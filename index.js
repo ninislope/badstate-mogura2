@@ -11,14 +11,18 @@ const allBadStates = [
     },
     {
         乳首敏感: [
-            { delay: 20 },
-            { delay: 30 },
             { delay: 50 },
+            { delay: 80 },
+            { delay: 120 },
+            { delay: 160 },
+            { delay: 200 },
         ],
         クリ敏感: [
-            { delay: 10 },
-            { delay: 30 },
-            { delay: 60 },
+            { delay: 40 },
+            { delay: 80 },
+            { delay: 120 },
+            { delay: 160 },
+            { delay: 200 },
         ],
     },
     {
@@ -174,8 +178,8 @@ class Stage {
     get restAppearCount() { return this.totalCount - this.appearCount; }
     /** 成功率% */
     get successRate() { return Math.round(this.successCount * 1000 / this.passCount) / 10; }
-    get currentAppearSpeed() { return 2000 - this.level * 100 - this.passCount * 5; } // TODO:
-    get currentHideSpeed() { return 3000 - this.level * 150 - this.passCount * 5; } // TODO:
+    get currentAppearSpeed() { return 2000 - this.level * 100 - this.passCount * 30; } // TODO:
+    get currentHideSpeed() { return 3000 - this.level * 150 - this.passCount * 30; } // TODO:
 }
 class BadStateNames {
     static byDifficulty(difficulty) {
