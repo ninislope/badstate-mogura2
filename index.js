@@ -9,8 +9,8 @@ const allBadStates = [
     {
         おもらし: [{ serious: 4, delay: 500, period: 4000 }],
         発情: [{ serious: 3, delay: 300, period: 8000 }],
-        ハメられ: [{ serious: 4, stop: 100, cycle: 500, prod: 100, period: 3500, endTrigger: ["膣内射精"], danger: ["膣内射精"], speak: ["膣内だめっ♡", ""], speakInterval: 350 }],
-        膣内射精: [{ serious: 4, delay: 1000, stop: 3000, prod: 100, period: 4000, danger: ["膣内射精"], speak: ["いやぁぁぁぁぁっ♡"] }],
+        ハメられ: [{ serious: 4, stop: 100, cycle: 500, prod: 100, period: 3500, endTrigger: ["膣内射精"], speak: ["膣内だめっ♡", ""], speakInterval: 350 }],
+        膣内射精: [{ serious: 4, delay: 1000, stop: 3000, prod: 100, period: 4000, speak: ["いやぁぁぁぁぁっ♡"] }],
     },
     {
         乳首敏感: [
@@ -68,7 +68,7 @@ const allBadStates = [
     },
     {
         挿入: [
-            { serious: 3, stop: 1000, prod: 80, period: 7500, trigger: ["ハメられ"], danger: ["膣内射精"], speak: ["ふあぁんっ♡"] },
+            { serious: 3, stop: 1000, prod: 80, period: 7500, trigger: ["ハメられ"], speak: ["ふあぁんっ♡"] },
         ],
     },
 ];
@@ -334,9 +334,16 @@ class PlayerBadStates {
         if (this.totalDelay)
             summaries.push(`敏感になり${this.totalDelay / 1000}秒動きが遅れてしまう`);
         const dangers = [];
+        const dangersUniq = {};
         for (const playerBadState of this.badStates) {
-            if (playerBadState.param.danger)
-                dangers.push(...playerBadState.param.danger);
+            if (playerBadState.param.danger) {
+                for (const danger of playerBadState.param.danger) {
+                    if (!dangersUniq[danger]) {
+                        dangersUniq[danger] = true;
+                        dangers.push(...playerBadState.param.danger);
+                    }
+                }
+            }
         }
         if (dangers.length)
             summaries.push(`体が開発され${dangers.join(", ")}の危険がある`);
