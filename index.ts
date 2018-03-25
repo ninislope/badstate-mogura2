@@ -129,9 +129,8 @@ class MoguraView {
             mogura.classList.add("hidden");
         }
         MoguraView.updateInfo();
-        const playerBadStates = player.snapShotBadState();
-        MoguraView.updateBadStates(playerBadStates, playerBadStates);
-        MoguraView.setSpeak(Speak.randomHitSpeak(playerBadStates.seriousSpeakIndex) || "……");
+        MoguraView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates);
+        MoguraView.setSpeak(Speak.randomHitSpeak(moguraGame.playerInGame.effectiveBadStates.seriousSpeakIndex) || "……");
     }
 
     static updateInfo() {
@@ -360,6 +359,10 @@ class Player {
 
     badStates: PlayerBadState[] = [];
 
+    newInGame() {
+        return new PlayerInMoguraGame(this);
+    }
+
     snapShotBadState() {
         return new PlayerBadStates([...this.badStates]);
     }
@@ -394,6 +397,35 @@ class Player {
     }
 }
 
+class PlayerInMoguraGame {
+    player: Player;
+    startBadStates: PlayerBadStates;
+    currentBadStates: PlayerBadStates;
+
+    constructor(player: Player) {
+        this.player = player;
+        this.startBadStates = this.currentBadStates = player.snapShotBadState();
+    }
+
+    get addMode() { return this.player.addMode; }
+    get effectiveBadStates() { return this.addMode === "immediate" ? this.currentBadStates : this.startBadStates; }
+
+    addBadState(name: string) {
+        this.player.addBadState(name);
+        this.currentBadStates = this.player.snapShotBadState();
+    }
+
+    removeBadState(name: string) {
+        this.player.removeBadState(name);
+        this.currentBadStates = this.player.snapShotBadState();
+    }
+
+    battleEnd() {
+        this.player.battleEnd();
+        this.currentBadStates = this.player.snapShotBadState();
+    }
+}
+
 const stages = new Stages();
 const player = new Player();
 let moguraGame: MoguraGame;
@@ -408,7 +440,7 @@ function gotoStartScene() {
 
 function gotoMoguraScene() {
     player.addMode = View.getAddMode();
-    moguraGame = new MoguraGame(stages.newStage(), gotoResultScene);
+    moguraGame = new MoguraGame(stages.newStage(), player.newInGame(), gotoResultScene);
     View.setScene("moguraScene");
     MoguraView.setup();
     MoguraView.showStart();
@@ -423,26 +455,25 @@ function gotoMoguraScene() {
 }
 
 function gotoResultScene() {
-    player.battleEnd();
     View.setScene("resultScene");
     View.setAddMode(player.addMode);
-    ResultView.updateBadStates(moguraGame.startPlayerBadStates, moguraGame.currentPlayerBadStates);
+    ResultView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates);
     ResultView.updateInfo();
 }
 
 class MoguraGame {
     stage: Stage;
+    playerInGame: PlayerInMoguraGame;
     onEnd: () => any;
 
-    startPlayerBadStates: PlayerBadStates;
-    currentPlayerBadStates: PlayerBadStates;
     private badStateNames: BadStateNames;
     private currentMoguras: {[index: string]: string} = {};
     private currentMoguraHits: {[index: string]: boolean} = {};
 
-    constructor(stage: Stage, onEnd: () => any) {
+    constructor(stage: Stage, playerInGame: PlayerInMoguraGame, onEnd: () => any) {
         this.stage = stage;
-        this.startPlayerBadStates = this.currentPlayerBadStates = player.snapShotBadState();
+        this.playerInGame = playerInGame;
+        this.onEnd = onEnd;
         this.badStateNames = BadStateNames.byDifficulty(stage.badStateDifficulty);
     }
 
@@ -451,11 +482,8 @@ class MoguraGame {
     }
 
     private end = () => {
+        this.playerInGame.battleEnd();
         this.onEnd();
-    }
-
-    private get playerBadStates() {
-        return player.addMode === "immediate" ? this.currentPlayerBadStates : this.startPlayerBadStates;
     }
 
     private get currentMoguraCount() { return Object.keys(this.currentMoguras).length; }
@@ -489,9 +517,8 @@ class MoguraGame {
         } else {
             const badStateName = this.currentMoguras[index];
             this.stage.fail(badStateName);
-            player.addBadState(badStateName);
-            this.currentPlayerBadStates = player.snapShotBadState();
-            MoguraView.updateBadStates(this.startPlayerBadStates, this.currentPlayerBadStates);
+            this.playerInGame.addBadState(badStateName);
+            MoguraView.updateBadStates(this.playerInGame.startBadStates, this.playerInGame.currentBadStates);
         }
         delete this.currentMoguras[index];
         MoguraView.updateInfo();
@@ -499,7 +526,7 @@ class MoguraGame {
     }
 
     hitMogura = (index: number) => {
-        const playerBadStates = this.playerBadStates;
+        const playerBadStates = this.playerInGame.effectiveBadStates;
         MoguraView.setSpeak(Speak.randomHitSpeak(playerBadStates.seriousSpeakIndex));
         if (playerBadStates.totalDelay) {
             setTimeout(() => this.hitMoguraExec(index), playerBadStates.totalDelay);
