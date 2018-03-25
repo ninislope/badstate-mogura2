@@ -408,7 +408,7 @@ function gotoStartScene() {
 
 function gotoMoguraScene() {
     player.addMode = View.getAddMode();
-    moguraGame = new MoguraGame(stages.newStage());
+    moguraGame = new MoguraGame(stages.newStage(), gotoResultScene);
     View.setScene("moguraScene");
     MoguraView.setup();
     MoguraView.showStart();
@@ -432,19 +432,27 @@ function gotoResultScene() {
 
 class MoguraGame {
     stage: Stage;
+    onEnd: () => any;
+
     startPlayerBadStates: PlayerBadStates;
     currentPlayerBadStates: PlayerBadStates;
     badStateNames: BadStateNames;
     currentMoguras: {[index: string]: string} = {};
     currentMoguraHits: {[index: string]: boolean} = {};
 
-    constructor(stage: Stage) {
+    constructor(stage: Stage, onEnd: () => any) {
         this.stage = stage;
         this.startPlayerBadStates = this.currentPlayerBadStates = player.snapShotBadState();
         this.badStateNames = BadStateNames.byDifficulty(stage.badStateDifficulty);
     }
 
-    start = () => this.appearMogura();
+    start = () => {
+        this.appearMogura();
+    }
+
+    end = () => {
+        this.onEnd();
+    }
 
     get playerBadStates() {
         return player.addMode === "immediate" ? this.currentPlayerBadStates : this.startPlayerBadStates;
@@ -487,7 +495,7 @@ class MoguraGame {
         }
         delete this.currentMoguras[index];
         MoguraView.updateInfo();
-        if (this.stage.restCount === 0) gotoResultScene();
+        if (this.stage.restCount === 0) this.end();
     }
 
     hitMogura = (index: number) => {

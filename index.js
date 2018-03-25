@@ -323,7 +323,7 @@ function gotoStartScene() {
 }
 function gotoMoguraScene() {
     player.addMode = View.getAddMode();
-    moguraGame = new MoguraGame(stages.newStage());
+    moguraGame = new MoguraGame(stages.newStage(), gotoResultScene);
     View.setScene("moguraScene");
     MoguraView.setup();
     MoguraView.showStart();
@@ -344,10 +344,15 @@ function gotoResultScene() {
     ResultView.updateInfo();
 }
 class MoguraGame {
-    constructor(stage) {
+    constructor(stage, onEnd) {
         this.currentMoguras = {};
         this.currentMoguraHits = {};
-        this.start = () => this.appearMogura();
+        this.start = () => {
+            this.appearMogura();
+        };
+        this.end = () => {
+            this.onEnd();
+        };
         this.appearMogura = () => {
             if (this.stage.restAppearCount === 0)
                 return;
@@ -375,7 +380,7 @@ class MoguraGame {
             delete this.currentMoguras[index];
             MoguraView.updateInfo();
             if (this.stage.restCount === 0)
-                gotoResultScene();
+                this.end();
         };
         this.hitMogura = (index) => {
             const playerBadStates = this.playerBadStates;
