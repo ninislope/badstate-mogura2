@@ -34,6 +34,22 @@
     display: block;
 }
 
+#moguraScene .inactive {
+    display: none;
+    z-index: 5;
+    position: absolute;
+    width: 500px;
+    height: 200px;
+    color: #f66;
+    background: rgba(255, 192, 255, 0.5);
+    text-align: center;
+    font-size: 40px;
+}
+
+#moguraScene .inactive.show {
+    display: block;
+}
+
 #moguraScene .info {
     grid-column: 1;
     grid-row: 1;

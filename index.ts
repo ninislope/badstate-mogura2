@@ -190,6 +190,14 @@ class MoguraView {
     static setStart(value: string) {
         document.querySelector<HTMLDivElement>("#moguraScene .start")!.textContent = value;
     }
+
+    static showInactive() {
+        document.querySelector<HTMLDivElement>("#moguraScene .inactive")!.classList.add("show");
+    }
+
+    static hideInactive() {
+        document.querySelector<HTMLDivElement>("#moguraScene .inactive")!.classList.remove("show");
+    }
 }
 
 class ResultView {
@@ -453,6 +461,7 @@ class PlayerInMoguraGame {
     }
 
     end = () => {
+        MoguraView.hideInactive();
         this.clearTimers();
         this.removeBattleEndBadStates();
     }
@@ -534,9 +543,11 @@ class PlayerInMoguraGame {
 
     private setInactive(period: number, onEnd: () => any) {
         this.inactive = true;
+        MoguraView.showInactive();
         this.inactiveTimer = setTimeout(() => {
             delete this.inactiveTimer;
             this.inactive = false;
+            MoguraView.hideInactive();
             onEnd();
         }, period);
     }
