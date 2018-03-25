@@ -110,7 +110,9 @@ class View {
         }
         document.querySelector(`${baseScene} [name="addMode"][value="${value}"]`).checked = true;
     }
-    static updateBadStates(baseScene, previous, current) {
+    static updateBadStates(baseScene, previous, current, summary) {
+        const summaryContainer = document.querySelector(`${baseScene} .badStatesSummary`);
+        summaryContainer.innerHTML = summary.summary;
         const container = document.querySelector(`${baseScene} .badStates`);
         container.innerHTML = "";
         for (const badState of previous.badStates) {
@@ -146,7 +148,7 @@ class MoguraView {
             mogura.classList.add("hidden");
         }
         MoguraView.updateInfo();
-        MoguraView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates);
+        MoguraView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates, moguraGame.playerInGame.currentBadStates);
         moguraGame.playerInGame.speakReady();
     }
     static updateInfo() {
@@ -154,8 +156,8 @@ class MoguraView {
         document.querySelector("#moguraScene .successCount").textContent = `${moguraGame.stage.successCount}`;
         document.querySelector("#moguraScene .failCount").textContent = `${moguraGame.stage.failCount}`;
     }
-    static updateBadStates(previous, current) {
-        View.updateBadStates("#moguraScene", previous, current);
+    static updateBadStates(previous, current, effective) {
+        View.updateBadStates("#moguraScene", previous, current, effective);
     }
     static moguras() {
         if (!MoguraView._moguras) {
@@ -207,7 +209,7 @@ class ResultView {
         document.querySelector("#resultScene .successRate").textContent = `${moguraGame.stage.successRate}`;
     }
     static updateBadStates(previous, current) {
-        View.updateBadStates("#resultScene", previous, current);
+        View.updateBadStates("#resultScene", previous, current, current);
     }
     static setAddMode(value) {
         View.setAddMode("#resultScene", value);
@@ -320,6 +322,9 @@ class PlayerBadStates {
         }
         this.index = index;
     }
+    get summary() {
+        return this.totalDelay ? `バッドステートにより<br>${this.totalDelay / 1000}秒動きが鈍っている` : "";
+    }
 }
 class Player {
     constructor() {
@@ -404,13 +409,13 @@ class PlayerInMoguraGame {
         this.currentBadStates = this.player.snapShotBadState();
         if (playerBadState)
             this.setBadStateTimer(playerBadState);
-        MoguraView.updateBadStates(this.startBadStates, this.currentBadStates);
+        MoguraView.updateBadStates(this.startBadStates, this.currentBadStates, this.effectiveBadStates);
     }
     removeBadState(name) {
         this.clearBadStateTimer(name);
         this.player.removeBadState(name);
         this.currentBadStates = this.player.snapShotBadState();
-        MoguraView.updateBadStates(this.startBadStates, this.currentBadStates);
+        MoguraView.updateBadStates(this.startBadStates, this.currentBadStates, this.effectiveBadStates);
     }
     removeBattleEndBadStates() {
         this.player.removeBattleEndBadStates();

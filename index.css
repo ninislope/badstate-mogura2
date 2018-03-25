@@ -111,22 +111,33 @@
     display: grid;
     position: relative;
     grid-template-columns: 500px 1fr;
-    grid-template-rows: 280px 110px;
+    grid-template-rows: 70px 200px 110px;
     grid-column-gap: 10px;
     grid-row-gap: 10px;
 }
 
 #resultScene .score {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 1 / 3;
     background: #efd;
     font-size: larger;
     font-weight: bold;
 }
 
+.badStatesSummary {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    padding: 10px;
+    color: #600;
+    background: #f9c;
+    font-size: 18px;
+    font-weight: bold;
+}
+
 .badStates {
     grid-column: 2;
-    grid-row: 1 / 4;
+    grid-row: 2 / 4;
     margin: 0;
     background: #fde;
 }
