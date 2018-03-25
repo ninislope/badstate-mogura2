@@ -10,6 +10,8 @@ const allBadStates: AllBadStates = [
     { // difficulty=0 これは出現しないが行動依存でつく レベルは1のみ
         おもらし: [{serious: 4, delay: 500, period: 4000}],
         発情: [{serious: 3, delay: 300, period: 8000}],
+        ハメられ: [{serious: 4, stop: 100, cycle: 500, prod: 100, period: 3500, endTrigger: ["膣内射精"], danger: ["膣内射精"], speak: ["膣内だめっ♡", ""], speakInterval: 350}],
+        膣内射精: [{serious: 4, delay: 1000, stop: 3000, prod: 100, period: 4000, danger: ["膣内射精"], speak: ["いやぁぁぁぁぁっ♡"]}],
     },
     { // difficulty=1
         乳首敏感: [
@@ -64,7 +66,12 @@ const allBadStates: AllBadStates = [
             {serious: 3, stop: 4000, cycle: 9000, prod: 20, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"]},
             {serious: 3, stop: 4000, cycle: 8000, prod: 30, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"]},
         ],
-    }
+    },
+    { // difficulty=3
+        挿入: [
+            {serious: 3, stop: 1000, prod: 80, period: 7500, trigger: ["ハメられ"], danger: ["膣内射精"], speak: ["ふあぁんっ♡"]},
+        ],
+    },
 ];
 
 interface BadStateLevelParam {
@@ -80,12 +87,16 @@ interface BadStateLevelParam {
     cycle?: number;
     /** 停止確率(%) 指定なしは100% */
     prod?: number;
-    /** 停止時台詞 1秒ごとに追加 */
+    /** 停止時台詞 speakIntervaごとに追加 */
     speak?: string[];
+    /** 停止時台詞の発話間隔 デフォルト1秒 */
+    speakInterval?: number;
     /** 停止時に誘発するバッドステート名 */
     trigger?: string[];
     /** バッドステート持続時間 */
     period?: number;
+    /** 持続時間終了停止時に誘発するバッドステート名 */
+    endTrigger?: string[];
     /** 説明用危険可能性 */
     danger?: string[];
 }
@@ -565,7 +576,7 @@ class PlayerInMoguraGame {
                 }
             });
             if (playerBadState.param.speak) { // しゃべる
-                this.timerSpeaks(playerBadState.param.speak);
+                this.timerSpeaks(playerBadState.param.speak, playerBadState.param.speakInterval || 1000);
             }
         }
         delete this.triggerStopTimers[name];
@@ -576,31 +587,38 @@ class PlayerInMoguraGame {
         if (this.triggerStopTimers[name]) return; // 前にかかっていたのがあったらそれにまかせる
         const playerBadState = this.effectiveBadStates.find(name);
         if (!playerBadState) return; // 解消されている場合
+        if (!playerBadState.param.cycle) return; // 周期実行でない場合
         this.triggerStopTimers[name] = setTimeout(() => this.timerTriggerStopImmediate(name, playerBadState), playerBadState.param.cycle);
     }
 
     private timerRemoveBadState(name: string, period: number) {
+        const playerBadState = this.effectiveBadStates.find(name);
         const previousHandle = this.removeTimers[name];
         if (previousHandle) clearTimeout(previousHandle); // 前にかかっていたのがあったら期限を更新
         this.removeTimers[name] = setTimeout(() => {
             delete this.removeTimers[name];
             this.removeBadState(name);
+            if (playerBadState.param.endTrigger) { // 持続時間終了後バッドステートを誘発
+                for (const name of playerBadState.param.endTrigger) {
+                    this.addBadState(name);
+                }
+            }
         }, period);
     }
 
-    private timerSpeaks(speaks: string[]) {
+    private timerSpeaks(speaks: string[], interval: number) {
         const lastIndex = speaks.length - 1;
         for (let index = 0; index <= lastIndex; ++index) {
-            this.timerSpeak(speaks[index], index, index === lastIndex);
+            this.timerSpeak(speaks[index], index, interval, index === lastIndex);
         }
     }
 
-    private timerSpeak(speak: string, index: number, last = false) {
+    private timerSpeak(speak: string, index: number, interval: number, last = false) {
         this.speakTimers[index] = setTimeout(() => {
             this.speakTimers[index] = undefined;
             if (last) this.speakTimers.length = 0;
             MoguraView.setSpeak(speak);
-        }, 1 + index * 1000);
+        }, 1 + index * interval);
     }
 
     private setInactive(period: number, onEnd: () => any) {

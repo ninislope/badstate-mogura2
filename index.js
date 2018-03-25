@@ -9,6 +9,8 @@ const allBadStates = [
     {
         おもらし: [{ serious: 4, delay: 500, period: 4000 }],
         発情: [{ serious: 3, delay: 300, period: 8000 }],
+        ハメられ: [{ serious: 4, stop: 100, cycle: 500, prod: 100, period: 3500, endTrigger: ["膣内射精"], danger: ["膣内射精"], speak: ["膣内だめっ♡", ""], speakInterval: 350 }],
+        膣内射精: [{ serious: 4, delay: 1000, stop: 3000, prod: 100, period: 4000, danger: ["膣内射精"], speak: ["いやぁぁぁぁぁっ♡"] }],
     },
     {
         乳首敏感: [
@@ -63,7 +65,12 @@ const allBadStates = [
             { serious: 3, stop: 4000, cycle: 9000, prod: 20, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
             { serious: 3, stop: 4000, cycle: 8000, prod: 30, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
         ],
-    }
+    },
+    {
+        挿入: [
+            { serious: 3, stop: 1000, prod: 80, period: 7500, trigger: ["ハメられ"], danger: ["膣内射精"], speak: ["ふあぁんっ♡"] },
+        ],
+    },
 ];
 class BadStates {
     static maxLevel(name) {
@@ -473,7 +480,7 @@ class PlayerInMoguraGame {
                 }
             });
             if (playerBadState.param.speak) {
-                this.timerSpeaks(playerBadState.param.speak);
+                this.timerSpeaks(playerBadState.param.speak, playerBadState.param.speakInterval || 1000);
             }
         }
         delete this.triggerStopTimers[name];
@@ -485,30 +492,38 @@ class PlayerInMoguraGame {
         const playerBadState = this.effectiveBadStates.find(name);
         if (!playerBadState)
             return; // 解消されている場合
+        if (!playerBadState.param.cycle)
+            return; // 周期実行でない場合
         this.triggerStopTimers[name] = setTimeout(() => this.timerTriggerStopImmediate(name, playerBadState), playerBadState.param.cycle);
     }
     timerRemoveBadState(name, period) {
+        const playerBadState = this.effectiveBadStates.find(name);
         const previousHandle = this.removeTimers[name];
         if (previousHandle)
             clearTimeout(previousHandle); // 前にかかっていたのがあったら期限を更新
         this.removeTimers[name] = setTimeout(() => {
             delete this.removeTimers[name];
             this.removeBadState(name);
+            if (playerBadState.param.endTrigger) {
+                for (const name of playerBadState.param.endTrigger) {
+                    this.addBadState(name);
+                }
+            }
         }, period);
     }
-    timerSpeaks(speaks) {
+    timerSpeaks(speaks, interval) {
         const lastIndex = speaks.length - 1;
         for (let index = 0; index <= lastIndex; ++index) {
-            this.timerSpeak(speaks[index], index, index === lastIndex);
+            this.timerSpeak(speaks[index], index, interval, index === lastIndex);
         }
     }
-    timerSpeak(speak, index, last = false) {
+    timerSpeak(speak, index, interval, last = false) {
         this.speakTimers[index] = setTimeout(() => {
             this.speakTimers[index] = undefined;
             if (last)
                 this.speakTimers.length = 0;
             MoguraView.setSpeak(speak);
-        }, 1 + index * 1000);
+        }, 1 + index * interval);
     }
     setInactive(period, onEnd) {
         this.inactive = true;
