@@ -528,32 +528,35 @@ class PlayerInMoguraGame {
 
     private setBadStateTimer(playerBadState: PlayerBadState) {
         if (playerBadState.param.stop) {
-            this.timerTriggerStop(playerBadState.name);
+            this.timerTriggerStopImmediate(playerBadState.name);
         }
         if (playerBadState.param.period) {
             this.timerRemoveBadState(playerBadState.name, playerBadState.param.period);
         }
     }
 
+    private timerTriggerStopImmediate(name: string, playerBadState = this.effectiveBadStates.find(name)) {
+        if (!this.inactive && playerBadState.triggersNow()) {
+            this.setInactive(playerBadState.param.stop as number, () => { // 停止させる
+                if (playerBadState.param.trigger) { // 停止後バッドステートを誘発
+                    for (const name of playerBadState.param.trigger) {
+                        this.addBadState(name);
+                    }
+                }
+            });
+            if (playerBadState.param.speak) { // しゃべる
+                this.timerSpeaks(playerBadState.param.speak);
+            }
+        }
+        delete this.triggerStopTimers[name];
+        this.timerTriggerStop(name);
+    }
+
     private timerTriggerStop(name: string) {
         if (this.triggerStopTimers[name]) return; // 前にかかっていたのがあったらそれにまかせる
         const playerBadState = this.effectiveBadStates.find(name);
-        this.triggerStopTimers[name] = setTimeout(() => {
-            if (!this.inactive && playerBadState.triggersNow()) {
-                this.setInactive(playerBadState.param.stop as number, () => { // 停止させる
-                    if (playerBadState.param.trigger) { // 停止後バッドステートを誘発
-                        for (const name of playerBadState.param.trigger) {
-                            this.addBadState(name);
-                        }
-                    }
-                });
-                if (playerBadState.param.speak) { // しゃべる
-                    this.timerSpeaks(playerBadState.param.speak);
-                }
-            }
-            delete this.triggerStopTimers[name];
-            this.timerTriggerStop(name);
-        }, playerBadState.param.cycle);
+        if (!playerBadState) return; // 解消されている場合
+        this.triggerStopTimers[name] = setTimeout(() => this.timerTriggerStopImmediate(name, playerBadState), playerBadState.param.cycle);
     }
 
     private timerRemoveBadState(name: string, period: number) {
