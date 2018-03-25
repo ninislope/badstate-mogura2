@@ -104,11 +104,11 @@ class View {
     static getAddMode() {
         return document.querySelector('[name="addMode"]:checked').value;
     }
-    static setAddMode(value) {
+    static setAddMode(baseScene, value) {
         for (const elem of document.querySelectorAll(`[name="addMode"]`)) {
             elem.checked = false;
         }
-        document.querySelector(`[name="addMode"][value="${value}"]`).checked = true;
+        document.querySelector(`${baseScene} [name="addMode"][value="${value}"]`).checked = true;
     }
     static updateBadStates(baseScene, previous, current) {
         const container = document.querySelector(`${baseScene} .badStates`);
@@ -200,6 +200,7 @@ class MoguraView {
 }
 class ResultView {
     static updateInfo() {
+        document.querySelector("#resultScene .level").textContent = `${moguraGame.stage.level}`;
         document.querySelector("#resultScene .totalCount").textContent = `${moguraGame.stage.totalCount}`;
         document.querySelector("#resultScene .successCount").textContent = `${moguraGame.stage.successCount}`;
         document.querySelector("#resultScene .failCount").textContent = `${moguraGame.stage.failCount}`;
@@ -207,6 +208,9 @@ class ResultView {
     }
     static updateBadStates(previous, current) {
         View.updateBadStates("#resultScene", previous, current);
+    }
+    static setAddMode(value) {
+        View.setAddMode("#resultScene", value);
     }
 }
 class Stages {
@@ -534,10 +538,10 @@ function gotoMoguraScene() {
     }, 2000);
 }
 function gotoResultScene() {
-    View.setScene("resultScene");
-    View.setAddMode(player.addMode);
+    ResultView.setAddMode(player.addMode);
     ResultView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates);
     ResultView.updateInfo();
+    View.setScene("resultScene");
 }
 class MoguraGame {
     constructor(stage, onEnd) {

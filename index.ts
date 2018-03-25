@@ -137,11 +137,11 @@ class View {
         return (document.querySelector('[name="addMode"]:checked') as HTMLInputElement).value as "immediate" | "lazy";
     }
 
-    static setAddMode(value: "immediate" | "lazy") {
+    static setAddMode(baseScene: string, value: "immediate" | "lazy") {
         for (const elem of document.querySelectorAll(`[name="addMode"]`) as NodeListOf<HTMLInputElement>) {
             elem.checked = false;
         }
-        (document.querySelector(`[name="addMode"][value="${value}"]`) as HTMLInputElement).checked = true;
+        (document.querySelector(`${baseScene} [name="addMode"][value="${value}"]`) as HTMLInputElement).checked = true;
     }
 
     static updateBadStates(baseScene: string, previous: PlayerBadStates, current: PlayerBadStates) {
@@ -250,6 +250,7 @@ class MoguraView {
 
 class ResultView {
     static updateInfo() {
+        document.querySelector<HTMLSpanElement>("#resultScene .level")!.textContent = `${moguraGame.stage.level}`;
         document.querySelector<HTMLSpanElement>("#resultScene .totalCount")!.textContent = `${moguraGame.stage.totalCount}`;
         document.querySelector<HTMLSpanElement>("#resultScene .successCount")!.textContent = `${moguraGame.stage.successCount}`;
         document.querySelector<HTMLSpanElement>("#resultScene .failCount")!.textContent = `${moguraGame.stage.failCount}`;
@@ -258,6 +259,10 @@ class ResultView {
 
     static updateBadStates(previous: PlayerBadStates, current: PlayerBadStates) {
         View.updateBadStates("#resultScene", previous, current);
+    }
+
+    static setAddMode(value: "immediate" | "lazy") {
+        View.setAddMode("#resultScene", value);
     }
 }
 
@@ -644,10 +649,10 @@ function gotoMoguraScene() {
 }
 
 function gotoResultScene() {
-    View.setScene("resultScene");
-    View.setAddMode(player.addMode);
+    ResultView.setAddMode(player.addMode);
     ResultView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates);
     ResultView.updateInfo();
+    View.setScene("resultScene");
 }
 
 class MoguraGame {

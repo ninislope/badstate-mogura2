@@ -120,6 +120,8 @@
     grid-column: 1;
     grid-row: 1;
     background: #efd;
+    font-size: larger;
+    font-weight: bold;
 }
 
 .badStates {
