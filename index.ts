@@ -390,7 +390,7 @@ class Player {
         this.badStates.splice(previousIndex, 1);
     }
 
-    battleEnd() {
+    removeBattleEndBadStates() {
         for (const name of BadStates.removeOnBattleEndNames) {
             this.removeBadState(name);
         }
@@ -420,8 +420,8 @@ class PlayerInMoguraGame {
         this.currentBadStates = this.player.snapShotBadState();
     }
 
-    battleEnd() {
-        this.player.battleEnd();
+    removeBattleEndBadStates() {
+        this.player.removeBattleEndBadStates();
         this.currentBadStates = this.player.snapShotBadState();
     }
 
@@ -492,7 +492,7 @@ class MoguraGame {
     }
 
     private end = () => {
-        this.playerInGame.battleEnd();
+        this.playerInGame.removeBattleEndBadStates();
         this.onEnd();
     }
 
