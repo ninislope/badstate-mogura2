@@ -436,9 +436,9 @@ class MoguraGame {
 
     startPlayerBadStates: PlayerBadStates;
     currentPlayerBadStates: PlayerBadStates;
-    badStateNames: BadStateNames;
-    currentMoguras: {[index: string]: string} = {};
-    currentMoguraHits: {[index: string]: boolean} = {};
+    private badStateNames: BadStateNames;
+    private currentMoguras: {[index: string]: string} = {};
+    private currentMoguraHits: {[index: string]: boolean} = {};
 
     constructor(stage: Stage, onEnd: () => any) {
         this.stage = stage;
@@ -450,27 +450,27 @@ class MoguraGame {
         this.appearMogura();
     }
 
-    end = () => {
+    private end = () => {
         this.onEnd();
     }
 
-    get playerBadStates() {
+    private get playerBadStates() {
         return player.addMode === "immediate" ? this.currentPlayerBadStates : this.startPlayerBadStates;
     }
 
-    get currentMoguraCount() { return Object.keys(this.currentMoguras).length; }
+    private get currentMoguraCount() { return Object.keys(this.currentMoguras).length; }
 
-    newMoguraIndex() {
+    private newMoguraIndex() {
         let index = Math.floor(Math.random() * (10 - this.currentMoguraCount));
         while (this.currentMoguras[index]) index = (index + 1) % 10;
         return index;
     }
 
-    newBadStateName() {
+    private newBadStateName() {
         return this.badStateNames.random();
     }
 
-    appearMogura = () => {
+    private appearMogura = () => {
         if (this.stage.restAppearCount === 0) return;
         const index = this.newMoguraIndex();
         const badStateName = this.newBadStateName();
@@ -482,7 +482,7 @@ class MoguraGame {
         setTimeout(this.appearMogura, this.stage.currentAppearSpeed);
     }
 
-    hideMogura = (index: number) => {
+    private hideMogura = (index: number) => {
         MoguraView.hideMogura(index);
         if (this.currentMoguraHits[index]) {
             delete this.currentMoguraHits[index];
@@ -508,7 +508,7 @@ class MoguraGame {
         }
     }
 
-    hitMoguraExec = (index: number) => {
+    private hitMoguraExec = (index: number) => {
         if (this.currentMoguras[index]) {
             this.currentMoguraHits[index] = true;
             this.stage.success();
