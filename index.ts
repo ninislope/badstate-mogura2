@@ -48,9 +48,9 @@ const allBadStates: AllBadStates = [
             {serious: 3, delay: 300},
         ],
         媚薬: [
-            {serious: 1, stop: 80, cycle: 5000, prod: 40, period: 4000, trigger: ["発情"], speak: ["んぅっ♡"]},
-            {serious: 2, stop: 160, cycle: 5000, prod: 60, period: 8000, trigger: ["発情"], speak: ["んぅっ♡"]},
-            {serious: 2, stop: 240, cycle: 5000, prod: 80, period: 16000, trigger: ["発情"], speak: ["ふわぁっ♡"]},
+            {serious: 1, stop: 80, cycle: 5000, prod: 40, period: 6000, trigger: ["発情"], speak: ["んぅっ♡"]},
+            {serious: 2, stop: 160, cycle: 4000, prod: 60, period: 8000, trigger: ["発情"], speak: ["んぅっ♡"]},
+            {serious: 2, stop: 240, cycle: 3000, prod: 80, period: 16000, trigger: ["発情"], speak: ["ふわぁっ♡"]},
         ],
     },
     { // difficulty=2
@@ -472,12 +472,14 @@ class PlayerInMoguraGame {
         const playerBadState = this.player.addBadState(name);
         this.currentBadStates = this.player.snapShotBadState();
         if (playerBadState) this.setBadStateTimer(playerBadState);
+        MoguraView.updateBadStates(this.startBadStates, this.currentBadStates);
     }
 
     removeBadState(name: string) {
         this.clearBadStateTimer(name);
         this.player.removeBadState(name);
         this.currentBadStates = this.player.snapShotBadState();
+        MoguraView.updateBadStates(this.startBadStates, this.currentBadStates);
     }
 
     removeBattleEndBadStates() {
@@ -502,7 +504,7 @@ class PlayerInMoguraGame {
 
     private clearBadStateTimer(name: string) {
         if (this.triggerStopTimers[name]) {
-            clearInterval(this.triggerStopTimers[name]);
+            clearTimeout(this.triggerStopTimers[name]);
             delete this.triggerStopTimers[name];
         }
         if (this.removeTimers[name]) {
@@ -517,7 +519,7 @@ class PlayerInMoguraGame {
             if (handle) clearTimeout(handle);
         }
         for (const name of Object.keys(this.triggerStopTimers)) {
-            clearInterval(this.triggerStopTimers[name]);
+            clearTimeout(this.triggerStopTimers[name]);
         }
         for (const name of Object.keys(this.removeTimers)) {
             clearTimeout(this.removeTimers[name]);
@@ -526,28 +528,31 @@ class PlayerInMoguraGame {
 
     private setBadStateTimer(playerBadState: PlayerBadState) {
         if (playerBadState.param.stop) {
-            this.timerTriggerStop(playerBadState);
+            this.timerTriggerStop(playerBadState.name);
         }
         if (playerBadState.param.period) {
             this.timerRemoveBadState(playerBadState.name, playerBadState.param.period);
         }
     }
 
-    private timerTriggerStop(playerBadState: PlayerBadState) {
+    private timerTriggerStop(name: string) {
         if (this.triggerStopTimers[name]) return; // 前にかかっていたのがあったらそれにまかせる
-        this.triggerStopTimers[name] = setInterval(() => {
-            if (this.inactive) return;
-            if (!playerBadState.triggersNow()) return;
-            this.setInactive(playerBadState.param.stop as number, () => { // 停止させる
-                if (playerBadState.param.trigger) { // 停止後バッドステートを誘発
-                    for (const name of playerBadState.param.trigger) {
-                        this.addBadState(name);
+        const playerBadState = this.effectiveBadStates.find(name);
+        this.triggerStopTimers[name] = setTimeout(() => {
+            if (!this.inactive && playerBadState.triggersNow()) {
+                this.setInactive(playerBadState.param.stop as number, () => { // 停止させる
+                    if (playerBadState.param.trigger) { // 停止後バッドステートを誘発
+                        for (const name of playerBadState.param.trigger) {
+                            this.addBadState(name);
+                        }
                     }
+                });
+                if (playerBadState.param.speak) { // しゃべる
+                    this.timerSpeaks(playerBadState.param.speak);
                 }
-            });
-            if (playerBadState.param.speak) { // しゃべる
-                this.timerSpeaks(playerBadState.param.speak);
             }
+            delete this.triggerStopTimers[name];
+            this.timerTriggerStop(name);
         }, playerBadState.param.cycle);
     }
 
@@ -699,7 +704,6 @@ class MoguraGame {
             const badStateName = this.currentMoguras[index];
             this.stage.fail(badStateName);
             this.playerInGame.addBadState(badStateName);
-            MoguraView.updateBadStates(this.playerInGame.startBadStates, this.playerInGame.currentBadStates);
         }
         delete this.currentMoguras[index];
         MoguraView.updateInfo();
