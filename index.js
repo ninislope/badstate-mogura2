@@ -57,7 +57,7 @@ class BadStates {
 BadStates.all = allBadStates;
 BadStates.removeOnBattleEndNames = Object.keys(allBadStates[0]);
 class Speak {
-    static randomStartSpeak(seriousSpeakIndex) {
+    static randomReadySpeak(seriousSpeakIndex) {
         return this.randomHitSpeak(seriousSpeakIndex);
     }
     static randomHitSpeak(seriousSpeakIndex) {
@@ -120,7 +120,7 @@ class MoguraView {
         }
         MoguraView.updateInfo();
         MoguraView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates);
-        moguraGame.playerInGame.speakStart();
+        moguraGame.playerInGame.speakReady();
     }
     static updateInfo() {
         document.querySelector("#moguraScene .restCount").textContent = `${moguraGame.stage.restCount}`;
@@ -254,6 +254,9 @@ class PlayerBadState {
         }
         throw new Error("no badstate");
     }
+    triggersNow() {
+        return Math.random() * 100 < (this.param.prod || 100);
+    }
 }
 /** 現在有効なバッドステート(モードの違い吸収) */
 class PlayerBadStates {
@@ -281,8 +284,8 @@ class Player {
     constructor() {
         this.badStates = [];
     }
-    newInGame() {
-        return new PlayerInMoguraGame(this);
+    newInGame(moguraGame) {
+        return new PlayerInMoguraGame(this, moguraGame);
     }
     snapShotBadState() {
         return new PlayerBadStates([...this.badStates]);
@@ -318,27 +321,50 @@ class Player {
     }
 }
 class PlayerInMoguraGame {
-    constructor(player) {
+    constructor(player, moguraGame) {
+        this.speakTimers = [];
+        this.triggerStopTimers = {};
+        this.removeTimers = {};
+        this.inactive = false;
+        this.start = () => {
+            const playerBadStates = this.effectiveBadStates;
+            let offset = 1;
+            for (const playerBadState of playerBadStates.badStates) {
+                setTimeout(() => this.setBadStateTimer(playerBadState), offset);
+                offset += 37; // タイミングがかぶらないように
+            }
+        };
+        this.end = () => {
+            this.clearTimers();
+            this.removeBattleEndBadStates();
+        };
         this.hitMogura = (index) => {
+            if (this.inactive)
+                return;
             this.speakHit();
             const playerBadStates = this.effectiveBadStates;
             if (playerBadStates.totalDelay) {
-                setTimeout(() => moguraGame.hitMogura(index), playerBadStates.totalDelay);
+                setTimeout(() => this.moguraGame.hitMogura(index), playerBadStates.totalDelay);
             }
             else {
-                moguraGame.hitMogura(index);
+                this.moguraGame.hitMogura(index);
             }
         };
         this.player = player;
+        this.moguraGame = moguraGame;
+        console.log("moguraGame", moguraGame);
         this.startBadStates = this.currentBadStates = player.snapShotBadState();
     }
     get addMode() { return this.player.addMode; }
     get effectiveBadStates() { return this.addMode === "immediate" ? this.currentBadStates : this.startBadStates; }
     addBadState(name) {
-        this.player.addBadState(name);
+        const playerBadState = this.player.addBadState(name);
         this.currentBadStates = this.player.snapShotBadState();
+        if (playerBadState)
+            this.setBadStateTimer(playerBadState);
     }
     removeBadState(name) {
+        this.clearBadStateTimer(name);
         this.player.removeBadState(name);
         this.currentBadStates = this.player.snapShotBadState();
     }
@@ -346,8 +372,91 @@ class PlayerInMoguraGame {
         this.player.removeBattleEndBadStates();
         this.currentBadStates = this.player.snapShotBadState();
     }
-    speakStart() {
-        MoguraView.setSpeak(Speak.randomStartSpeak(this.effectiveBadStates.seriousSpeakIndex));
+    clearBadStateTimer(name) {
+        if (this.triggerStopTimers[name]) {
+            clearInterval(this.triggerStopTimers[name]);
+            delete this.triggerStopTimers[name];
+        }
+        if (this.removeTimers[name]) {
+            clearTimeout(this.removeTimers[name]);
+            delete this.removeTimers[name];
+        }
+    }
+    clearTimers() {
+        if (this.inactiveTimer)
+            clearTimeout(this.inactiveTimer);
+        for (const handle of this.speakTimers) {
+            if (handle)
+                clearTimeout(handle);
+        }
+        for (const name of Object.keys(this.triggerStopTimers)) {
+            clearInterval(this.triggerStopTimers[name]);
+        }
+        for (const name of Object.keys(this.removeTimers)) {
+            clearTimeout(this.removeTimers[name]);
+        }
+    }
+    setBadStateTimer(playerBadState) {
+        if (playerBadState.param.stop) {
+            this.timerTriggerStop(playerBadState);
+        }
+        if (playerBadState.param.period) {
+            this.timerRemoveBadState(playerBadState.name, playerBadState.param.period);
+        }
+    }
+    timerTriggerStop(playerBadState) {
+        if (this.triggerStopTimers[name])
+            return; // 前にかかっていたのがあったらそれにまかせる
+        this.triggerStopTimers[name] = setInterval(() => {
+            if (this.inactive)
+                return;
+            if (!playerBadState.triggersNow())
+                return;
+            this.setInactive(playerBadState.param.stop, () => {
+                if (playerBadState.param.trigger) {
+                    for (const name of playerBadState.param.trigger) {
+                        this.addBadState(name);
+                    }
+                }
+            });
+            if (playerBadState.param.speak) {
+                this.timerSpeaks(playerBadState.param.speak);
+            }
+        }, playerBadState.param.cycle);
+    }
+    timerRemoveBadState(name, period) {
+        const previousHandle = this.removeTimers[name];
+        if (previousHandle)
+            clearTimeout(previousHandle); // 前にかかっていたのがあったら期限を更新
+        this.removeTimers[name] = setTimeout(() => {
+            delete this.removeTimers[name];
+            this.removeBadState(name);
+        }, period);
+    }
+    timerSpeaks(speaks) {
+        const lastIndex = speaks.length - 1;
+        for (let index = 0; index <= lastIndex; ++index) {
+            this.timerSpeak(speaks[index], index, index === lastIndex);
+        }
+    }
+    timerSpeak(speak, index, last = false) {
+        this.speakTimers[index] = setTimeout(() => {
+            this.speakTimers[index] = undefined;
+            if (last)
+                this.speakTimers.length = 0;
+            MoguraView.setSpeak(speak);
+        }, 1 + index * 1000);
+    }
+    setInactive(period, onEnd) {
+        this.inactive = true;
+        this.inactiveTimer = setTimeout(() => {
+            delete this.inactiveTimer;
+            this.inactive = false;
+            onEnd();
+        }, period);
+    }
+    speakReady() {
+        MoguraView.setSpeak(Speak.randomReadySpeak(this.effectiveBadStates.seriousSpeakIndex));
     }
     speakHit() {
         MoguraView.setSpeak(Speak.randomHitSpeak(this.effectiveBadStates.seriousSpeakIndex));
@@ -364,7 +473,7 @@ function gotoStartScene() {
 }
 function gotoMoguraScene() {
     player.addMode = View.getAddMode();
-    moguraGame = new MoguraGame(stages.newStage(), player.newInGame(), gotoResultScene);
+    moguraGame = new MoguraGame(stages.newStage(), gotoResultScene);
     View.setScene("moguraScene");
     MoguraView.setup();
     MoguraView.showStart();
@@ -374,7 +483,8 @@ function gotoMoguraScene() {
     setTimeout(() => MoguraView.setStart("START!"), 1500);
     setTimeout(() => {
         MoguraView.hideStart();
-        setTimeout(moguraGame.start, 100);
+        setTimeout(moguraGame.playerInGame.start, 200);
+        setTimeout(moguraGame.start, 400);
     }, 2000);
 }
 function gotoResultScene() {
@@ -384,18 +494,18 @@ function gotoResultScene() {
     ResultView.updateInfo();
 }
 class MoguraGame {
-    constructor(stage, playerInGame, onEnd) {
+    constructor(stage, onEnd) {
         this.currentMoguras = {};
         this.currentMoguraHits = {};
         this.start = () => {
             this.appearMogura();
         };
         this.end = () => {
-            this.playerInGame.removeBattleEndBadStates();
+            this.playerInGame.end();
             this.onEnd();
         };
         this.appearMogura = () => {
-            if (this.stage.restAppearCount === 0)
+            if (this.stage.restAppearCount <= 0)
                 return;
             const index = this.newMoguraIndex();
             const badStateName = this.newBadStateName();
@@ -419,7 +529,7 @@ class MoguraGame {
             }
             delete this.currentMoguras[index];
             MoguraView.updateInfo();
-            if (this.stage.restCount === 0)
+            if (this.stage.restCount <= 0)
                 this.end();
         };
         this.hitMogura = (index) => {
@@ -431,7 +541,7 @@ class MoguraGame {
             }
         };
         this.stage = stage;
-        this.playerInGame = playerInGame;
+        this.playerInGame = player.newInGame(this);
         this.onEnd = onEnd;
         this.badStateNames = BadStateNames.byDifficulty(stage.badStateDifficulty);
     }
