@@ -37,32 +37,32 @@ const allBadStates: AllBadStates = [
             {serious: 1, delay: 50},
             {serious: 1, delay: 100},
             {serious: 1, delay: 150},
-            {serious: 2, delay: 200},
-            {serious: 2, delay: 250},
+            {serious: 2, delay: 200, stop: 80, cycle: 7000, prod: 20},
+            {serious: 2, delay: 250, stop: 80, cycle: 7000, prod: 50},
         ],
         クリ肥大化: [
             {serious: 1, delay: 60},
             {serious: 1, delay: 120},
             {serious: 1, delay: 180},
-            {serious: 2, delay: 240},
-            {serious: 3, delay: 300},
+            {serious: 2, delay: 240, stop: 80, cycle: 9000, prod: 20},
+            {serious: 3, delay: 300, stop: 80, cycle: 9000, prod: 50},
         ],
         媚薬: [
-            {serious: 1, stop: 80, cycle: 5000, prod: 40, period: 6000, trigger: ["発情"], speak: ["んぅっ♡"]},
-            {serious: 2, stop: 160, cycle: 4000, prod: 60, period: 8000, trigger: ["発情"], speak: ["んぅっ♡"]},
-            {serious: 2, stop: 240, cycle: 3000, prod: 80, period: 16000, trigger: ["発情"], speak: ["ふわぁっ♡"]},
+            {serious: 1, stop: 80, cycle: 5000, prod: 40, period: 6000, trigger: ["発情"], danger: ["発情"], speak: ["んぅっ♡"]},
+            {serious: 2, stop: 160, cycle: 4000, prod: 60, period: 8000, trigger: ["発情"], danger: ["発情"], speak: ["んぅっ♡"]},
+            {serious: 2, stop: 240, cycle: 3000, prod: 80, period: 16000, trigger: ["発情"], danger: ["発情"], speak: ["ふわぁっ♡"]},
         ],
     },
     { // difficulty=2
         母乳体質: [
-            {stop: 400, cycle: 10000, prod: 30, speak: ["んっ……おっぱい張って……っ"]},
-            {stop: 800, cycle: 10000, prod: 30, speak: ["やっ……母乳がっ……!?"]},
-            {stop: 1500, cycle: 8000, prod: 30, speak: ["だめ……母乳感じて……"]},
+            {stop: 400, cycle: 10000, prod: 30, danger: ["母乳分泌"], speak: ["んっ……おっぱい張って……っ"]},
+            {stop: 800, cycle: 10000, prod: 30, danger: ["母乳分泌"], speak: ["やっ……母乳がっ……!?"]},
+            {stop: 1500, cycle: 8000, prod: 30, danger: ["母乳分泌"], speak: ["だめ……母乳感じて……"]},
         ],
         おもらし癖: [
-            {serious: 2, stop: 4000, cycle: 10000, prod: 10, trigger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"]},
-            {serious: 3, stop: 4000, cycle: 9000, prod: 20, trigger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"]},
-            {serious: 3, stop: 4000, cycle: 8000, prod: 30, trigger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"]},
+            {serious: 2, stop: 4000, cycle: 10000, prod: 10, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"]},
+            {serious: 3, stop: 4000, cycle: 9000, prod: 20, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"]},
+            {serious: 3, stop: 4000, cycle: 8000, prod: 30, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"]},
         ],
     }
 ];
@@ -86,6 +86,8 @@ interface BadStateLevelParam {
     trigger?: string[];
     /** バッドステート持続時間 */
     period?: number;
+    /** 説明用危険可能性 */
+    danger?: string[];
 }
 
 class BadStates {
@@ -411,7 +413,14 @@ class PlayerBadStates {
     }
 
     get summary() {
-        return this.totalDelay ? `バッドステートにより<br>${this.totalDelay / 1000}秒動きが鈍っている` : "";
+        const summaries: string[] = [];
+        if (this.totalDelay) summaries.push(`敏感になり${this.totalDelay / 1000}秒動きが遅れてしまう`);
+        const dangers: string[] = [];
+        for (const playerBadState of this.badStates) {
+            if (playerBadState.param.danger) dangers.push(...playerBadState.param.danger);
+        }
+        if (dangers.length) summaries.push(`体が開発され${dangers.join(", ")}の危険がある`);
+        return summaries.join("<br>");
     }
 }
 
