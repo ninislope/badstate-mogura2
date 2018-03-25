@@ -7,22 +7,22 @@ const seriousSpeaks = [
 ];
 const allBadStates = [
     {
-        おもらし: [{ delay: 50, period: 4000 }],
+        おもらし: [{ delay: 500, period: 4000 }],
     },
     {
         乳首敏感: [
-            { delay: 50 },
-            { delay: 80 },
-            { delay: 120 },
-            { delay: 160 },
-            { delay: 200 },
+            { serious: 1, delay: 50 },
+            { serious: 1, delay: 80 },
+            { serious: 1, delay: 120 },
+            { serious: 2, delay: 160 },
+            { serious: 2, delay: 200 },
         ],
         クリ敏感: [
-            { delay: 40 },
-            { delay: 80 },
-            { delay: 120 },
-            { delay: 160 },
-            { delay: 200 },
+            { serious: 1, delay: 40 },
+            { serious: 1, delay: 80 },
+            { serious: 1, delay: 120 },
+            { serious: 2, delay: 160 },
+            { serious: 2, delay: 200 },
         ],
     },
     {
@@ -243,8 +243,8 @@ class PlayerBadStates {
         this.badStates = badStates;
         this.serious = badStates.reduce((sum, badState) => sum + (badState.param.serious || 1), 0);
         this.totalDelay = badStates.reduce((sum, badState) => sum + (badState.param.delay || 0), 0);
-        const seriousSpeakIndex = seriousSpeaks.findIndex((seriousSpeak) => seriousSpeak.serious <= this.serious);
-        this.seriousSpeakIndex = seriousSpeakIndex === -1 ? seriousSpeaks.length - 1 : seriousSpeakIndex;
+        const nextSeriousSpeakIndex = seriousSpeaks.findIndex((seriousSpeak) => seriousSpeak.serious > this.serious);
+        this.seriousSpeakIndex = nextSeriousSpeakIndex === -1 ? seriousSpeaks.length - 1 : nextSeriousSpeakIndex - 1;
     }
     find(name) {
         if (!this.index)
@@ -367,6 +367,8 @@ function gotoResultScene() {
 }
 function hitMogura(index) {
     const playerBadStates = player.addMode === "immediate" ? currentPlayerBadStates : startPlayerBadStates;
+    console.log(playerBadStates.seriousSpeakIndex);
+    MoguraView.setSpeak(randomSpeak(playerBadStates.seriousSpeakIndex));
     if (playerBadStates.totalDelay) {
         setTimeout(() => hitMoguraExec(index), playerBadStates.totalDelay);
     }
@@ -375,6 +377,8 @@ function hitMogura(index) {
     }
 }
 function hitMoguraExec(index) {
+    const playerBadStates = player.addMode === "immediate" ? currentPlayerBadStates : startPlayerBadStates;
+    MoguraView.setSpeak(randomSpeak(playerBadStates.seriousSpeakIndex));
     if (currentMoguras[index]) {
         currentMoguraHits[index] = true;
         stage.success();
