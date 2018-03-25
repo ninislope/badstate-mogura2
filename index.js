@@ -225,6 +225,8 @@ class PlayerBadState {
             description.push(`確率で${this.param.stop / 1000}秒動けなくなる`);
         if (this.param.trigger)
             description.push(`${this.param.trigger.join(", ")}を誘発`);
+        if (this.param.period)
+            description.push(`${this.param.period / 1000}秒で自然解消`);
         this.description = description.join(" ");
     }
     findBadState() {
