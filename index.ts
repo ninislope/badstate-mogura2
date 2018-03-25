@@ -40,6 +40,27 @@ const allBadStates: AllBadStates = [
     }
 ];
 
+interface BadStateLevelParam {
+    /** 深刻度(デフォルト1) */
+    serious?: number;
+    /** 快楽蓄積 */
+
+    /** 遅延 */
+    delay?: number;
+    /** 停止時間 */
+    stop?: number;
+    /** 停止時間サイクル */
+    cycle?: number;
+    /** 停止確率(%) 指定なしは100% */
+    prod?: number;
+    /** 停止時台詞 1秒ごとに追加 */
+    speak?: string[];
+    /** 停止時に誘発するバッドステート名 */
+    trigger?: string[];
+    /** バッドステート持続時間 */
+    period?: number;
+}
+
 class BadStates {
     static all = allBadStates;
 
@@ -253,25 +274,6 @@ class Stage {
     get currentHideSpeed() { return Math.max(200, 3000 - this.level * 150 - this.passCount * 30); } // TODO:
 }
 
-interface BadStateLevelParam {
-    /** 深刻度(デフォルト1) */
-    serious?: number;
-    /** 遅延 */
-    delay?: number;
-    /** 停止時間 */
-    stop?: number;
-    /** 停止時間サイクル */
-    cycle?: number;
-    /** 停止確率(%) 指定なしは100% */
-    prod?: number;
-    /** 停止時台詞 1秒ごとに追加 */
-    speak?: string[];
-    /** 停止時に誘発するバッドステート名 */
-    trigger?: string[];
-    /** バッドステート持続時間 */
-    period?: number;
-}
-
 type BadStateSet = BadStateLevelParam[];
 
 interface BadStatesInDifficulty {
@@ -305,6 +307,7 @@ class BadStateNames {
 class PlayerBadState {
     name: string;
     level: number;
+    difficulty: number;
     displayName: string;
     displayLevel: number;
     param: BadStateLevelParam;
@@ -313,9 +316,11 @@ class PlayerBadState {
     constructor(name: string, level = 0) {
         this.name = name;
         this.level = level;
+        const {difficulty, param} = this.findBadState();
+        this.difficulty = difficulty;
+        this.param = param;
         this.displayLevel = level + 1;
-        this.displayName = `${name} Lv.${this.displayLevel}`;
-        this.param = this.findBadState();
+        this.displayName = difficulty ? `${name} Lv.${this.displayLevel}` : name;
         const description: string[] = [];
         if (this.param.delay) description.push(`反応が${this.param.delay / 1000}秒遅れる`);
         if (this.param.stop) description.push(`確率で${this.param.stop / 1000}秒動けなくなる`);
@@ -325,11 +330,13 @@ class PlayerBadState {
     }
 
     private findBadState() {
+        let difficulty = 0;
         for (const badStatesInDifficulty of allBadStates) {
             const badState = badStatesInDifficulty[this.name];
             if (badState) {
-                return badState[this.level];
+                return { difficulty, param: badState[this.level]};
             }
+            ++difficulty;
         }
         throw new Error("no badstate");
     }

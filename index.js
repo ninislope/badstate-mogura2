@@ -237,9 +237,11 @@ class PlayerBadState {
     constructor(name, level = 0) {
         this.name = name;
         this.level = level;
+        const { difficulty, param } = this.findBadState();
+        this.difficulty = difficulty;
+        this.param = param;
         this.displayLevel = level + 1;
-        this.displayName = `${name} Lv.${this.displayLevel}`;
-        this.param = this.findBadState();
+        this.displayName = difficulty ? `${name} Lv.${this.displayLevel}` : name;
         const description = [];
         if (this.param.delay)
             description.push(`反応が${this.param.delay / 1000}秒遅れる`);
@@ -252,11 +254,13 @@ class PlayerBadState {
         this.description = description.join(" ");
     }
     findBadState() {
+        let difficulty = 0;
         for (const badStatesInDifficulty of allBadStates) {
             const badState = badStatesInDifficulty[this.name];
             if (badState) {
-                return badState[this.level];
+                return { difficulty, param: badState[this.level] };
             }
+            ++difficulty;
         }
         throw new Error("no badstate");
     }
