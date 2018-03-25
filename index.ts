@@ -413,13 +413,13 @@ function gotoMoguraScene() {
     MoguraView.setup();
     MoguraView.showStart();
     setTimeout(() => MoguraView.setStart("3"), 1);
-    setTimeout(() => MoguraView.setStart("2"), 1000);
-    setTimeout(() => MoguraView.setStart("1"), 2000);
-    setTimeout(() => MoguraView.setStart("START!"), 3000);
+    setTimeout(() => MoguraView.setStart("2"), 500);
+    setTimeout(() => MoguraView.setStart("1"), 1000);
+    setTimeout(() => MoguraView.setStart("START!"), 1500);
     setTimeout(() => {
         MoguraView.hideStart();
         setTimeout(moguraGame.start, 100);
-    }, 3500);
+    }, 2000);
 }
 
 function gotoResultScene() {
