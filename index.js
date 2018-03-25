@@ -316,6 +316,16 @@ class Player {
 }
 class PlayerInMoguraGame {
     constructor(player) {
+        this.hitMogura = (index) => {
+            const playerBadStates = this.effectiveBadStates;
+            MoguraView.setSpeak(Speak.randomHitSpeak(playerBadStates.seriousSpeakIndex));
+            if (playerBadStates.totalDelay) {
+                setTimeout(() => moguraGame.hitMogura(index), playerBadStates.totalDelay);
+            }
+            else {
+                moguraGame.hitMogura(index);
+            }
+        };
         this.player = player;
         this.startBadStates = this.currentBadStates = player.snapShotBadState();
     }
@@ -404,16 +414,6 @@ class MoguraGame {
                 this.end();
         };
         this.hitMogura = (index) => {
-            const playerBadStates = this.playerInGame.effectiveBadStates;
-            MoguraView.setSpeak(Speak.randomHitSpeak(playerBadStates.seriousSpeakIndex));
-            if (playerBadStates.totalDelay) {
-                setTimeout(() => this.hitMoguraExec(index), playerBadStates.totalDelay);
-            }
-            else {
-                this.hitMoguraExec(index);
-            }
-        };
-        this.hitMoguraExec = (index) => {
             if (this.currentMoguras[index]) {
                 this.currentMoguraHits[index] = true;
                 this.stage.success();
