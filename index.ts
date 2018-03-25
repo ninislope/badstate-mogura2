@@ -66,6 +66,10 @@ class BadStates {
 class Speak {
     static seriousSpeaks = seriousSpeaks;
 
+    static randomStartSpeak(seriousSpeakIndex: number) {
+        return this.randomHitSpeak(seriousSpeakIndex);
+    }
+
     static randomHitSpeak(seriousSpeakIndex: number) {
         // TODO: 直前に出したindex出さないようにしたい
         const speaks = this.seriousSpeaks[seriousSpeakIndex].speak;
@@ -130,7 +134,7 @@ class MoguraView {
         }
         MoguraView.updateInfo();
         MoguraView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates);
-        MoguraView.setSpeak(Speak.randomHitSpeak(moguraGame.playerInGame.effectiveBadStates.seriousSpeakIndex) || "……");
+        moguraGame.playerInGame.speakStart();
     }
 
     static updateInfo() {
@@ -426,13 +430,21 @@ class PlayerInMoguraGame {
     }
 
     hitMogura = (index: number) => {
+        this.speakHit();
         const playerBadStates = this.effectiveBadStates;
-        MoguraView.setSpeak(Speak.randomHitSpeak(playerBadStates.seriousSpeakIndex));
         if (playerBadStates.totalDelay) {
             setTimeout(() => moguraGame.hitMogura(index), playerBadStates.totalDelay);
         } else {
             moguraGame.hitMogura(index);
         }
+    }
+
+    speakStart() {
+        MoguraView.setSpeak(Speak.randomStartSpeak(this.effectiveBadStates.seriousSpeakIndex));
+    }
+
+    private speakHit() {
+        MoguraView.setSpeak(Speak.randomHitSpeak(this.effectiveBadStates.seriousSpeakIndex));
     }
 }
 

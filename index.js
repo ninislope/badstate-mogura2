@@ -57,6 +57,9 @@ class BadStates {
 BadStates.all = allBadStates;
 BadStates.removeOnBattleEndNames = Object.keys(allBadStates[0]);
 class Speak {
+    static randomStartSpeak(seriousSpeakIndex) {
+        return this.randomHitSpeak(seriousSpeakIndex);
+    }
     static randomHitSpeak(seriousSpeakIndex) {
         // TODO: 直前に出したindex出さないようにしたい
         const speaks = this.seriousSpeaks[seriousSpeakIndex].speak;
@@ -117,7 +120,7 @@ class MoguraView {
         }
         MoguraView.updateInfo();
         MoguraView.updateBadStates(moguraGame.playerInGame.startBadStates, moguraGame.playerInGame.currentBadStates);
-        MoguraView.setSpeak(Speak.randomHitSpeak(moguraGame.playerInGame.effectiveBadStates.seriousSpeakIndex) || "……");
+        moguraGame.playerInGame.speakStart();
     }
     static updateInfo() {
         document.querySelector("#moguraScene .restCount").textContent = `${moguraGame.stage.restCount}`;
@@ -317,8 +320,8 @@ class Player {
 class PlayerInMoguraGame {
     constructor(player) {
         this.hitMogura = (index) => {
+            this.speakHit();
             const playerBadStates = this.effectiveBadStates;
-            MoguraView.setSpeak(Speak.randomHitSpeak(playerBadStates.seriousSpeakIndex));
             if (playerBadStates.totalDelay) {
                 setTimeout(() => moguraGame.hitMogura(index), playerBadStates.totalDelay);
             }
@@ -342,6 +345,12 @@ class PlayerInMoguraGame {
     removeBattleEndBadStates() {
         this.player.removeBattleEndBadStates();
         this.currentBadStates = this.player.snapShotBadState();
+    }
+    speakStart() {
+        MoguraView.setSpeak(Speak.randomStartSpeak(this.effectiveBadStates.seriousSpeakIndex));
+    }
+    speakHit() {
+        MoguraView.setSpeak(Speak.randomHitSpeak(this.effectiveBadStates.seriousSpeakIndex));
     }
 }
 const stages = new Stages();
