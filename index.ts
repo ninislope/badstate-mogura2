@@ -470,22 +470,24 @@ class MoguraGame {
         this.stage.appear();
         MoguraView.appearMogura(index, badStateName);
         MoguraView.updateInfo();
-        setTimeout(() => {
-            MoguraView.hideMogura(index);
-            if (this.currentMoguraHits[index]) {
-                delete this.currentMoguraHits[index];
-            } else {
-                const badStateName = this.currentMoguras[index];
-                this.stage.fail(badStateName);
-                player.addBadState(badStateName);
-                this.currentPlayerBadStates = player.snapShotBadState();
-                MoguraView.updateBadStates(this.startPlayerBadStates, this.currentPlayerBadStates);
-            }
-            delete this.currentMoguras[index];
-            MoguraView.updateInfo();
-            if (this.stage.restCount === 0) gotoResultScene();
-        }, this.stage.currentHideSpeed);
+        setTimeout(() => this.hideMogura(index), this.stage.currentHideSpeed);
         setTimeout(this.appearMogura, this.stage.currentAppearSpeed);
+    }
+
+    hideMogura = (index: number) => {
+        MoguraView.hideMogura(index);
+        if (this.currentMoguraHits[index]) {
+            delete this.currentMoguraHits[index];
+        } else {
+            const badStateName = this.currentMoguras[index];
+            this.stage.fail(badStateName);
+            player.addBadState(badStateName);
+            this.currentPlayerBadStates = player.snapShotBadState();
+            MoguraView.updateBadStates(this.startPlayerBadStates, this.currentPlayerBadStates);
+        }
+        delete this.currentMoguras[index];
+        MoguraView.updateInfo();
+        if (this.stage.restCount === 0) gotoResultScene();
     }
 
     hitMogura = (index: number) => {
