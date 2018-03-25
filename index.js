@@ -7,7 +7,8 @@ const seriousSpeaks = [
 ];
 const allBadStates = [
     {
-        おもらし: [{ delay: 500, period: 4000 }],
+        おもらし: [{ serious: 4, delay: 500, period: 4000 }],
+        発情: [{ serious: 3, delay: 300, period: 8000 }],
     },
     {
         乳首敏感: [
@@ -23,6 +24,32 @@ const allBadStates = [
             { serious: 1, delay: 120 },
             { serious: 2, delay: 160 },
             { serious: 2, delay: 200 },
+        ],
+        膨乳: [
+            { serious: 1, delay: 80 },
+            { serious: 2, delay: 160 },
+            { serious: 2, delay: 240 },
+            { serious: 3, delay: 320 },
+            { serious: 3, delay: 360 },
+        ],
+        乳首肥大化: [
+            { serious: 1, delay: 50 },
+            { serious: 1, delay: 100 },
+            { serious: 1, delay: 150 },
+            { serious: 2, delay: 200 },
+            { serious: 2, delay: 250 },
+        ],
+        クリ肥大化: [
+            { serious: 1, delay: 60 },
+            { serious: 1, delay: 120 },
+            { serious: 1, delay: 180 },
+            { serious: 2, delay: 240 },
+            { serious: 3, delay: 300 },
+        ],
+        媚薬: [
+            { serious: 1, stop: 80, cycle: 5000, prod: 40, period: 4000, trigger: ["発情"], speak: ["んぅっ♡"] },
+            { serious: 2, stop: 160, cycle: 5000, prod: 60, period: 8000, trigger: ["発情"], speak: ["んぅっ♡"] },
+            { serious: 2, stop: 240, cycle: 5000, prod: 80, period: 16000, trigger: ["発情"], speak: ["ふわぁっ♡"] },
         ],
     },
     {
