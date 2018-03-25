@@ -249,8 +249,8 @@ class Stage {
     get restAppearCount() { return this.totalCount - this.appearCount; }
     /** 成功率% */
     get successRate() { return Math.round(this.successCount * 1000 / this.passCount) / 10 }
-    get currentAppearSpeed() { return 2000 - this.level * 100 - this.passCount * 30; } // TODO:
-    get currentHideSpeed() { return 3000 - this.level * 150 - this.passCount * 30; } // TODO:
+    get currentAppearSpeed() { return Math.max(100, 2000 - this.level * 100 - this.passCount * 30); } // TODO:
+    get currentHideSpeed() { return Math.max(200, 3000 - this.level * 150 - this.passCount * 30); } // TODO:
 }
 
 interface BadStateLevelParam {
