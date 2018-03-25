@@ -60,6 +60,7 @@
 }
 
 #moguraScene .field {
+    position: relative;
     grid-column: 1;
     grid-row: 2;
     margin: 0;
