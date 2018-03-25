@@ -66,6 +66,21 @@ const allBadStates = [
             { serious: 3, stop: 4000, cycle: 9000, prod: 20, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
             { serious: 3, stop: 4000, cycle: 8000, prod: 30, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
         ],
+        乳首ローター: [
+            { serious: 1, stop: 80, cycle: 1500, prod: 10, speak: ["ふゃぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 1000, prod: 10, speak: ["ふゃぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 500, prod: 15, speak: ["ふゃぁぁ……っ"] },
+        ],
+        クリローター: [
+            { serious: 1, stop: 80, cycle: 1500, prod: 10, speak: ["ひぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 1000, prod: 10, speak: ["ひぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 500, prod: 15, speak: ["ひぁ……っ"] },
+        ],
+        バイブ: [
+            { serious: 1, stop: 80, cycle: 800, prod: 5, speak: ["あぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 700, prod: 10, speak: ["あぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 600, prod: 15, speak: ["あぁぁ……っ"] },
+        ],
     },
     {
         挿入: [
