@@ -40,6 +40,21 @@ const allBadStates: AllBadStates = [
     }
 ];
 
+function randomSpeak(seriousSpeakIndex: number) {
+    // TODO: 直前に出したindex出さないようにしたい
+    const speaks = seriousSpeaks[seriousSpeakIndex].speak;
+    return speaks[Math.floor(Math.random() * speaks.length)];
+}
+
+const allBadStateMaxLevels: {[name: string]: number} = {};
+for (const badStatesInDifficulty of allBadStates) {
+    for (const name of Object.keys(badStatesInDifficulty)) {
+        allBadStateMaxLevels[name] = badStatesInDifficulty[name].length - 1;
+    }
+}
+
+const removeOnBattleEndBadStates = Object.keys(allBadStates[0]);
+
 class View {
     static setScene(name: string) {
         for (const elem of document.querySelectorAll(".scene")) {
@@ -258,21 +273,6 @@ class BadStateNames {
     }
 }
 
-function randomSpeak(seriousSpeakIndex: number) {
-    // TODO: 直前に出したindex出さないようにしたい
-    const speaks = seriousSpeaks[seriousSpeakIndex].speak;
-    return speaks[Math.floor(Math.random() * speaks.length)];
-}
-
-const allBadStateMaxLevels: {[name: string]: number} = {};
-for (const badStatesInDifficulty of allBadStates) {
-    for (const name of Object.keys(badStatesInDifficulty)) {
-        allBadStateMaxLevels[name] = badStatesInDifficulty[name].length - 1;
-    }
-}
-
-const removeOnBattleEndBadStates = Object.keys(allBadStates[0]);
-
 class PlayerBadState {
     name: string;
     level: number;
@@ -347,15 +347,19 @@ class Player {
 
     addBadState(name: string) {
         const previousIndex = this.badStates.findIndex((badStateLevel) => badStateLevel.name === name);
+        let playerBadState: PlayerBadState;
         if (previousIndex === -1) {
-            this.badStates.push(new PlayerBadState(name));
+            playerBadState = new PlayerBadState(name);
+            this.badStates.push();
         } else {
             const previous = this.badStates[previousIndex];
             const nextLevel = previous.level + 1;
             if (nextLevel > allBadStateMaxLevels[name]) return;
+            playerBadState = new PlayerBadState(name, nextLevel);
             this.badStates.splice(previousIndex, 1);
-            this.badStates.push(new PlayerBadState(name, nextLevel));
+            this.badStates.push(playerBadState);
         }
+        return playerBadState;
     }
 
     removeBadState(name: string) {
@@ -405,6 +409,10 @@ let startPlayerBadStates: PlayerBadStates;
 let currentPlayerBadStates: PlayerBadStates;
 let badStateNames: BadStateNames;
 
+function usePlayerBadStates() {
+    return player.addMode === "immediate" ? currentPlayerBadStates : startPlayerBadStates;
+}
+
 function startMogura() {
     currentMoguras = {};
     currentMoguraHits = {};
@@ -449,8 +457,7 @@ function gotoResultScene() {
 }
 
 function hitMogura(index: number) {
-    const playerBadStates = player.addMode === "immediate" ? currentPlayerBadStates : startPlayerBadStates;
-    console.log(playerBadStates.seriousSpeakIndex);
+    const playerBadStates = usePlayerBadStates();
     MoguraView.setSpeak(randomSpeak(playerBadStates.seriousSpeakIndex));
     if (playerBadStates.totalDelay) {
         setTimeout(() => hitMoguraExec(index), playerBadStates.totalDelay);
@@ -460,8 +467,6 @@ function hitMogura(index: number) {
 }
 
 function hitMoguraExec(index: number) {
-    const playerBadStates = player.addMode === "immediate" ? currentPlayerBadStates : startPlayerBadStates;
-    MoguraView.setSpeak(randomSpeak(playerBadStates.seriousSpeakIndex));
     if (currentMoguras[index]) {
         currentMoguraHits[index] = true;
         stage.success();
