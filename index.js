@@ -52,34 +52,34 @@ const allBadStates = [
         媚薬: [
             { serious: 1, stop: 80, cycle: 5000, prod: 40, period: 6000, trigger: ["発情"], danger: ["発情"], speak: ["んぅっ♡"] },
             { serious: 2, stop: 160, cycle: 4000, prod: 60, period: 8000, trigger: ["発情"], danger: ["発情"], speak: ["んぅっ♡"] },
-            { serious: 2, stop: 240, cycle: 3000, prod: 80, period: 16000, trigger: ["発情"], danger: ["発情"], speak: ["ふわぁっ♡"] },
+            { serious: 2, stop: 240, cycle: 3000, prod: 80, period: 12000, trigger: ["発情"], danger: ["発情"], speak: ["ふわぁっ♡"] },
         ],
     },
     {
         母乳体質: [
-            { stop: 400, cycle: 10000, prod: 30, danger: ["母乳分泌"], speak: ["んっ……おっぱい張って……っ"] },
-            { stop: 800, cycle: 10000, prod: 30, danger: ["母乳分泌"], speak: ["やっ……母乳がっ……!?"] },
-            { stop: 1500, cycle: 8000, prod: 30, danger: ["母乳分泌"], speak: ["だめ……母乳感じて……"] },
+            { serious: 2, stop: 400, cycle: 10000, prod: 30, danger: ["母乳分泌"], speak: ["んっ……おっぱい張って……っ"] },
+            { serious: 3, stop: 800, cycle: 10000, prod: 30, danger: ["母乳分泌"], speak: ["やっ……母乳がっ……!?"] },
+            { serious: 3, stop: 1500, cycle: 8000, prod: 30, danger: ["母乳分泌"], speak: ["だめ……母乳感じて……"] },
         ],
         おもらし癖: [
-            { serious: 2, stop: 4000, cycle: 10000, prod: 10, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
-            { serious: 3, stop: 4000, cycle: 9000, prod: 20, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
-            { serious: 3, stop: 4000, cycle: 8000, prod: 30, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
+            { serious: 2, stop: 3000, cycle: 10000, prod: 10, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
+            { serious: 3, stop: 3000, cycle: 9000, prod: 20, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
+            { serious: 4, stop: 3000, cycle: 8000, prod: 30, trigger: ["おもらし"], danger: ["おもらし"], speak: ["いやっ……も、もれ……\n", "ふわぁぁぁぁぁ……っ"] },
         ],
         乳首ローター: [
             { serious: 1, stop: 80, cycle: 1500, prod: 10, speak: ["ふゃぁぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 1000, prod: 10, speak: ["ふゃぁぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 500, prod: 15, speak: ["ふゃぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 1200, prod: 10, speak: ["ふゃぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 900, prod: 15, speak: ["ふゃぁぁ……っ"] },
         ],
         クリローター: [
             { serious: 1, stop: 80, cycle: 1500, prod: 10, speak: ["ひぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 1000, prod: 10, speak: ["ひぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 500, prod: 15, speak: ["ひぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 1200, prod: 10, speak: ["ひぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 900, prod: 15, speak: ["ひぁ……っ"] },
         ],
         バイブ: [
-            { serious: 1, stop: 80, cycle: 800, prod: 5, speak: ["あぁぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 700, prod: 10, speak: ["あぁぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 600, prod: 15, speak: ["あぁぁ……っ"] },
+            { serious: 1, stop: 80, cycle: 1000, prod: 5, speak: ["あぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 900, prod: 10, speak: ["あぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 800, prod: 15, speak: ["あぁぁ……っ"] },
         ],
     },
     {
@@ -95,10 +95,10 @@ function stageTotalCount(stage) {
     return stage.level * 3 + 7;
 }
 function appearSpeed(stage) {
-    return Math.max(200, 2000 - stage.level * 100 - stage.passCount * 30);
+    return Math.max(270, 1500 - stage.level * 100 - stage.passCount * 30);
 }
 function hideSpeed(stage) {
-    return Math.max(300, 3000 - stage.level * 150 - stage.passCount * 30);
+    return Math.max(320, 2500 - stage.level * 150 - stage.passCount * 30);
 }
 class BadStates {
     static maxLevel(name) {
@@ -425,17 +425,21 @@ class PlayerInMoguraGame {
         this.removeTimers = {};
         this.inactive = false;
         this.start = () => {
+            console.log("v start PlayerInMoguraGame", `stage level=${this.moguraGame.stage.level}`);
             const playerBadStates = this.effectiveBadStates;
             let offset = 1;
             for (const playerBadState of playerBadStates.badStates) {
                 setTimeout(() => this.setBadStateTimer(playerBadState), offset);
                 offset += 37; // タイミングがかぶらないように
             }
+            console.log("^ start PlayerInMoguraGame", `stage level=${this.moguraGame.stage.level}`);
         };
         this.end = () => {
+            console.log("v end PlayerInMoguraGame", `stage level=${this.moguraGame.stage.level}`);
             MoguraView.hideInactive();
             this.clearTimers();
             this.removeBattleEndBadStates();
+            console.log("^ end PlayerInMoguraGame", `stage level=${this.moguraGame.stage.level}`);
         };
         this.hitMogura = (index) => {
             if (this.inactive)
@@ -497,6 +501,9 @@ class PlayerInMoguraGame {
         }
     }
     setBadStateTimer(playerBadState) {
+        if (this.moguraGame.ended)
+            return;
+        console.log(`setBadStateTimer ${playerBadState.name} ${playerBadState.level}`);
         if (playerBadState.param.stop) {
             if (!this.triggerStopTimers[name])
                 this.timerTriggerStopImmediate(playerBadState.name); // 前にかかっていたのがあったらそれにまかせる
@@ -506,7 +513,11 @@ class PlayerInMoguraGame {
         }
     }
     timerTriggerStopImmediate(name, playerBadState = this.effectiveBadStates.find(name)) {
-        if (!this.inactive && playerBadState.triggersNow()) {
+        if (this.moguraGame.ended)
+            return;
+        const triggerNow = playerBadState.triggersNow();
+        console.log(new Date().toISOString(), `inactive=${this.inactive} now=${triggerNow} ${playerBadState.name} ${playerBadState.level}`);
+        if (!this.inactive && triggerNow) {
             this.setInactive(playerBadState.param.stop, () => {
                 if (playerBadState.param.trigger) {
                     for (const name of playerBadState.param.trigger) {
@@ -537,6 +548,8 @@ class PlayerInMoguraGame {
         if (previousHandle)
             clearTimeout(previousHandle); // 前にかかっていたのがあったら期限を更新
         this.removeTimers[name] = setTimeout(() => {
+            if (this.moguraGame.ended)
+                return;
             delete this.removeTimers[name];
             this.removeBadState(name);
             if (playerBadState.param.endTrigger) {
@@ -554,6 +567,8 @@ class PlayerInMoguraGame {
     }
     timerSpeak(speak, index, interval, last = false) {
         this.speakTimers[index] = setTimeout(() => {
+            if (this.moguraGame.ended)
+                return;
             this.speakTimers[index] = undefined;
             if (last)
                 this.speakTimers.length = 0;
@@ -598,7 +613,7 @@ function gotoMoguraScene() {
     setTimeout(() => MoguraView.setStart("START!"), 1500);
     setTimeout(() => {
         MoguraView.hideStart();
-        setTimeout(moguraGame.playerInGame.start, 200);
+        setTimeout(moguraGame.playerInGame.start, 400);
         setTimeout(moguraGame.start, 400);
     }, 2000);
 }
@@ -610,16 +625,21 @@ function gotoResultScene() {
 }
 class MoguraGame {
     constructor(stage, onEnd) {
+        this.ended = false;
         this.currentMoguras = {};
         this.currentMoguraHits = {};
-        this.ended = false;
         this.start = () => {
+            console.log("v start MoguraGame", `stage level=${this.stage.level}`);
             this.appearMogura();
+            console.log("^ start MoguraGame", `stage level=${this.stage.level}`);
         };
         this.end = () => {
+            console.log("v end MoguraGame", `stage level=${this.stage.level}`);
             this.ended = true;
             this.playerInGame.end();
+            console.log("^ end MoguraGame", `stage level=${this.stage.level}`);
             this.onEnd();
+            console.log("- end complete MoguraGame", `stage level=${this.stage.level}`);
         };
         this.appearMogura = () => {
             if (this.stage.restAppearCount <= 0)
