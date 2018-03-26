@@ -601,10 +601,12 @@ class MoguraGame {
     constructor(stage, onEnd) {
         this.currentMoguras = {};
         this.currentMoguraHits = {};
+        this.ended = false;
         this.start = () => {
             this.appearMogura();
         };
         this.end = () => {
+            this.ended = true;
             this.playerInGame.end();
             this.onEnd();
         };
@@ -632,7 +634,7 @@ class MoguraGame {
             }
             delete this.currentMoguras[index];
             MoguraView.updateInfo();
-            if (this.stage.restCount <= 0)
+            if (this.stage.restCount <= 0 && !this.ended)
                 this.end();
         };
         this.hitMogura = (index) => {

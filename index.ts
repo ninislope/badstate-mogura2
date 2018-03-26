@@ -720,6 +720,7 @@ class MoguraGame {
     private badStateNames: BadStateNames;
     private currentMoguras: {[index: string]: string} = {};
     private currentMoguraHits: {[index: string]: boolean} = {};
+    private ended = false;
 
     constructor(stage: Stage, onEnd: () => any) {
         this.stage = stage;
@@ -733,6 +734,7 @@ class MoguraGame {
     }
 
     private end = () => {
+        this.ended = true;
         this.playerInGame.end();
         this.onEnd();
     }
@@ -772,7 +774,7 @@ class MoguraGame {
         }
         delete this.currentMoguras[index];
         MoguraView.updateInfo();
-        if (this.stage.restCount <= 0) this.end();
+        if (this.stage.restCount <= 0 && !this.ended) this.end();
     }
 
     hitMogura = (index: number) => {
