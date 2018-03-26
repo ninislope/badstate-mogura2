@@ -88,6 +88,18 @@ const allBadStates = [
         ],
     },
 ];
+function stageDifficulty(stage) {
+    return Math.ceil(stage.level / 3);
+}
+function stageTotalCount(stage) {
+    return stage.level * 3 + 7;
+}
+function appearSpeed(stage) {
+    return Math.max(200, 2000 - stage.level * 100 - stage.passCount * 30);
+}
+function hideSpeed(stage) {
+    return Math.max(300, 3000 - stage.level * 150 - stage.passCount * 30);
+}
 class BadStates {
     static maxLevel(name) {
         if (!this.allBadStateMaxLevels)
@@ -256,8 +268,8 @@ class Stage {
         this.appearCount = 0;
         this.fails = [];
         this.level = level;
-        this.badStateDifficulty = Math.ceil(level / 3);
-        this.totalCount = this.level * 3 + 7;
+        this.badStateDifficulty = stageDifficulty(this);
+        this.totalCount = stageTotalCount(this);
     }
     success() { ++this.successCount; }
     appear() { ++this.appearCount; }
@@ -268,8 +280,8 @@ class Stage {
     get restAppearCount() { return this.totalCount - this.appearCount; }
     /** 成功率% */
     get successRate() { return Math.round(this.successCount * 1000 / this.passCount) / 10; }
-    get currentAppearSpeed() { return Math.max(200, 2000 - this.level * 100 - this.passCount * 30); } // TODO:
-    get currentHideSpeed() { return Math.max(300, 3000 - this.level * 150 - this.passCount * 30); } // TODO:
+    get currentAppearSpeed() { return appearSpeed(this); }
+    get currentHideSpeed() { return hideSpeed(this); }
 }
 class BadStateNames {
     static byDifficulty(difficulty) {
@@ -439,7 +451,6 @@ class PlayerInMoguraGame {
         };
         this.player = player;
         this.moguraGame = moguraGame;
-        console.log("moguraGame", moguraGame);
         this.startBadStates = this.currentBadStates = player.snapShotBadState();
     }
     get addMode() { return this.player.addMode; }
