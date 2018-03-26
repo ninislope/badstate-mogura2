@@ -39,15 +39,15 @@ const allBadStates = [
             { serious: 1, delay: 50 },
             { serious: 1, delay: 100 },
             { serious: 1, delay: 150 },
-            { serious: 2, delay: 200, stop: 80, cycle: 7000, prod: 20 },
-            { serious: 2, delay: 250, stop: 80, cycle: 7000, prod: 50 },
+            { serious: 2, delay: 200, stop: 80, cycle: 7000, prod: 20, speak: ["やっ……乳首……っ"] },
+            { serious: 2, delay: 250, stop: 80, cycle: 7000, prod: 50, speak: ["乳首擦れちゃ……っ"] },
         ],
         クリ肥大化: [
             { serious: 1, delay: 60 },
             { serious: 1, delay: 120 },
             { serious: 1, delay: 180 },
-            { serious: 2, delay: 240, stop: 80, cycle: 9000, prod: 20 },
-            { serious: 3, delay: 300, stop: 80, cycle: 9000, prod: 50 },
+            { serious: 2, delay: 240, stop: 80, cycle: 9000, prod: 20, speak: ["あっクリ……"] },
+            { serious: 3, delay: 300, stop: 80, cycle: 9000, prod: 50, speak: ["クリだめ……っ"] },
         ],
         媚薬: [
             { serious: 1, stop: 80, cycle: 5000, prod: 40, period: 6000, trigger: ["発情"], danger: ["発情"], speak: ["んぅっ♡"] },
@@ -69,17 +69,17 @@ const allBadStates = [
         乳首ローター: [
             { serious: 1, stop: 80, cycle: 1500, prod: 10, speak: ["ふゃぁぁ……っ"] },
             { serious: 2, stop: 80, cycle: 1200, prod: 10, speak: ["ふゃぁぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 900, prod: 15, speak: ["ふゃぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 900, prod: 15, speak: ["ふゃぁぁぁ……っ"] },
         ],
         クリローター: [
             { serious: 1, stop: 80, cycle: 1500, prod: 10, speak: ["ひぁ……っ"] },
             { serious: 2, stop: 80, cycle: 1200, prod: 10, speak: ["ひぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 900, prod: 15, speak: ["ひぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 900, prod: 15, speak: ["ひぁぁ……っ"] },
         ],
         バイブ: [
             { serious: 1, stop: 80, cycle: 1000, prod: 5, speak: ["あぁぁ……っ"] },
             { serious: 2, stop: 80, cycle: 900, prod: 10, speak: ["あぁぁ……っ"] },
-            { serious: 2, stop: 80, cycle: 800, prod: 15, speak: ["あぁぁ……っ"] },
+            { serious: 2, stop: 80, cycle: 800, prod: 15, speak: ["あぁぁぁ……っ"] },
         ],
     },
     {
