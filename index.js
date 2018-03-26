@@ -387,7 +387,7 @@ class Player {
             const previous = this.badStates[previousIndex];
             const nextLevel = previous.level + 1;
             if (nextLevel > BadStates.maxLevel(name))
-                return;
+                return previous;
             playerBadState = new PlayerBadState(name, nextLevel);
             this.badStates.splice(previousIndex, 1);
             this.badStates.push(playerBadState);
@@ -487,7 +487,8 @@ class PlayerInMoguraGame {
     }
     setBadStateTimer(playerBadState) {
         if (playerBadState.param.stop) {
-            this.timerTriggerStopImmediate(playerBadState.name);
+            if (!this.triggerStopTimers[name])
+                this.timerTriggerStopImmediate(playerBadState.name); // 前にかかっていたのがあったらそれにまかせる
         }
         if (playerBadState.param.period) {
             this.timerRemoveBadState(playerBadState.name, playerBadState.param.period);
