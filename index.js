@@ -505,7 +505,7 @@ class PlayerInMoguraGame {
             return;
         console.log(`setBadStateTimer ${playerBadState.name} ${playerBadState.level}`);
         if (playerBadState.param.stop) {
-            if (!this.triggerStopTimers[name])
+            if (!this.triggerStopTimers[playerBadState.name])
                 this.timerTriggerStopImmediate(playerBadState.name); // 前にかかっていたのがあったらそれにまかせる
         }
         if (playerBadState.param.period) {
