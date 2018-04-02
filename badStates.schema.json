@@ -1,0 +1,88 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "type": "object",
+    "patternProperties": {
+        ".*": {
+            "type":"array",
+            "items": {
+                "type":"object",
+                "properties": {
+                    "name":{
+                        "title": "ベース名",
+                        "type":"string"
+                    },
+                    "level": {
+                        "title": "レベル文字列",
+                        "type":"string"
+                    },
+                    "serious":{
+                        "title": "深刻度",
+                        "type":"number"
+                    },
+                    "delay":{
+                        "title":"遅延ms",
+                        "type":"number"
+                    },
+                    "stop":{
+                        "title": "停止時間ms",
+                        "type":"number"
+                    },
+                    "cycle":{
+                        "title": "停止発動周期ms",
+                        "type":"number"
+                    },
+                    "prod":{
+                        "title": "停止発動確率%",
+                        "type":"number"
+                    },
+                    "speak":{
+                        "title": "停止時台詞",
+                        "type":"array",
+                        "items": {
+                            "oneOf":[
+                                {
+                                    "type":"string"
+                                },
+                                {
+                                    "type":"array",
+                                    "items": {
+                                        "type":"string"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "speakInterval":{
+                        "title": "停止時台詞発話間隔ms",
+                        "type":"number"
+                    },
+                    "trigger":{
+                        "title": "停止時誘発バッドステート名",
+                        "type":"array",
+                        "items": {
+                            "type":"string"
+                        }
+                    },
+                    "period":{
+                        "title": "持続時間ms",
+                        "type":"number"
+                    },
+                    "endTrigger":{
+                        "title": "持続時間終了時誘発バッドステート名",
+                        "type":"array",
+                        "items": {
+                            "type":"string"
+                        }
+                    },
+                    "danger":{
+                        "title": "説明用危険可能性",
+                        "type":"array",
+                        "items": {
+                            "type":"string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
