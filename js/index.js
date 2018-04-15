@@ -27,6 +27,13 @@ const _setTimeout = setTimeout;
 function speedUp(num) {
     setTimeout = function (a, b) { return _setTimeout(a, b / num); };
 }
+function skipStage() {
+    if (_player.environment.gameChallenges.currentGameChallenge.currentGameStage && _player.environment.gameChallenges.currentGameChallenge.currentGameStage.level + 1 > _player.environment.gameChallenges.challenges.challenge(1).stages.length) {
+        console.log("この先のステージは未実装です");
+        return;
+    }
+    return _player.environment.gameChallenges.currentGameChallenge.newGameStage();
+}
 const _environment = new Environment(BadStates.fromData(badStateSets), Challenges.fromData(challenges, stages), Repairs.fromData(repairs), new Speak(actionSpeaks));
 const _player = new Player(_environment);
 // let moguraGame: MoguraGame;
