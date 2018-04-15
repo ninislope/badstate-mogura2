@@ -1,0 +1,15 @@
+#resultScene .main {
+    background: #efd;
+    font-size: larger;
+    font-weight: bold;
+}
+
+#resultScene .main dt {
+    float: left;
+    text-align: right;
+    width: 4em;
+}
+
+#resultScene .main dd {
+    margin-left: 4.5em;
+}

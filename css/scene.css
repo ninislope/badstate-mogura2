@@ -1,0 +1,11 @@
+.scene {
+    width: 960px;
+    height: 720px;
+    margin: 0 auto;
+    position: relative;
+    border: 1px solid black;
+}
+
+.scene.hidden {
+    display: none !important;
+}

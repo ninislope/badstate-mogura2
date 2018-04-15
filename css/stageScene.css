@@ -1,0 +1,100 @@
+#stageScene .start {
+    display: none;
+    z-index: 10;
+    position: absolute;
+    width: 960px;
+    height: 720px;
+    background: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    font-size: 40px;
+}
+
+#stageScene .start.show {
+    display: block;
+}
+
+#stageScene .orgasm {
+    pointer-events: none;
+    z-index: 10;
+    position: absolute;
+    width: 440px;
+    height: 270px;
+    background: #fff;
+    opacity: 0;
+}
+
+#stageScene .inactive {
+    display: none;
+    z-index: 5;
+    position: absolute;
+    width: 440px;
+    height: 270px;
+    color: #f66;
+    background: rgba(255, 192, 255, 0.5);
+    text-align: center;
+    font-size: 40px;
+}
+
+#stageScene .inactive.show {
+    display: block;
+}
+
+#stageScene .info {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    padding: 10px;
+    background: #ccc;
+    font-size: 22px;
+}
+
+#stageScene .main {
+    position: relative;
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 19% 19% 19% 19% 19%;
+    grid-template-rows: 49% 49%;
+    grid-column-gap: 1.2%;
+    grid-row-gap: 2%;
+    background: #efd;
+}
+
+#stageScene .main .mogura {
+    display: block;
+    border: none;
+    font-size: large;
+    font-weight: bold;
+}
+
+#stageScene .main .mogura.appear {
+    color: #f33;
+    background: #ff3;
+    visibility: visible;
+}
+
+#stageScene .main .mogura.destroyed {
+    color: #ccc;
+    background: #666;
+    visibility: visible;
+}
+
+#stageScene .main .mogura.hidden {
+    visibility: hidden;
+}
+
+#stageScene .speak {
+    color: #f06;
+    background: #fee;
+    border: 4px solid #e3d;
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+@keyframes orgasmDisplay {
+    from { opacity: 1 }
+    to { opacity: 0 }
+}

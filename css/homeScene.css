@@ -1,0 +1,27 @@
+#homeScene .control {
+    text-align: center;
+}
+
+#homeScene .control .challenge button {
+    font-size: large;
+    width: 10em;
+    border: none;
+}
+#homeScene .control .challenge button#startStageButton {
+    background: #e99;
+}
+#homeScene .control .challenge button#repairButton {
+    background: #cce;
+}
+
+#homeScene .control .description {
+    display: inline-block;
+    font-size: small;
+    vertical-align: top;
+}
+
+#homeScene .control .select {
+    display: inline-block;
+    text-align: left;
+    vertical-align: top;
+}

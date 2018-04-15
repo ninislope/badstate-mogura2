@@ -1,0 +1,198 @@
+.statuses {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 20px 1fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+    padding: 10px;
+    color: #300;
+    background: #fce;
+}
+
+.statuses ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.statuses > .title {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: large;
+    font-weight: bold;
+    text-align: center;
+}
+
+.statuses > .sensitivityTitle {
+    grid-column: 2/4;
+    grid-row: 1;
+    font-size: large;
+    font-weight: bold;
+    text-align: center;
+}
+
+.statuses > .normal {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.statuses > .sensitivity1 {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.statuses > .sensitivity2 {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.statuses .normalStatus {
+    font-size: 0.95em;
+}
+
+.statuses .normalStatus span {
+    display: inline-block;
+}
+
+.statuses .normalStatus .title {
+    width: 5.2em;
+    text-align: right;
+    font-weight: bold;
+}
+
+.statuses .normalStatus .value {
+    margin-left: 0.3em;
+    font-weight: bold;
+}
+
+.statuses .sensitivityStatus {
+    font-size: 0.95em;
+}
+
+.statuses .sensitivityStatus.weak {
+    animation: weakShadowDisplay 5s linear 0s infinite;
+}
+
+.statuses .sensitivityStatus span {
+    display: inline-block;
+}
+
+.statuses .sensitivityStatus .title {
+    width: 5em;
+    text-align: right;
+    font-weight: bold;
+}
+/*
+.statuses .sensitivityStatus.weak .title {
+    animation: weakDisplay 5s linear 0s infinite;
+}
+*/
+.statuses .sensitivityStatus .weakMark {
+    display: none;
+    font-size: 0.5em;
+    transform: scale(1, 1.2);
+    color: red;
+    vertical-align: middle;
+}
+
+.statuses .sensitivityStatus.weak .title .weakMark {
+    display: inline-block;
+}
+
+@keyframes weakDisplay {
+    0% { color: #300; }
+    30% { color: #f00; }
+    60% { color: #f00; }
+    100% { color: #300; }
+}
+
+@keyframes weakShadowDisplay {
+    0% { text-shadow: 0 0 0px #f69; }
+    30% { text-shadow: 0 0 10px #f69; }
+    50% { text-shadow: 0 0 10px #f69; }
+    80% { text-shadow: 0 0 0px #f69; }
+    100% { text-shadow: 0 0 0px #f69; }
+}
+
+.statuses .sensitivityStatus .value {
+    margin-left: 0.3em;
+    width: 3.5em;
+    font-weight: bold;
+}
+
+.statuses .sensitivityStatus .rate {
+    /* visibility: hidden; */
+    width: 5em;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.statuses .sensitivityStatus .rate.show {
+    visibility: visible;
+}
+
+.statuses .sensitivityStatus .rate:before {
+    content: "(";
+    color: #300;
+    font-weight: normal;
+}
+.statuses .sensitivityStatus .rate:after {
+    content: ")";
+    color: #300;
+    font-weight: normal;
+}
+
+.statuses .sensitivityStatus .diffRate,
+.statuses .sensitivityStatus .diffValue {
+    position: absolute;
+    z-index: 10;
+    visibility: hidden;
+    width: 1em;
+    text-align: right;
+    color: red;
+    text-shadow: 1px 1px 0 white;
+    font-size: 0.85em;
+    font-weight: bold;
+    opacity: 0;
+    animation: diffDisplay 7s linear 0s infinite;
+}
+
+.statuses .sensitivityStatus .diffRate {
+    animation-delay: 0s;
+}
+
+.statuses .sensitivityStatus .diffValue {
+    animation-delay: 3.5s;
+}
+
+.statuses .sensitivityStatus .diffRate.show,
+.statuses .sensitivityStatus .diffValue.show {
+    visibility: visible;
+}
+
+.statuses .sensitivityStatus .diffRate.minus,
+.statuses .sensitivityStatus .diffValue.minus {
+    color: blue;
+}
+
+.statuses .sensitivityStatus .diffRate:before,
+.statuses .sensitivityStatus .diffValue:before {
+    content: "+";
+}
+
+.statuses .sensitivityStatus .diffRate.minus:before,
+.statuses .sensitivityStatus .diffValue.minus:before {
+    content: ""; /* 数値側で-がついている */
+}
+
+.statuses .sensitivityStatus .diffRate:after {
+    content: "%";
+}
+
+@keyframes diffDisplay {
+    0% { opacity: 0 }
+    10% { opacity: 1 }
+    50% { opacity: 1 }
+    60% { opacity: 0 }
+    100% { opacity: 0 }
+}

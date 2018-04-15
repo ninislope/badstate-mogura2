@@ -1,4 +1,4 @@
-遊ぶ => https://ninislope.github.io/badstate-mogura/
+遊ぶ => https://ninislope.github.io/badstate-mogura2/
 
 開発 => [index.ts](index.ts)
 

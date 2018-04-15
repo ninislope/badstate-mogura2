@@ -2,75 +2,175 @@
 <html>
     <head>
         <meta charset="utf8">
-        <title>バステもぐらたたき</title>
-        <link rel="stylesheet" href="index.css">
-        <script src="index.js"></script>
+        <title>バステもぐらたたきRPG</title>
+        <link rel="stylesheet" href="css/badStates.css">
+        <link rel="stylesheet" href="css/badStateDetail.css">
+        <link rel="stylesheet" href="css/statuses.css">
+        <link rel="stylesheet" href="css/scene.css">
+        <link rel="stylesheet" href="css/mainScene.css">
+        <link rel="stylesheet" href="css/startScene.css">
+        <link rel="stylesheet" href="css/homeScene.css">
+        <link rel="stylesheet" href="css/stageScene.css">
+        <link rel="stylesheet" href="css/resultScene.css">
+        <script src="js/speak.js"></script>
+        <script src="js/badstate.js"></script>
+        <script src="js/player.js"></script>
+        <script src="js/stage.js"></script>
+        <script src="js/sceneBase.js"></script>
+        <script src="js/scene.js"></script>
+        <script src="js/scenestate.js"></script>
+        <script src="js/repair.js"></script>
+        <script src="js/game.js"></script>
+        <script src="js/environment.js"></script>
+        <script src="js/serialize.js"></script>
+        <script src="js/data/actionSpeaks.js"></script>
+        <script src="js/data/badStateSets.js"></script>
+        <script src="js/data/challenges.js"></script>
+        <script src="js/data/repairs.js"></script>
+        <script src="js/data/stages.js"></script>
+        <script src="js/index.js"></script>
     </head>
-    <body onload="startGame()">
+    <body onload="sceneState.start()">
+        <section class="badStateDetailContainer">
+            <div class="badStateDetail hide">
+                <button class="close" onclick="BadStateDetailDialog.hide()">×</button>
+                <div class="displayName"></div>
+                <div class="description"></div>
+                <div class="sensitivityDetail">
+                    <div class="sensitivityDetailTitle">感度</div>
+                    <ul class="sensitivity"></ul>
+                </div>
+                <ul class="effects"></ul>
+            </div>
+        </section>
         <section id="startScene" class="scene">
-            <h1>バステもぐらたたき</h1>
-            <p><button onclick="gotoMoguraScene()">スタート</button></p>
+            <h1>バステもぐらたたきRPG</h1>
+            <p><button onclick="sceneState.beginGame()">スタート</button></p>
 
             <p>たたけなかったもぐらのバステがつきます</p>
-            <p>バステが付くタイミングは？</p>
-            <p>
-                <label><input type="radio" name="addMode" value="immediate" checked>即時</label>
-                <label><input type="radio" name="addMode" value="lazy">1戦終わった後</label>
-            </p>
         </section>
-        <section id="moguraScene" class="scene">
+        <section id="homeScene" class="scene mainScene">
+            <div class="title">
+                <h1>拠点</h1>
+            </div>
+            <div class="main">
+
+            </div>
+            <div class="control">
+                <p class="challenge">
+                    <button id="startStageButton" onclick="sceneState.startStage()">挑戦</button>
+                    <button id="repairButton" onclick="sceneState.repair()">治療</button>
+                </p>
+                <div class="addMode">
+                    <div class="description">
+                        たたけなかったもぐらのバステがつきます<br>
+                        バステが付くタイミングは？
+                    </div>
+                    <div class="select">
+                        <label><input type="radio" name="addMode" value="immediate" checked>即時</label>
+                        <br>
+                        <label><input type="radio" name="addMode" value="lazy">1戦終わった後</label>
+                    </div>
+                </div>
+            </div>
+            <div class="statuses">
+                <div class="title">ステータス</div>
+                <ul class="normal"></ul>
+                <div class="sensitivityTitle">感度</div>
+                <ul class="sensitivity1"></ul>
+                <ul class="sensitivity2"></ul>
+            </div>
+            <div class="view"></div>
+            <ol class="badStates"></ol>
+        </section>
+        <section id="repairScene" class="scene mainScene">
+            <div class="title">
+                <h1>治療</h1>
+            </div>
+            <div class="main">
+                <p class="caution"></p>
+                <p><button id="doRepairButton" onclick="sceneState.scene.doRepair()">治療する</button></p>
+                <p class="result"></p>
+            </div>
+            <div class="control">
+                <p><button onclick="sceneState.scene.back()">戻る</button></p>
+            </div>
+            <div class="statuses">
+                <div class="title">ステータス</div>
+                <ul class="normal"></ul>
+                <div class="sensitivityTitle">感度</div>
+                <ul class="sensitivity1"></ul>
+                <ul class="sensitivity2"></ul>
+            </div>
+            <div class="view"></div>
+            <ol class="badStates"></ol>
+        </section>
+        <section id="stageScene" class="scene mainScene">
             <div class="start">
                 START!
             </div>
-            <div class="info">
-                Lv<span class="level"></span> /
+            <div class="title">
+                ステージ<span class="level"></span> [<span class="stageName"></span>]（<span class="repeatCount"></span>回目）
+                <br>
                 あと<span class="restCount"></span>体出現 /
                 成功<span class="successCount"></span>体 /
                 失敗<span class="failCount"></span>体
             </div>
-            <div class="field">
+            <div class="main">
+                <div class="orgasm"></div>
                 <div class="inactive"></div>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(0)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(1)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(2)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(3)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(4)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(5)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(6)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(7)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(8)"></button>
-                <button class="mogura" onclick="moguraGame.playerInGame.hitMogura(9)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(0)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(1)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(2)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(3)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(4)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(5)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(6)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(7)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(8)"></button>
+                <button class="mogura" onclick="sceneState.scene.moguraGame.gamePlayer.hitMogura(9)"></button>
             </div>
-            <div class="badStatesSummary">
+            <div class="control speak">
             </div>
-            <ol class="badStates">
-            </ol>
-            <div class="speak">
+            <div class="statuses">
+                <div class="title">ステータス</div>
+                <ul class="normal"></ul>
+                <div class="sensitivityTitle">感度</div>
+                <ul class="sensitivity1"></ul>
+                <ul class="sensitivity2"></ul>
             </div>
+            <div class="view"></div>
+            <ol class="badStates"></ol>
         </section>
-        <section id="resultScene" class="scene">
-            <div class="score">
-                <ul>
-                    <li>Lv<span class="level"></span></li>
-                    <li>出現<span class="totalCount"></span>体</li>
-                    <li>成功<span class="successCount"></span>体</li>
-                    <li>失敗<span class="failCount"></span>体</li>
-                    <li>成功率<span class="successRate"></span>%</li>
-                </ul>
+        <section id="resultScene" class="scene mainScene">
+            <div class="title">
+                ステージ<span class="level"></span> [<span class="stageName"></span>]（<span class="repeatCount"></span>回目） 挑戦結果
             </div>
-            <div class="badStatesSummary">
+            <div class="main">
+                <dl>
+                    <dt>出現</dt><dd><span class="totalCount"></span>体</dd>
+                    <dt>成功</dt><dd><span class="successCount"></span>体</dd>
+                    <dt>失敗</dt><dd><span class="failCount"></span>体</dd>
+                    <dt>成功率</dt><dd><span class="successRate"></span>%</dd>
+                    <dt>絶頂回数</dt><dd><span class="currentStageOrgasmCount"></span>回</dd>
+                    <dt>攻略</dt><dd><span class="nextStage"></span></dd>
+                </dl>
             </div>
-            <ol class="badStates">
-            </ol>
             <div class="control">
-                <p><button onclick="gotoMoguraScene()">次のステージへ</button></p>
-                <p>バステが付くタイミングは？</p>
-                <p>
-                    <label><input type="radio" name="addMode" value="immediate">即時</label>
-                    <label><input type="radio" name="addMode" value="lazy">1戦終わった後</label>
-                </p>
+                <p id="nextStageButton"><button onclick="sceneState.nextStage()">次のステージへ</button></p>
+                <p id="sameStageButton"><button onclick="sceneState.sameStage()">ステージに再挑戦</button></p>
+                <p id="bachHomeButton"><button onclick="sceneState.backHome()">撤退</button></p>
             </div>
+            <div class="statuses">
+                <div class="title">ステータス</div>
+                <ul class="normal"></ul>
+                <div class="sensitivityTitle">感度</div>
+                <ul class="sensitivity1"></ul>
+                <ul class="sensitivity2"></ul>
+            </div>
+            <div class="view"></div>
+            <ol class="badStates"></ol>
         </section>
-        <p><a href="https://github.com/ninislope/badstate-mogura" target="_blank">ソース</a></p>
+        <p><a href="https://github.com/ninislope/badstate-mogura2" target="_blank">ソース</a></p>
     </body>
 </html>

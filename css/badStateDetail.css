@@ -1,0 +1,108 @@
+.badStateDetailContainer {
+    width: 960px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.badStateDetail {
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    left: -1px;
+    width: 440px;
+    height: 510px;
+    color: #911;
+    background: white;
+    border: 1px solid red;
+}
+
+.badStateDetail.hide, .badStateDetail .hide {
+    display: none;
+}
+
+.badStateDetail .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 30px;
+    font-size: 25px;
+    border: none;
+    background: red;
+    color: white;
+}
+
+.badStateDetail .displayName {
+    margin: 0.5em;
+    font-size: xx-large;
+}
+
+.badStateDetail .description {
+    margin: 0.5em;
+}
+
+.badStateDetail .sensitivityDetail {
+    margin: 0.5em;
+}
+
+.badStateDetail .sensitivityDetail .sensitivityDetailTitle {
+    margin: 0.5em;
+    font-weight: bold;
+    border-bottom: 1px solid #900;
+}
+
+.badStateDetail .sensitivityDetail .sensitivity {
+    margin: 0 0.5em;
+    padding: 0;
+    list-style: none;
+}
+
+.badStateDetail .sensitivityDetail .sensitivity .sensitivityDescription {
+    display: inline-block;
+    margin: 0.4em;
+    font-weight: bold;
+}
+
+.badStateDetail .sensitivityDetail .sensitivity .sensitivityDescription .part {
+    width: 6em;
+}
+
+.badStateDetail .sensitivityDetail .sensitivity .sensitivityDescription .rate {
+    width: 5em;
+    color: #f00;
+}
+.badStateDetail .sensitivityDetail .sensitivity .sensitivityDescription .rate:before {
+    content: "+";
+}
+.badStateDetail .sensitivityDetail .sensitivity .sensitivityDescription .rate:after {
+    content: "%";
+}
+
+.badStateDetail .effects {
+    margin: 0 0.5em;
+    padding: 0;
+    list-style: none;
+}
+
+.badStateDetail .effects .effect {
+    margin: 0.2em;
+    font-size: 0.9em;
+}
+
+.badStateDetail .effects .effect .name,
+.badStateDetail .effects .effect .value {
+    display: block;
+    padding: 0.2em;
+}
+
+.badStateDetail .effects .effect .name {
+    float: left;
+    width: 9em;
+    text-align: right;
+    font-weight: bold;
+    background: #fce;
+}
+
+.badStateDetail .effects .effect .value {
+    margin-left: 9.5em;
+}

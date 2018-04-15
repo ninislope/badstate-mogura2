@@ -1,0 +1,48 @@
+.badStates {
+    margin: 0;
+    background: #fde;
+}
+
+.badStates.canShowDetail .badState {
+    cursor: pointer;
+}
+
+.badStates.canShowDetail .badState:hover {
+    text-shadow: 0 0 10px #f69;
+}
+
+.badStates .badState .name {
+    font-weight: bold;
+}
+
+.badStates .badState .effect {
+    color: #666;
+    font-size: 0.7em;
+}
+
+.badStates .badState .effect:before {
+    content: "(";
+}
+
+.badStates .badState .effect:after {
+    content: ")";
+}
+
+.badStates .diff.remove {
+    color: #99c;
+}
+
+.badStates .diff.same,
+.badStates .diff.up .before,
+.badStates .diff.down .before {
+    color: #600;
+}
+
+.badStates .diff.add,
+.badStates .diff.up .after {
+    color: #e03;
+}
+
+.badStates .diff.down .after {
+    color: #33e;
+}
