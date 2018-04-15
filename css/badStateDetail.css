@@ -97,12 +97,12 @@
 
 .badStateDetail .effects .effect .name {
     float: left;
-    width: 9em;
+    width: 10em;
     text-align: right;
     font-weight: bold;
     background: #fce;
 }
 
 .badStateDetail .effects .effect .value {
-    margin-left: 9.5em;
+    margin-left: 10.5em;
 }
