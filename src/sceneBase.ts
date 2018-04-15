@@ -99,6 +99,7 @@ class MainScene extends Scene {
         normalContainer.innerHTML = "";
         this.normalStatusElements = new NormalStatusElements();
         normalContainer.appendChild(this.normalStatusElements.sensation.container);
+        normalContainer.appendChild(this.normalStatusElements.delay.container);
         normalContainer.appendChild(this.normalStatusElements.repair.container);
         normalContainer.appendChild(this.normalStatusElements.resist.container);
         normalContainer.appendChild(this.normalStatusElements.orgasm.container);
@@ -107,6 +108,7 @@ class MainScene extends Scene {
 
     private updateNormalStatuses() {
         this.normalStatusElements.sensation.update(this.player.sensation);
+        this.normalStatusElements.delay.update(this.player.delay / 1000);
         this.normalStatusElements.repair.update(this.player.repairCount);
         this.normalStatusElements.resist.update(this.player.resist);
         this.normalStatusElements.orgasm.update(this.player.orgasmCount);
@@ -175,7 +177,7 @@ class NormalStatusElement {
         if (this._value === value) return;
         this._value = value;
         if (this.autoHideZero) this.show = value !== 0;
-        this.valueElem.textContent = Math.round(value).toString();
+        this.valueElem.textContent = float2(value).toString();
         const color = this.colorCode(this.colorFunc(value));
         this.valueElem.style.color = color;
     }
@@ -198,6 +200,7 @@ class NormalStatusElement {
 
 class NormalStatusElements {
     sensation = NormalStatusElement.create("快感", (num) => Math.log10(num + 1) / 3);
+    delay = NormalStatusElement.create("遅延", (num) => Math.log10(num + 1) * 2);
     repair = NormalStatusElement.create("治療回数", (num) => Math.log10(num + 1) / 1.5, true);
     resist = NormalStatusElement.create("抵抗値", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, true);
     orgasm = NormalStatusElement.create("絶頂回数", (num) => Math.log10(num + 1) / 3);
