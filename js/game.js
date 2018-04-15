@@ -1,9 +1,10 @@
 class GamePlayer {
     constructor(player, moguraGame) {
+        this.inactiveTimers = [];
         this.speakTimers = [];
         this.triggerStopTimers = {};
         this.removeTimers = {};
-        this.inactive = false;
+        this.inactive = 0;
         this.start = () => {
             console.log("v start PlayerInMoguraGame", `stage level=${this.moguraGame.gameStageChallenge.stage.level}`);
             const playerBadStates = this.effectiveBadStates;
@@ -69,8 +70,10 @@ class GamePlayer {
         this.player.downBadStatesOnBattleEnd();
     }
     clearTimers() {
-        if (this.inactiveTimer)
-            clearTimeout(this.inactiveTimer);
+        for (const handle of this.inactiveTimers) {
+            if (handle)
+                clearTimeout(handle);
+        }
         if (this.orgasmTimer)
             clearTimeout(this.orgasmTimer);
         for (const handle of this.speakTimers) {
@@ -122,7 +125,7 @@ class GamePlayer {
         if (!badState)
             return; // 解消されている場合
         const triggerNow = badState.triggersNow();
-        if (!this.inactive && triggerNow) {
+        if (triggerNow) {
             const logname = `[${badState.displayName}]`;
             if (badState.stop) {
                 this.setInactive(badState.stop * this.player.effectiveRate, () => {
@@ -196,14 +199,15 @@ class GamePlayer {
         }, 1 + index * interval);
     }
     setInactive(period, onEnd) {
-        this.inactive = true;
+        ++this.inactive;
         this.moguraGame.scene.showInactive();
-        this.inactiveTimer = setTimeout(() => {
-            delete this.inactiveTimer;
-            this.inactive = false;
-            this.moguraGame.scene.hideInactive();
+        const length = this.inactiveTimers.push(setTimeout(() => {
+            this.inactiveTimers[length - 1] = undefined;
+            --this.inactive;
+            if (!this.inactive)
+                this.moguraGame.scene.hideInactive();
             onEnd();
-        }, period);
+        }, period));
     }
     setOrgasm() {
         if (this.orgasmTimer != null)

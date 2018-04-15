@@ -6,12 +6,12 @@ class GamePlayer {
     moguraGame: MoguraGame;
     get currentBadStates() { return this.player.badStates; }
 
-    private inactiveTimer?: number;
+    private inactiveTimers: Array<number | undefined> = [];
     private orgasmTimer?: number;
     private speakTimers: Array<number | undefined> = [];
     private triggerStopTimers: {[name: string]: number} = {};
     private removeTimers: {[name: string]: number} = {};
-    private inactive = false;
+    private inactive = 0;
 
     constructor(player: Player, moguraGame: MoguraGame) {
         this.player = player;
@@ -72,7 +72,9 @@ class GamePlayer {
     }
 
     private clearTimers() {
-        if (this.inactiveTimer) clearTimeout(this.inactiveTimer);
+        for (const handle of this.inactiveTimers) {
+            if (handle) clearTimeout(handle);
+        }
         if (this.orgasmTimer) clearTimeout(this.orgasmTimer);
         for (const handle of this.speakTimers) {
             if (handle) clearTimeout(handle);
@@ -120,7 +122,7 @@ class GamePlayer {
         const badState = this.effectiveBadStates.find(setName);
         if (!badState) return; // 解消されている場合
         const triggerNow = badState.triggersNow();
-        if (!this.inactive && triggerNow) {
+        if (triggerNow) {
             const logname = `[${badState.displayName}]`;
             if (badState.stop) {
                 this.setInactive(badState.stop * this.player.effectiveRate, () => { // 停止させる
@@ -198,14 +200,14 @@ class GamePlayer {
     }
 
     private setInactive(period: number, onEnd: () => any) {
-        this.inactive = true;
+        ++this.inactive;
         this.moguraGame.scene.showInactive();
-        this.inactiveTimer = setTimeout(() => {
-            delete this.inactiveTimer;
-            this.inactive = false;
-            this.moguraGame.scene.hideInactive();
+        const length = this.inactiveTimers.push(setTimeout(() => {
+            this.inactiveTimers[length - 1] = undefined;
+            --this.inactive;
+            if (!this.inactive) this.moguraGame.scene.hideInactive();
             onEnd();
-        }, period);
+        }, period));
     }
 
     private setOrgasm() {
