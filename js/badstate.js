@@ -115,7 +115,7 @@ class BadStateDescription {
     get sensation() { if (this.badState.sensation)
         return `+効果発動で${this.badState.sensation === 1 ? "等" : this.badState.sensation}倍の快感を得る`; }
     get trigger() { if (this.badState.trigger && this.badState.trigger.length)
-        return `+効果発動で${this.badState.trigger.join(", ")}を誘発`; }
+        return `+効果発動で${this.badState.trigger.map(param => typeof param === "string" ? param : param.name).join(", ")}を誘発`; }
     get period() { if (this.badState.period)
         return `${this.biasFormula(this.badState.period / 1000)}秒で${this.badState.periodDown === true ? "" : `${this.badState.periodDown}段階`}解消`; }
     get endTrigger() { if (this.badState.endTrigger && this.badState.endTrigger.length)

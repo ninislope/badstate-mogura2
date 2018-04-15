@@ -308,7 +308,7 @@ class BadStateDescription {
     get prod() { if (this.badState.needTrigger) return `${this.badState.cycle ? `${float2(this.badState.cycle / 1000)}秒に一回` : ""}${this.badState.prod || 100}%の確率で+効果発動`; }
     get stop() { if (this.badState.stop) return `+効果発動で${this.biasFormula(this.badState.stop / 1000)}秒動けなくなる`; }
     get sensation() { if (this.badState.sensation) return `+効果発動で${this.badState.sensation === 1 ? "等" : this.badState.sensation}倍の快感を得る`; }
-    get trigger() { if (this.badState.trigger && this.badState.trigger.length) return `+効果発動で${this.badState.trigger.join(", ")}を誘発`; }
+    get trigger() { if (this.badState.trigger && this.badState.trigger.length) return `+効果発動で${this.badState.trigger.map(param => typeof param === "string" ? param : param.name).join(", ")}を誘発`; }
     get period() { if (this.badState.period) return `${this.biasFormula(this.badState.period / 1000)}秒で${this.badState.periodDown === true ? "" : `${this.badState.periodDown}段階`}解消`; }
     get endTrigger() { if (this.badState.endTrigger && this.badState.endTrigger.length) return `解消時${this.badState.endTrigger.join(", ")}を誘発`; }
     get count() { if (this.badState.count) return `誘発（付与されない場合も含む）されると${this.badState.setName}のカウントが${this.badState.count}回増える`; }
