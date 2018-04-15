@@ -230,24 +230,24 @@ const badStateSets = ({
     ],
     // 露出
     // 露出性感は回数を加算するためtriggerは個別
-    "露出(上)": [
+    "露出の呪い(上)": [
         { name: "服乳首上20cm", sensation: 0, sensitivity: { skin: 2, bust: 2, leftNipple: 2, rightNipple: 2 }, cycle: 4000 },
         { name: "服乳首上10cm", sensation: 0.1, sensitivity: { skin: 3, bust: 3, leftNipple: 3, rightNipple: 3 }, cycle: 4000, retryDown: 1 },
-        { name: "服乳首上2cm", sensation: 0.3, sensitivity: { skin: 10, bust: 3, leftNipple: 3, rightNipple: 3 }, cycle: 4000, retryDown: 2, trigger: ["露出性感"] },
-        { name: "服乳首上0cm", sensation: 1, sensitivity: { skin: 20, bust: 5, leftNipple: 15, rightNipple: 15 }, cycle: 4000, retryDown: 3, trigger: ["露出性感", "露出性感", "露出性感"] },
-        { name: "服乳首下3cm", sensation: 1, sensitivity: { skin: 30, bust: 10, leftNipple: 25, rightNipple: 25 }, cycle: 4000, retryDown: 4, trigger: ["露出性感", "露出性感", "露出性感"] },
-        { name: "服胸下", sensation: 1, sensitivity: { skin: 35, bust: 15, leftNipple: 25, rightNipple: 25 }, cycle: 4000, retryDown: 5, trigger: ["露出性感", "露出性感", "露出性感"] },
-        { name: "トップレス", sensation: 1, sensitivity: { skin: 40, bust: 15, leftNipple: 25, rightNipple: 25 }, cycle: 4000, retryDown: 6, trigger: ["露出性感", "露出性感", "露出性感"] },
+        { name: "服乳首上2cm", sensation: 0.3, sensitivity: { skin: 10, bust: 3, leftNipple: 3, rightNipple: 3 }, cycle: 4000, retryDown: 1, trigger: ["露出性感"] },
+        { name: "服乳首上0cm", sensation: 1, sensitivity: { skin: 20, bust: 5, leftNipple: 15, rightNipple: 15 }, cycle: 4000, retryDown: 1, trigger: ["露出性感", "露出性感", "露出性感"] },
+        { name: "服乳首下3cm", sensation: 1, sensitivity: { skin: 30, bust: 10, leftNipple: 25, rightNipple: 25 }, cycle: 4000, retryDown: 1, trigger: ["露出性感", "露出性感", "露出性感"] },
+        { name: "服胸下", sensation: 1, sensitivity: { skin: 35, bust: 15, leftNipple: 25, rightNipple: 25 }, cycle: 4000, retryDown: 2, trigger: ["露出性感", "露出性感", "露出性感"] },
+        { name: "トップレス", sensation: 1, sensitivity: { skin: 40, bust: 15, leftNipple: 25, rightNipple: 25 }, cycle: 4000, retryDown: 3, trigger: ["露出性感", "露出性感", "露出性感"] },
     ],
-    "露出(下)": [
+    "露出の呪い(下)": [
         { name: "スカート股下20cm", sensation: 0, sensitivity: { skin: 2, urethra: 2, clitoris: 2, vagina: 2, anal: 2, hip: 1 }, cycle: 4000 },
         { name: "スカート股下16cm", sensation: 0, sensitivity: { skin: 3, urethra: 3, clitoris: 3, vagina: 3, anal: 3, hip: 2 }, cycle: 4000, retryDown: 1 },
         { name: "スカート股下10cm", sensation: 0.1, sensitivity: { skin: 8, urethra: 8, clitoris: 8, vagina: 8, anal: 8, hip: 5 }, cycle: 4000, retryDown: 2, trigger: ["露出性感"] },
-        { name: "スカート股下3cm", sensation: 0.3, sensitivity: { skin: 10, urethra: 20, clitoris: 20, vagina: 20, anal: 20, hip: 10 }, cycle: 4000, retryDown: 3, trigger: ["露出性感", "露出性感", "露出性感"] },
-        { name: "スカート股下0cm", sensation: 1, sensitivity: { skin: 20, urethra: 30, clitoris: 30, vagina: 30, anal: 30, hip: 20 }, cycle: 4000, retryDown: 4, trigger: ["露出性感", "露出性感", "露出性感"] },
-        { name: "スカート股上3cm", sensation: 1.5, sensitivity: { skin: 30, urethra: 40, clitoris: 40, vagina: 40, anal: 40, hip: 25 }, cycle: 4000, retryDown: 5, trigger: ["露出性感", "露出性感", "露出性感", "露出性感"] },
-        { name: "スカート股上7cm", sensation: 1.5, sensitivity: { skin: 35, urethra: 50, clitoris: 50, vagina: 50, anal: 50, hip: 30 }, cycle: 4000, retryDown: 6, trigger: ["露出性感", "露出性感", "露出性感", "露出性感", "露出性感"] },
-        { name: "ボトムレス", sensation: 1.5, sensitivity: { skin: 40, urethra: 50, clitoris: 50, vagina: 50, anal: 50, hip: 30 }, cycle: 4000, retryDown: 7, trigger: ["露出性感", "露出性感", "露出性感", "露出性感", "露出性感"] },
+        { name: "スカート股下3cm", sensation: 0.3, sensitivity: { skin: 10, urethra: 20, clitoris: 20, vagina: 20, anal: 20, hip: 10 }, cycle: 4000, retryDown: 1, trigger: ["露出性感", "露出性感", "露出性感"] },
+        { name: "スカート股下0cm", sensation: 1, sensitivity: { skin: 20, urethra: 30, clitoris: 30, vagina: 30, anal: 30, hip: 20 }, cycle: 4000, retryDown: 1, trigger: ["露出性感", "露出性感", "露出性感"] },
+        { name: "スカート股上3cm", sensation: 1.5, sensitivity: { skin: 30, urethra: 40, clitoris: 40, vagina: 40, anal: 40, hip: 25 }, cycle: 4000, retryDown: 1, trigger: ["露出性感", "露出性感", "露出性感", "露出性感"] },
+        { name: "スカート股上7cm", sensation: 1.5, sensitivity: { skin: 35, urethra: 50, clitoris: 50, vagina: 50, anal: 50, hip: 30 }, cycle: 4000, retryDown: 2, trigger: ["露出性感", "露出性感", "露出性感", "露出性感", "露出性感"] },
+        { name: "ボトムレス", sensation: 1.5, sensitivity: { skin: 40, urethra: 50, clitoris: 50, vagina: 50, anal: 50, hip: 30 }, cycle: 4000, retryDown: 2, trigger: ["露出性感", "露出性感", "露出性感", "露出性感", "露出性感"] },
     ],
     服透明化: [
         { level: "3%", sensation: 0, sensitivity: 2, cycle: 5000 },
@@ -257,7 +257,8 @@ const badStateSets = ({
         { level: "50%", sensation: 0.5, sensitivity: 25, cycle: 5000, retryDown: 2, trigger: ["露出性感", "露出性感", "露出性感"] },
         { level: "80%", sensation: 0.8, sensitivity: 40, cycle: 5000, retryDown: 1, trigger: ["露出性感", "露出性感", "露出性感", "露出性感", "露出性感"] },
     ],
-    ノーパン暗示: [ // TODO:
+    ノーパン暗示: [
+        { sensation: 1, sensitivity: { skin: 30, urethra: 40, clitoris: 40, vagina: 40, anal: 40, hip: 20 }, cycle: 5000, trigger: ["露出性感", "露出性感", "露出性感"] },
     ],
     露出性感: [
         { level: "(軽度)", sensitivity: { skin: 100, bust: 50, leftNipple: 50, rightNipple: 50, urethra: 50, clitoris: 50, vagina: 50, anal: 50, hip: 30 }, count: 1, countActivate: [{ name: "露出性感", count: 30 }], description: "露出を期待してしまう" },
