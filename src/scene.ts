@@ -1,6 +1,5 @@
 class StartScene extends Scene {
     start() {
-        console.log("start");
         this.setScene("startScene");
     }
 }
@@ -228,7 +227,6 @@ class StageScene extends MainScene {
     }
 
     upSensation(info: UpSensationInfo) {
-        console.log(info);
     }
 
     orgasm(second: number) {

@@ -46,6 +46,8 @@ class GamePlayer {
         }
         const playerBadStates = this.player.upBadState(setName, upProgress);
         if (playerBadStates)
+            console.info("▼発動", setName, "進行=", upProgress);
+        if (playerBadStates)
             this.setBadStateTimer(setName);
         this.moguraGame.scene.updateBadStates();
         this.moguraGame.scene.updateStatuses();
@@ -54,6 +56,7 @@ class GamePlayer {
         const playerBadStates = this.player.downBadState(setName, periodDown);
         if (endTrigger) { // 持続時間終了後バッドステートを誘発
             for (const triggerParam of endTrigger) {
+                console.info("●終了誘発", ...(typeof triggerParam === "string" ? ["→", triggerParam, "進行=", 1] : ["→", triggerParam.name, "進行=", triggerParam.progress]));
                 this.upBadState(triggerParam);
             }
         }
@@ -89,7 +92,6 @@ class GamePlayer {
             this.clearBadStateTimer(setName);
             return;
         }
-        console.log(`setBadStateTimer ${badState.setName} ${badState.progress}`);
         if (badState.needTrigger) {
             if (!this.triggerStopTimers[badState.setName])
                 this.timerTriggerImmediate(badState.setName); // 前にかかっていたのがあったらそれにまかせる
@@ -120,12 +122,13 @@ class GamePlayer {
         if (!badState)
             return; // 解消されている場合
         const triggerNow = badState.triggersNow();
-        console.log(new Date().toISOString(), `inactive=${this.inactive} now=${triggerNow} ${badState.setName} ${badState.progress}`);
         if (!this.inactive && triggerNow) {
+            const logname = `[${badState.displayName}]`;
             if (badState.stop) {
                 this.setInactive(badState.stop * this.player.effectiveRate, () => {
                     if (badState.trigger) { // 停止後バッドステートを誘発
                         for (const triggerParam of badState.trigger) {
+                            console.info("●誘発", logname, ...(typeof triggerParam === "string" ? ["→", triggerParam, "進行=", 1] : ["→", triggerParam.name, "進行=", triggerParam.progress]));
                             this.upBadState(triggerParam);
                         }
                     }
@@ -133,6 +136,7 @@ class GamePlayer {
             }
             else if (badState.trigger) { // バッドステートを誘発
                 for (const triggerParam of badState.trigger) {
+                    console.info("●誘発", logname, ...(typeof triggerParam === "string" ? ["→", triggerParam, "進行=", 1] : ["→", triggerParam.name, "進行=", triggerParam.progress]));
                     this.upBadState(triggerParam);
                 }
             }
@@ -140,6 +144,9 @@ class GamePlayer {
                 const parts = badState.sensitivity ? Object.keys(badState.sensitivity) : PlayerSensitivity.parts;
                 const info = this.player.upSensation(parts, badState.sensation);
                 this.moguraGame.scene.upSensation(info);
+                for (const part of Object.keys(info.sensitivity)) {
+                    console.info("★快感", logname, "強度=", badState.sensation, "快感=", float2(info.sensation), "感度=", PlayerSensitivity.ja(part, true), "+", float2(info.sensitivity[part]), "base=", float2(this.player.baseSensitivity[part]), "bias=", float2(this.player.badStates.sensitivityBias[part]), "%");
+                }
                 if (this.player.canOrgasm)
                     this.setOrgasm();
             }
@@ -212,7 +219,7 @@ class GamePlayer {
             }
             this.upBadState("絶頂余韻", orgasmCount);
             this.player.orgasm(orgasmCount);
-            console.info("ORGA", orgasmCount, beforeWS, this.player.sensation);
+            console.info("★★★絶頂", "回数=", orgasmCount, "絶頂時快感=", beforeWS, "絶頂後快感=", this.player.sensation);
             this.moguraGame.scene.orgasm(1 + orgasmCount / 2);
             delete this.orgasmTimer;
         }, GamePlayer.orgasmWait);
@@ -265,7 +272,7 @@ class MoguraGame {
         this.currentMoguras = {};
         this.currentMoguraHits = {};
         this.start = () => {
-            console.log("v start MoguraGame", `stage level=${this.gameStageChallenge.stage.level}`);
+            console.log("---------- start MoguraGame", `stage level=${this.gameStageChallenge.stage.level}`);
             this.appearMogura();
             console.log("^ start MoguraGame", `stage level=${this.gameStageChallenge.stage.level}`);
         };
@@ -273,9 +280,9 @@ class MoguraGame {
             console.log("v end MoguraGame", `stage level=${this.gameStageChallenge.stage.level}`);
             this.ended = true;
             this.gamePlayer.end();
-            console.log("^ end MoguraGame", `stage level=${this.gameStageChallenge.stage.level}`);
+            console.log("- end MoguraGame", `stage level=${this.gameStageChallenge.stage.level}`);
             this.onEnd();
-            console.log("- end complete MoguraGame", `stage level=${this.gameStageChallenge.stage.level}`);
+            console.log("---------- end complete MoguraGame", `stage level=${this.gameStageChallenge.stage.level}`);
         };
         this.appearMogura = () => {
             if (this.gameStageChallenge.restAppearCount <= 0)
