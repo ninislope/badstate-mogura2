@@ -135,7 +135,7 @@ class MainScene extends Scene {
 }
 
 class NormalStatusElement {
-    static create(title: string, colorFunc: (value: number) => number, autoHideZero = false) {
+    static create(title: string, unit: string, colorFunc: (value: number) => number, autoHideZero = false) {
         const li = document.createElement("li");
         li.className = "normalStatus";
         const titleElem = document.createElement("span");
@@ -152,6 +152,10 @@ class NormalStatusElement {
         const valueElem = document.createElement("span");
         valueElem.className = "value";
         li.appendChild(valueElem);
+        const unitElem = document.createElement("span");
+        unitElem.className = "unit";
+        unitElem.textContent = unit;
+        li.appendChild(unitElem);
 
         return new this(li, titleElem, valueElem, colorFunc, autoHideZero);
     }
@@ -199,12 +203,12 @@ class NormalStatusElement {
 }
 
 class NormalStatusElements {
-    sensation = NormalStatusElement.create("快感", (num) => Math.log10(num + 1) / 3);
-    delay = NormalStatusElement.create("遅延", (num) => Math.log10(num + 1) * 2);
-    repair = NormalStatusElement.create("治療回数", (num) => Math.log10(num + 1) / 1.5, true);
-    resist = NormalStatusElement.create("抵抗値", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, true);
-    orgasm = NormalStatusElement.create("絶頂回数", (num) => Math.log10(num + 1) / 3);
-    leak = NormalStatusElement.create("おもらし回数", (num) => Math.log10(num + 1) / 2, true);
+    sensation = NormalStatusElement.create("快感", " / 1000", (num) => Math.log10(num + 1) / 3);
+    delay = NormalStatusElement.create("遅延", "秒", (num) => Math.log10(num + 1) * 2);
+    repair = NormalStatusElement.create("治療回数", "回", (num) => Math.log10(num + 1) / 1.5, true);
+    resist = NormalStatusElement.create("抵抗値", "%", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, true);
+    orgasm = NormalStatusElement.create("絶頂回数", "回", (num) => Math.log10(num + 1) / 3);
+    leak = NormalStatusElement.create("おもらし回数", "回", (num) => Math.log10(num + 1) / 2, true);
 }
 
 class SensitivityStatusElement {

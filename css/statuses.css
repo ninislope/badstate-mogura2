@@ -65,6 +65,12 @@
     font-weight: bold;
 }
 
+.statuses .normalStatus .unit {
+    margin-left: 0.3em;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
 .statuses .sensitivityStatus {
     font-size: 0.95em;
 }
