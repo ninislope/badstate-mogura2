@@ -133,13 +133,13 @@ const badStateSets = ({
         {level: "（弱）",        sensation: 1, sensitivity: {clitoris:  5}, stop:  50, cycle: 1500, prod: 10, retryDown: true, speak: ["ひぁ……っ"]},
         {level: "（中）",        sensation: 2, sensitivity: {clitoris: 10}, stop:  70, cycle: 1200, prod: 10, retryDown: true, speak: ["ひぁ……っ"]},
         {level: "（強）",        sensation: 3, sensitivity: {clitoris: 15}, stop: 100, cycle: 1000, prod: 15, retryDown: true, speak: ["ひぁぁ……っ"]},
-        {level: "（超強 呪い）", sensation: 4, sensitivity: {clitoris: 25}, stop: 130, cycle: 1000, prod: 20, speak: ["ひぁぁ……っ"]},
+        {level: "（超強 呪い）", sensation: 3, sensitivity: {clitoris: 25}, stop: 130, cycle: 1000, prod: 20, speak: ["ひぁぁ……っ"]},
     ],
     クリブラシ: [
         {level: "（低速）",        sensation: 1, sensitivity: {clitoris:  5}, stop:  50, cycle: 1000, prod: 10, retryDown: true, speak: ["ひぁ……っ"]},
-        {level: "（中速）",        sensation: 2, sensitivity: {clitoris: 10}, stop:  70, cycle:  700, prod: 10, retryDown: true, speak: ["ひぁ……っ"]},
-        {level: "（高速）",        sensation: 3, sensitivity: {clitoris: 15}, stop: 100, cycle:  500, prod: 15, retryDown: true, speak: ["ひぁぁ……っ"]},
-        {level: "（高速 呪い）",   sensation: 4, sensitivity: {clitoris: 25}, stop: 130, cycle:  500, prod: 20, speak: ["ひぁぁ……っ"]},
+        {level: "（中速）",        sensation: 1, sensitivity: {clitoris: 10}, stop:  70, cycle:  700, prod: 10, retryDown: true, speak: ["ひぁ……っ"]},
+        {level: "（高速）",        sensation: 1, sensitivity: {clitoris: 15}, stop: 100, cycle:  500, prod: 15, retryDown: true, speak: ["ひぁぁ……っ"]},
+        {level: "（高速 呪い）",   sensation: 1, sensitivity: {clitoris: 25}, stop: 130, cycle:  500, prod: 20, speak: ["ひぁぁ……っ"]},
     ],
     "乳首ピアス(右)": [ // TODO:
         {},
