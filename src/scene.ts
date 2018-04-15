@@ -302,5 +302,6 @@ class ResultScene extends MainScene {
         document.querySelector<HTMLSpanElement>("#resultScene .successRate")!.textContent = `${this.moguraGame.gameStageChallenge.successRate}`;
         document.querySelector<HTMLSpanElement>("#resultScene .currentStageOrgasmCount")!.textContent = `${this.player.currentStageOrgasmCount}`;
         document.querySelector<HTMLSpanElement>("#resultScene .nextStage")!.textContent = this.player.currentStageCanClear ? "成功" : "失敗";
+        document.querySelector<HTMLParagraphElement>("#resultScene #nextStageButton")!.style.display = this.player.currentStageCanClear ? "block" : "none";
     }
 }
