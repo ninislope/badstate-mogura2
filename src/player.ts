@@ -188,7 +188,7 @@ class PlayerSensitivity implements SensitivityDetail {
     }
 
     static sensationSpeed(sensitivity: number, allSensitivity: number) {
-        return sensitivity ** 0.85 / 20 * Math.log10(allSensitivity); // TODO: 調整
+        return sensitivity ** 0.7 / 8 * Math.log10(allSensitivity); // TODO: 調整
     }
 
     skin = 15;
