@@ -138,7 +138,7 @@ class GamePlayer {
                 }
             }
             if (badState.sensation) {
-                const parts = badState.sensitivity ? Object.keys(badState.sensitivity) as SensitivePart[] : PlayerSensitivity.parts;
+                const parts = typeof badState.sensitivity === "number" ? PlayerSensitivity.parts : Object.keys(badState.sensitivity) as SensitivePart[];
                 const info = this.player.upSensation(parts, badState.sensation);
                 this.moguraGame.scene.upSensation(info);
                 for (const part of Object.keys(info.sensitivity) as SensitivePartWithAll[]) {
