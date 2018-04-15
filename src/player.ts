@@ -184,11 +184,11 @@ class PlayerSensitivity implements SensitivityDetail {
     }
 
     static sensitiveSpeed(sensitivity: number, allSensitivity: number) {
-        return 1 + sensitivity / 80 * Math.log10(allSensitivity); // TODO: 調整
+        return 1 + sensitivity ** 0.7 / 60 * Math.log10(allSensitivity); // TODO: 調整
     }
 
     static sensationSpeed(sensitivity: number, allSensitivity: number) {
-        return sensitivity / 20 * Math.log10(allSensitivity); // TODO: 調整
+        return sensitivity ** 0.8 / 20 * Math.log10(allSensitivity); // TODO: 調整
     }
 
     skin = 15;
@@ -216,7 +216,7 @@ class PlayerSensitivity implements SensitivityDetail {
     static initialAll = new PlayerSensitivity().all;
 
     get delay() {
-        return ((this.all - PlayerSensitivity.initialAll) / 3) ** 1.2 / 5; // TODO:
+        return ((this.all - PlayerSensitivity.initialAll) / 3) ** 0.65 / 1.2; // TODO:
     }
 
     copy() {

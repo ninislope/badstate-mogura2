@@ -143,16 +143,16 @@ class PlayerSensitivity {
         return this.partsJa[this.parts.indexOf(part)];
     }
     static sensitiveSpeed(sensitivity, allSensitivity) {
-        return 1 + sensitivity / 80 * Math.log10(allSensitivity); // TODO: 調整
+        return 1 + Math.pow(sensitivity, 0.7) / 60 * Math.log10(allSensitivity); // TODO: 調整
     }
     static sensationSpeed(sensitivity, allSensitivity) {
-        return sensitivity / 20 * Math.log10(allSensitivity); // TODO: 調整
+        return Math.pow(sensitivity, 0.8) / 20 * Math.log10(allSensitivity); // TODO: 調整
     }
     get all() {
         return PlayerSensitivity.parts.reduce((sum, part) => this[part] + sum, 0);
     }
     get delay() {
-        return Math.pow(((this.all - PlayerSensitivity.initialAll) / 3), 1.2) / 5; // TODO:
+        return Math.pow(((this.all - PlayerSensitivity.initialAll) / 3), 0.65) / 1.2; // TODO:
     }
     copy() {
         const params = {};
