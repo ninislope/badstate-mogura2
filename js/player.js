@@ -146,7 +146,7 @@ class PlayerSensitivity {
         return 1 + Math.pow(sensitivity, 0.7) / 60 * Math.log10(allSensitivity); // TODO: 調整
     }
     static sensationSpeed(sensitivity, allSensitivity) {
-        return Math.pow(sensitivity, 0.85) / 20 * Math.log10(allSensitivity); // TODO: 調整
+        return Math.pow(sensitivity, 0.7) / 8 * Math.log10(allSensitivity); // TODO: 調整
     }
     get all() {
         return PlayerSensitivity.parts.reduce((sum, part) => this[part] + sum, 0);
