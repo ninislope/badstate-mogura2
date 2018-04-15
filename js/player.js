@@ -152,7 +152,7 @@ class PlayerSensitivity {
         return PlayerSensitivity.parts.reduce((sum, part) => this[part] + sum, 0);
     }
     get delay() {
-        return Math.pow(((this.all - PlayerSensitivity.initialAll) / 3), 1.2); // TODO:
+        return Math.pow(((this.all - PlayerSensitivity.initialAll) / 3), 1.2) / 5; // TODO:
     }
     copy() {
         const params = {};

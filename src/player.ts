@@ -216,7 +216,7 @@ class PlayerSensitivity implements SensitivityDetail {
     static initialAll = new PlayerSensitivity().all;
 
     get delay() {
-        return ((this.all - PlayerSensitivity.initialAll) / 3) ** 1.2; // TODO:
+        return ((this.all - PlayerSensitivity.initialAll) / 3) ** 1.2 / 5; // TODO:
     }
 
     copy() {

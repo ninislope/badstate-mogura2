@@ -250,12 +250,12 @@ const badStateSets = ({
         { name: "ボトムレス", sensation: 1.5, sensitivity: { skin: 40, urethra: 50, clitoris: 50, vagina: 50, anal: 50, hip: 30 }, cycle: 4000, retryDown: 7, trigger: ["露出性感", "露出性感", "露出性感", "露出性感", "露出性感"] },
     ],
     服透明化: [
-        { name: "3%", sensation: 0, sensitivity: 2, cycle: 5000 },
-        { name: "10%", sensation: 0.1, sensitivity: 3, cycle: 5000, retryDown: 1, trigger: ["露出性感"] },
-        { name: "20%", sensation: 0.2, sensitivity: 5, cycle: 5000, retryDown: 2, trigger: ["露出性感"] },
-        { name: "30%", sensation: 0.3, sensitivity: 10, cycle: 5000, retryDown: 2, trigger: ["露出性感", "露出性感"] },
-        { name: "50%", sensation: 0.5, sensitivity: 25, cycle: 5000, retryDown: 2, trigger: ["露出性感", "露出性感", "露出性感"] },
-        { name: "80%", sensation: 0.8, sensitivity: 40, cycle: 5000, retryDown: 1, trigger: ["露出性感", "露出性感", "露出性感", "露出性感", "露出性感"] },
+        { level: "3%", sensation: 0, sensitivity: 2, cycle: 5000 },
+        { level: "10%", sensation: 0.1, sensitivity: 3, cycle: 5000, retryDown: 1, trigger: ["露出性感"] },
+        { level: "20%", sensation: 0.2, sensitivity: 5, cycle: 5000, retryDown: 2, trigger: ["露出性感"] },
+        { level: "30%", sensation: 0.3, sensitivity: 10, cycle: 5000, retryDown: 2, trigger: ["露出性感", "露出性感"] },
+        { level: "50%", sensation: 0.5, sensitivity: 25, cycle: 5000, retryDown: 2, trigger: ["露出性感", "露出性感", "露出性感"] },
+        { level: "80%", sensation: 0.8, sensitivity: 40, cycle: 5000, retryDown: 1, trigger: ["露出性感", "露出性感", "露出性感", "露出性感", "露出性感"] },
     ],
     ノーパン暗示: [ // TODO:
     ],
