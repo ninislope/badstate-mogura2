@@ -165,7 +165,7 @@ class NormalStatusElement {
     autoHideZero: boolean;
 
     private _value?: number;
-    private _show = false;
+    private _show = true;
 
     constructor(container: HTMLLIElement, titleElem: HTMLSpanElement, valueElem: HTMLSpanElement, colorFunc: (value: number) => number, autoHideZero = false) {
         this.container = container; this.titleElem = titleElem; this.valueElem = valueElem;
@@ -191,9 +191,9 @@ class NormalStatusElement {
         if (this.show === show) return;
         this._show = show;
         if (this.show) {
-            this.container.classList.add("show");
+            this.container.classList.remove("hide");
         } else {
-            this.container.classList.remove("show");
+            this.container.classList.add("hide");
         }
     }
 

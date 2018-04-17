@@ -105,7 +105,7 @@ class MainScene extends Scene {
 }
 class NormalStatusElement {
     constructor(container, titleElem, valueElem, colorFunc, autoHideZero = false) {
-        this._show = false;
+        this._show = true;
         this.container = container;
         this.titleElem = titleElem;
         this.valueElem = valueElem;
@@ -154,10 +154,10 @@ class NormalStatusElement {
             return;
         this._show = show;
         if (this.show) {
-            this.container.classList.add("show");
+            this.container.classList.remove("hide");
         }
         else {
-            this.container.classList.remove("show");
+            this.container.classList.add("hide");
         }
     }
     colorCode(value) {
