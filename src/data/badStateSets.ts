@@ -1,4 +1,9 @@
-/** 入力中のチェックは
+/**
+ * バッドステート
+ *
+ * 説明は https://github.com/ninislope/badstate-mogura2/blob/master/src/badstate.ts#L75
+ *
+ * 入力中のチェックは
  *
  * ```
  * const badStateSets: BadStateSetsDataWeak = ({...});

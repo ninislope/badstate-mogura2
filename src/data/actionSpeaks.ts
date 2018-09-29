@@ -1,3 +1,8 @@
+/**
+ * もぐらヒット時などにしゃべる台詞
+ *
+ * 全体の感度がminSensitivity以上の感度で当該の組をしゃべる
+ */
 const actionSpeaks: ActionSpeakData[] = [
     {minSensitivity:    0, speaks: [""]},
     {minSensitivity:  500, speaks: ["", "", "", "", "", "", "ん……"]},
