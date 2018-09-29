@@ -73,7 +73,11 @@ interface BadStateData extends BadStateDataWeak {
 }
 
 interface BadStateDataWeak {
-    /** ベース名 */
+    /**
+     * ベース名
+     *
+     * データで設定しない場合、これを誘発するもぐらと同じ名前になる
+     */
     name?: string;
     /** レベル表現 */
     level?: string;
