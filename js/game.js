@@ -317,7 +317,7 @@ class MoguraGame {
                 this.end();
         };
         this.hitMogura = (index) => {
-            if (this.currentMoguras[index]) {
+            if (this.currentMoguras[index] && !this.currentMoguraHits[index]) {
                 this.currentMoguraHits[index] = true;
                 this.gameStageChallenge.success();
                 this.scene.destroyMogura(index);
