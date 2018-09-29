@@ -1,4 +1,11 @@
-// 設定回数分だけ治療可能
+/**
+ * 治療
+ *
+ * 設定回数分だけ治療可能
+ * regist: 抵抗値（この%分だけ各種効果を減少）
+ * ステージクリアごとにresistStepだけ減っていき、resistMinに到達するとそのままになる。
+ * sensitiveSpeedBias: 感度上昇割合が元と比べてこの%になる
+ */
 const repairs = [
     //     {resist:  0, resistStep: 0.0, sensitiveSpeedBias: 100}, // 25面で0
     { resist: 10, resistMin: 0, resistStep: 0.2, sensitiveSpeedBias: 100,
