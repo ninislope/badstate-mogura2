@@ -340,7 +340,8 @@ class MoguraGame {
             this.currentMoguras[index] = badState;
             this.gameStageChallenge.appear();
             this.scene.appearMogura(index, badState.displayName);
-            const hideSpeed = this.gameStageChallenge.currentHideSpeed * badState.hideSpeed / 100;
+            const stageHideSpeed = (this.gameStageChallenge.badStates[badState.setName]!.hideSpeed || 100);
+            const hideSpeed = this.gameStageChallenge.currentHideSpeed * badState.hideSpeed * stageHideSpeed / 10000;
             setTimeout(() => this.hideMogura(index), hideSpeed);
         }
         setTimeout(this.appearMogura, this.gameStageChallenge.currentAppearSpeed);

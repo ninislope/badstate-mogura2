@@ -33,6 +33,8 @@ interface StageBadState {
     maxProgress?: number;
     /** デフォルト100 */
     weight?: number;
+    /** 隠れるスピード */
+    hideSpeed?: number;
 }
 
 type StageBadStates = {[P in BadStateSetName]?: StageBadState};
