@@ -5,7 +5,7 @@ class SceneState {
             this.scene.start();
         };
         this.beginGame = () => {
-            this.changeScene(new HomeScene(this.player, true, false));
+            this.changeScene(new HomeScene(this.player, true));
         };
         this.startStage = () => {
             this.changeScene(new StageScene(this.player, true, true));
@@ -17,7 +17,7 @@ class SceneState {
             this.changeScene(new StageScene(this.player, false));
         };
         this.backHome = () => {
-            this.changeScene(new HomeScene(this.player, true, true));
+            this.changeScene(new HomeScene(this.player, true));
         };
         this.showResult = (moguraGame) => {
             this.changeScene(new ResultScene(this.player, moguraGame));
@@ -25,8 +25,14 @@ class SceneState {
         this.repair = () => {
             this.changeScene(new RepairScene(this.player));
         };
-        this.repairBackHome = (canRepair) => {
-            this.changeScene(new HomeScene(this.player, false, canRepair));
+        this.dope = () => {
+            this.changeScene(new DopeScene(this.player));
+        };
+        this.repairBackHome = () => {
+            this.changeScene(new HomeScene(this.player, false));
+        };
+        this.dopeBackHome = () => {
+            this.changeScene(new HomeScene(this.player, false));
         };
         this.player = player;
     }

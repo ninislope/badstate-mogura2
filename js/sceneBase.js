@@ -94,6 +94,10 @@ class MainScene extends Scene {
         normalContainer.appendChild(this.normalStatusElements.delay.container);
         normalContainer.appendChild(this.normalStatusElements.repair.container);
         normalContainer.appendChild(this.normalStatusElements.resist.container);
+        normalContainer.appendChild(this.normalStatusElements.sensitiveSpeedBias.container);
+        normalContainer.appendChild(this.normalStatusElements.dope.container);
+        normalContainer.appendChild(this.normalStatusElements.speedBoost.container);
+        normalContainer.appendChild(this.normalStatusElements.patience.container);
         normalContainer.appendChild(this.normalStatusElements.orgasm.container);
         normalContainer.appendChild(this.normalStatusElements.leak.container);
         normalContainer.appendChild(this.normalStatusElements.milk.container);
@@ -103,6 +107,10 @@ class MainScene extends Scene {
         this.normalStatusElements.delay.update(this.player.delay / 1000);
         this.normalStatusElements.repair.update(this.player.repairCount);
         this.normalStatusElements.resist.update(this.player.resist);
+        this.normalStatusElements.sensitiveSpeedBias.update(this.player.sensitiveSpeedBias / 100);
+        this.normalStatusElements.dope.update(this.player.dopeCount);
+        this.normalStatusElements.speedBoost.update(this.player.speedBoost);
+        this.normalStatusElements.patience.update(this.player.patience);
         this.normalStatusElements.orgasm.update(this.player.orgasmCount);
         this.normalStatusElements.leak.update(this.player.badStates.badStateCounts.おもらし || 0);
         this.normalStatusElements.milk.update(this.player.badStates.badStateCounts.母乳濡れ || 0);
@@ -192,6 +200,10 @@ class NormalStatusElements {
         this.delay = NormalStatusElement.create("遅延", "秒", (num) => Math.log10(num + 1) * 2);
         this.repair = NormalStatusElement.create("治療回数", "回", (num) => Math.log10(num + 1) / 1.5, 0);
         this.resist = NormalStatusElement.create("抵抗値", "%", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, 0);
+        this.sensitiveSpeedBias = NormalStatusElement.create("感度上昇速度", "倍", (num) => Math.log10(num), 1);
+        this.dope = NormalStatusElement.create("ドーピング数", "回", (num) => Math.log10(Math.max(0, num + 1)) / 1.5, 0);
+        this.speedBoost = NormalStatusElement.create("精神加速", "%", (num) => Math.log10(Math.max(0, 100 - num)) / 1.9, 100);
+        this.patience = NormalStatusElement.create("我慢値", "%", (num) => Math.log10(Math.max(0, 100 - num)) / 1.9, 100);
         this.orgasm = NormalStatusElement.create("絶頂回数", "回", (num) => Math.log10(num + 1) / 3);
         this.leak = NormalStatusElement.create("おもらし回数", "回", (num) => Math.log10(num + 1) / 2, 0);
         this.milk = NormalStatusElement.create("射乳回数", "回", (num) => Math.log10(num + 1) / 2, 0);

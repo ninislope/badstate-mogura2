@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="css/homeScene.css">
         <link rel="stylesheet" href="css/stageScene.css">
         <link rel="stylesheet" href="css/resultScene.css">
+        <link rel="stylesheet" href="css/repairDopeScene.css">
         <script src="js/speak.js"></script>
         <script src="js/badstate.js"></script>
         <script src="js/player.js"></script>
@@ -21,6 +22,7 @@
         <script src="js/scene.js"></script>
         <script src="js/scenestate.js"></script>
         <script src="js/repair.js"></script>
+        <script src="js/dope.js"></script>
         <script src="js/game.js"></script>
         <script src="js/environment.js"></script>
         <script src="js/serialize.js"></script>
@@ -28,6 +30,7 @@
         <script src="js/data/badStateSets.js"></script>
         <script src="js/data/challenges.js"></script>
         <script src="js/data/repairs.js"></script>
+        <script src="js/data/dopes.js"></script>
         <script src="js/data/stages.js"></script>
         <script src="js/index.js"></script>
     </head>
@@ -63,6 +66,7 @@
                 <p class="challenge">
                     <button id="startStageButton" onclick="sceneState.startStage()">挑戦</button>
                     <button id="repairButton" onclick="sceneState.repair()">治療</button>
+                    <button id="dopeButton" onclick="sceneState.dope()">ドーピング</button>
                 </p>
                 <div class="addMode">
                     <div class="description">
@@ -92,11 +96,38 @@
                 <h1>治療</h1>
             </div>
             <div class="main">
+                <p class="description">撤退するとダンジョンから素材の供給があり、治療が可能になるそうだ。なめられているのか。</p>
                 <p class="caution"></p>
                 <p><button id="doRepairButton" onclick="sceneState.scene.doRepair()">治療する</button></p>
                 <p class="result"></p>
             </div>
             <div class="control">
+                <p><button id="reloadRepairButton" onclick="sceneState.repair()">続けて治療する</button></p>
+                <p><button onclick="sceneState.scene.back()">戻る</button></p>
+            </div>
+            <div class="statuses">
+                <div class="title">ステータス</div>
+                <ul class="normal"></ul>
+                <div class="sensitivityTitle">感度</div>
+                <ul class="sensitivity1"></ul>
+                <ul class="sensitivity2"></ul>
+            </div>
+            <div class="view"></div>
+            <ol class="badStates"></ol>
+        </section>
+        <section id="dopeScene" class="scene mainScene">
+            <ol class="logs" reversed></ol>
+            <div class="title">
+                <h1>ドーピング</h1>
+            </div>
+            <div class="main">
+                <p class="description">敗北するとダンジョンから素材の供給があるらしい。<br>敗北、つまり絶頂したことが人に知らされるなんて、いやらしい仕組みだ。</p>
+                <p class="caution"></p>
+                <p><button id="doDopeButton" onclick="sceneState.scene.doRepair()">ドーピングする</button></p>
+                <p class="result"></p>
+            </div>
+            <div class="control">
+                <p><button id="reloadDopeButton" onclick="sceneState.dope()">続けてドーピングする</button></p>
                 <p><button onclick="sceneState.scene.back()">戻る</button></p>
             </div>
             <div class="statuses">

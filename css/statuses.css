@@ -3,7 +3,7 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 20px 1fr;
     grid-column-gap: 10px;
-    grid-row-gap: 10px;
+    grid-row-gap: 7px;
     padding: 10px;
     color: #300;
     background: #fce;
@@ -47,7 +47,8 @@
 }
 
 .statuses .normalStatus {
-    font-size: 0.95em;
+    font-size: 0.9em;
+    line-height: 1.15em;
 }
 
 .statuses .normalStatus.hide {

@@ -41,6 +41,7 @@ const _environment = new Environment(
     BadStates.fromData(badStateSets as any),
     Challenges.fromData(challenges, stages),
     Repairs.fromData(repairs),
+    Dopes.fromData(dopes),
     new Speak(actionSpeaks),
 );
 const _player = new Player(_environment);

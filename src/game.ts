@@ -173,7 +173,7 @@ class GamePlayer {
         const badState = this.effectiveBadStates.find(setName);
         if (!badState) return; // 解消されている場合
         if (!badState.cycle) return; // 周期実行でない場合
-        this.triggerStopTimers[setName] = setTimeout(() => this.timerTriggerImmediate(badState.setName), badState.cycle);
+        this.triggerStopTimers[setName] = setTimeout(() => this.timerTriggerImmediate(badState.setName), badState.cycle * this.player.speedBoost / 100);
     }
 
     private timerRemoveBadState(badState: BadState) {
@@ -183,7 +183,7 @@ class GamePlayer {
             if (this.moguraGame.ended) return;
             delete this.removeTimers[name];
             this.downBadState(badState.setName, badState.periodDown, badState.endTrigger);
-        }, (badState.period as number) * this.player.effectiveRate);
+        }, (badState.period as number) * this.player.effectiveRate * this.player.speedBoost / 100);
     }
 
     private timerSpeaks(speaks: string[], interval: number) {
@@ -210,7 +210,7 @@ class GamePlayer {
             --this.inactive;
             if (!this.inactive) this.moguraGame.scene.hideInactive();
             onEnd();
-        }, period));
+        }, period * this.player.speedBoost / 100));
     }
 
     private setOrgasm() {
@@ -345,9 +345,9 @@ class MoguraGame {
             this.scene.appearMogura(index, badState.displayName);
             const stageHideSpeed = (this.gameStageChallenge.badStates[badState.setName]!.hideSpeed || 100);
             const hideSpeed = this.gameStageChallenge.currentHideSpeed * badState.hideSpeed * stageHideSpeed / 10000;
-            setTimeout(() => this.hideMogura(index), hideSpeed);
+            setTimeout(() => this.hideMogura(index), hideSpeed * this.gamePlayer.player.speedBoost / 100);
         }
-        setTimeout(this.appearMogura, this.gameStageChallenge.currentAppearSpeed);
+        setTimeout(this.appearMogura, this.gameStageChallenge.currentAppearSpeed * this.gamePlayer.player.speedBoost / 100);
     }
 
     private hideMogura = (index: number) => {

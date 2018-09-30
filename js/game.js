@@ -172,7 +172,7 @@ class GamePlayer {
             return; // 解消されている場合
         if (!badState.cycle)
             return; // 周期実行でない場合
-        this.triggerStopTimers[setName] = setTimeout(() => this.timerTriggerImmediate(badState.setName), badState.cycle);
+        this.triggerStopTimers[setName] = setTimeout(() => this.timerTriggerImmediate(badState.setName), badState.cycle * this.player.speedBoost / 100);
     }
     timerRemoveBadState(badState) {
         const previousHandle = this.removeTimers[badState.setName];
@@ -183,7 +183,7 @@ class GamePlayer {
                 return;
             delete this.removeTimers[name];
             this.downBadState(badState.setName, badState.periodDown, badState.endTrigger);
-        }, badState.period * this.player.effectiveRate);
+        }, badState.period * this.player.effectiveRate * this.player.speedBoost / 100);
     }
     timerSpeaks(speaks, interval) {
         const lastIndex = speaks.length - 1;
@@ -210,7 +210,7 @@ class GamePlayer {
             if (!this.inactive)
                 this.moguraGame.scene.hideInactive();
             onEnd();
-        }, period));
+        }, period * this.player.speedBoost / 100));
     }
     setOrgasm() {
         if (this.orgasmTimer != null)
@@ -302,9 +302,9 @@ class MoguraGame {
                 this.scene.appearMogura(index, badState.displayName);
                 const stageHideSpeed = (this.gameStageChallenge.badStates[badState.setName].hideSpeed || 100);
                 const hideSpeed = this.gameStageChallenge.currentHideSpeed * badState.hideSpeed * stageHideSpeed / 10000;
-                setTimeout(() => this.hideMogura(index), hideSpeed);
+                setTimeout(() => this.hideMogura(index), hideSpeed * this.gamePlayer.player.speedBoost / 100);
             }
-            setTimeout(this.appearMogura, this.gameStageChallenge.currentAppearSpeed);
+            setTimeout(this.appearMogura, this.gameStageChallenge.currentAppearSpeed * this.gamePlayer.player.speedBoost / 100);
         };
         this.hideMogura = (index) => {
             let failed = false;

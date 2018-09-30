@@ -6,9 +6,8 @@ class StartScene extends Scene {
 
 class HomeScene extends MainScene {
     newChallenge: boolean;
-    canRepair: boolean;
 
-    constructor(player: Player, newChallenge: boolean, canRepair: boolean) {
+    constructor(player: Player, newChallenge: boolean) {
         super(
             player,
             document.querySelector(`#homeScene .badStates`) as HTMLOListElement,
@@ -18,7 +17,6 @@ class HomeScene extends MainScene {
             "previousChallengeSensitivity",
         );
         this.newChallenge = newChallenge;
-        this.canRepair = canRepair;
     }
 
     start() {
@@ -28,6 +26,7 @@ class HomeScene extends MainScene {
 
         this.setStartStageButton();
         this.setRepairButtonState();
+        this.setDopeButtonState();
         this.updateBadStates();
         this.updateStatuses();
         this.updateLogs();
@@ -52,7 +51,22 @@ class HomeScene extends MainScene {
         } else {
             elem.textContent = `治療不可`;
         }
-        if (this.canRepair && repair) {
+        if (this.player.canRepair && repair) {
+            elem.disabled = false;
+        } else {
+            elem.disabled = true;
+        }
+    }
+
+    private setDopeButtonState() {
+        const elem = document.querySelector("#dopeButton") as HTMLButtonElement;
+        const dope = this.player.environment.dopes.byCount(this.player.dopeCount);
+        if (dope) {
+            elem.textContent = `ドーピング（${this.player.dopeCount + 1}回目）`;
+        } else {
+            elem.textContent = `ドーピング不可`;
+        }
+        if (this.player.canDope && dope) {
             elem.disabled = false;
         } else {
             elem.disabled = true;
@@ -65,6 +79,7 @@ class RepairScene extends MainScene {
 
     private get cautionElem() { return document.querySelector(`#repairScene .caution`) as HTMLParagraphElement; }
     private get doRepairButton() { return document.querySelector(`#repairScene #doRepairButton`) as HTMLButtonElement; }
+    private get reloadRepairButton() { return document.querySelector(`#repairScene #reloadRepairButton`) as HTMLButtonElement; }
     private get resultElem() { return document.querySelector(`#repairScene .result`) as HTMLParagraphElement; }
 
     constructor(player: Player) {
@@ -84,6 +99,7 @@ class RepairScene extends MainScene {
         if (!repair) throw new Error("no repair");
         this.cautionElem.textContent = repair.description;
         this.doRepairButton.disabled = false;
+        this.reloadRepairButton.classList.add("hidden");
         this.resultElem.textContent = "";
         this.updateBadStates();
         this.updateStatuses();
@@ -95,6 +111,7 @@ class RepairScene extends MainScene {
         if (!repair) throw new Error("no repair");
         repair.apply(this.player);
         this.doRepairButton.disabled = true;
+        if (this.player.canRepair && this.player.environment.repairs.byCount(this.player.repairCount)) this.reloadRepairButton.classList.remove("hidden");
         this.resultElem.textContent = repair.effectDescription;
         this.updateBadStates();
         this.updateStatuses();
@@ -103,7 +120,54 @@ class RepairScene extends MainScene {
     }
 
     back() {
-        sceneState.repairBackHome(!this.repaired);
+        sceneState.repairBackHome();
+    }
+}
+
+class DopeScene extends MainScene {
+    private get cautionElem() { return document.querySelector(`#dopeScene .caution`) as HTMLParagraphElement; }
+    private get doDopeButton() { return document.querySelector(`#dopeScene #doDopeButton`) as HTMLButtonElement; }
+    private get reloadDopeButton() { return document.querySelector(`#dopeScene #reloadDopeButton`) as HTMLButtonElement; }
+    private get resultElem() { return document.querySelector(`#dopeScene .result`) as HTMLParagraphElement; }
+
+    constructor(player: Player) {
+        super(
+            player,
+            document.querySelector(`#dopeScene .badStates`) as HTMLOListElement,
+            document.querySelector(`#dopeScene .statuses`) as HTMLDivElement,
+            document.querySelector(`#dopeScene .logs`) as HTMLOListElement,
+            "previousChallengeBadStates",
+            "previousChallengeSensitivity",
+        );
+    }
+
+    start() {
+        this.setScene("dopeScene");
+        const dope = this.player.environment.dopes.byCount(this.player.dopeCount);
+        if (!dope) throw new Error("no repair");
+        this.cautionElem.textContent = dope.description;
+        this.doDopeButton.disabled = false;
+        this.reloadDopeButton.classList.add("hidden");
+        this.resultElem.textContent = "";
+        this.updateBadStates();
+        this.updateStatuses();
+        this.updateLogs();
+    }
+
+    doRepair() {
+        const dope = this.player.environment.dopes.byCount(this.player.dopeCount);
+        if (!dope) throw new Error("no repair");
+        dope.apply(this.player);
+        this.doDopeButton.disabled = true;
+        if (this.player.canDope && this.player.environment.dopes.byCount(this.player.dopeCount)) this.reloadDopeButton.classList.remove("hidden");
+        this.resultElem.textContent = dope.effectDescription;
+        this.updateBadStates();
+        this.updateStatuses();
+        this.updateLogs();
+    }
+
+    back() {
+        sceneState.dopeBackHome();
     }
 }
 

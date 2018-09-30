@@ -1,0 +1,20 @@
+#repairScene .description,
+#dopeScene .description {
+    font-size: smaller;
+}
+
+#repairScene p,
+#dopeScene p {
+    margin: 0.5em 0;
+    font-size: 0.95em;
+}
+
+#repairScene .main,
+#dopeScene .main {
+    overflow: hidden;
+}
+
+#repairScene .hidden,
+#dopeScene .hidden {
+    display: none;
+}

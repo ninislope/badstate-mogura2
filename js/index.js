@@ -34,7 +34,7 @@ function skipStage() {
     }
     return _player.environment.gameChallenges.currentGameChallenge.newGameStage();
 }
-const _environment = new Environment(BadStates.fromData(badStateSets), Challenges.fromData(challenges, stages), Repairs.fromData(repairs), new Speak(actionSpeaks));
+const _environment = new Environment(BadStates.fromData(badStateSets), Challenges.fromData(challenges, stages), Repairs.fromData(repairs), Dopes.fromData(dopes), new Speak(actionSpeaks));
 const _player = new Player(_environment);
 // let moguraGame: MoguraGame;
 /*

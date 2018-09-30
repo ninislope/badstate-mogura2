@@ -20,6 +20,8 @@
 .logs .downBadState { color: #00f; }
 .logs .downBadStatesOnBattleEnd { color: #00f; }
 .logs .downBadStatesOnRetry { color: #00f; }
+.logs .repair { color: #09f; }
+.logs .dope { color: #96f; }
 .logs .passStage { color: #099; }
 .logs .endStageSuccess { color: #090; }
 .logs .endStageFailed { color: #90f; }

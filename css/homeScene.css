@@ -4,7 +4,7 @@
 
 #homeScene .control .challenge button {
     font-size: large;
-    width: 10em;
+    width: 7em;
     border: none;
 }
 #homeScene .control .challenge button#startStageButton {

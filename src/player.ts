@@ -17,6 +17,8 @@ class Player {
 
     /** 治療回数 */
     repairCount = 0;
+    /** ドーピング回数 */
+    dopeCount = 0;
     // 比較用
     /** 初期感度 */
     initialSensitivity: PlayerSensitivity;
@@ -49,6 +51,10 @@ class Player {
     currentStageOrgasmCount = 0;
     /** 失敗となる絶頂回数 */
     orgasmLimit = 1;
+    /** 挑戦回数 */
+    challengeCount = 0;
+    /** 敗北回数 */
+    failedCount = 0;
 
     /** 抵抗値(この%分だけ効果を削る) */
     resist = 0;
@@ -58,6 +64,18 @@ class Player {
     resistMin = 0;
     /** 感度上昇速度バイアス(%) */
     sensitiveSpeedBias = 100;
+    /** 精神加速(%) */
+    speedBoost = 100;
+    /** 精神加速鈍化ステップ(%) */
+    speedBoostStep = 0;
+    /** 精神加速最小値(%) */
+    speedBoostMin = 100;
+    /** 我慢値(%) */
+    patience = 100;
+    /** 我慢値減少ステップ(%) */
+    patienceStep = 0;
+    /** 我慢最小値(%) */
+    patienceMin = 100;
 
     constructor(
         environment: Environment,
@@ -78,10 +96,12 @@ class Player {
     get effectiveBadStates() { return this.addMode === "immediate" ? this.badStates : this.previousStageBadStates; }
     /** 遅延時間・停止時間・持続時間・快感上昇速度にきく */
     get effectiveRate() { return (100 - this.resist) / 100; }
-    get sensitivity() { return this.badStates.sensitivityBias.sensitivity(this.baseSensitivity); }
+    get sensitivity() { return this.badStates.sensitivityBias.sensitivity(this.baseSensitivity, this.patience); }
     get sensationLimit() { return this.baseSensationLimit + Math.exp(1 - this.sensitivity.all / 10000) / Math.exp(1); }
     get canOrgasm() { return this.sensation >= this.sensationLimit; }
     get currentStageCanClear() { return this.currentStageOrgasmCount < this.orgasmLimit; }
+    get canRepair() { return this.repairCount < this.challengeCount; }
+    get canDope() { return this.dopeCount < this.failedCount; }
 
     get delay() { return (this.sensitivity.delay + this.badStates.delay) * this.effectiveRate; }
 
@@ -98,6 +118,7 @@ class Player {
     newChallenge(count: number) {
         this.previousChallengeSensitivity = this.sensitivity.copy();
         this.previousChallengeBadStates = this.badStates;
+        ++this.challengeCount;
         this.logs.newChallenge(count);
     }
 
@@ -177,6 +198,17 @@ class Player {
         this.logs.repair(this.repairCount, this.resist, this.sensitiveSpeedBias);
     }
 
+    dope(dope: Dope) {
+        ++this.dopeCount;
+        this.speedBoost = dope.speedBoost;
+        this.speedBoostStep = dope.speedBoostStep;
+        this.speedBoostMin = dope.speedBoostMin;
+        this.patience = dope.patience;
+        this.patienceStep = dope.patienceStep;
+        this.patienceMin = dope.patienceMin;
+        this.logs.dope(this.dopeCount, this.speedBoost, this.patience);
+    }
+
     downBadStatesOnRetry() {
         const badStates = this.badStates.downRetry();
         this.logs.downBadStatesOnRetry(this.badStates, badStates);
@@ -185,6 +217,7 @@ class Player {
     }
 
     endStage(successRate: number) {
+        if (!this.currentStageCanClear) ++this.failedCount;
         this.logs.endStage(this.currentStageCanClear, this.currentStageOrgasmCount, successRate);
     }
 
@@ -193,7 +226,17 @@ class Player {
         const previousResist = this.resist;
         this.resist -= this.resistStep;
         if (this.resist < this.resistMin) this.resist = this.resistMin;
-        this.logs.passStage(previousResist, this.resist, this.resistStep, this.resistMin);
+        const previousSpeedBoost = this.speedBoost;
+        this.speedBoost -= this.speedBoostStep;
+        if (this.speedBoost < this.speedBoostMin) this.speedBoost = this.speedBoostMin;
+        const previousAnestethia = this.patience;
+        this.patience -= this.patienceStep;
+        if (this.patience < this.patienceMin) this.patience = this.patienceMin;
+        this.logs.passStage(
+            previousResist, this.resist, this.resistStep, this.resistMin,
+            previousSpeedBoost, this.speedBoost, this.speedBoostStep, this.speedBoostMin,
+            previousAnestethia, this.patience, this.patienceStep, this.patienceMin,
+        );
     }
 }
 
@@ -287,10 +330,10 @@ class PlayerSensitivityBias implements SensitivityDetail {
     anal = 100;
     hip = 100;
 
-    sensitivity(playerSensitivity: PlayerSensitivity) {
+    sensitivity(playerSensitivity: PlayerSensitivity, patience: number) {
         return new PlayerSensitivity(
             PlayerSensitivity.parts.reduce((params, part) => {
-                params[part] = playerSensitivity[part] * this[part] / 100;
+                params[part] = playerSensitivity[part] * this[part] / 100 / patience * 100;
                 return params;
             }, {} as SensitivityDetail),
         )
@@ -658,10 +701,19 @@ class PlayerLogs extends Array<HTMLLIElement> {
     }
 
     repair(repairCount: number, resist: number, sensitiveSpeedBias: number) {
-        this.unshift(this.createElement("downBadStatesOnRetry", [
+        this.unshift(this.createElement("repair", [
             text(`${repairCount}回目の治療をうけたことで`),
             text(`抵抗値が`), strong(`${resist}%`),
-            ...(sensitiveSpeedBias === 100 ? [] : [text(` 感度上昇速度が`), strong(`${sensitiveSpeedBias}%`)]),
+            ...(sensitiveSpeedBias === 100 ? [] : [text(` 感度上昇速度が`), strong(`${float2(sensitiveSpeedBias / 100)}倍`)]),
+            text(`に`),
+        ]));
+    }
+
+    dope(dopeCount: number, speedBoost: number, patience: number) {
+        this.unshift(this.createElement("dope", [
+            text(`${dopeCount}回目のドーピングで`),
+            text(`精神加速が`), strong(`${speedBoost}%`),
+            text(` 我慢値が`), strong(`${patience}%`),
             text(`に`),
         ]));
     }
@@ -691,22 +743,59 @@ class PlayerLogs extends Array<HTMLLIElement> {
         return str;
     }
 
-    passStage(previousResist: number, currentResist: number, resistStep: number, resistMin: number) {
-        if (!resistStep) return;
-        const resistDiff = previousResist - currentResist;
+    passStage(
+        previousResist: number, resist: number, resistStep: number, resistMin: number,
+        previousSpeedBoost: number, speedBoost: number, speedBoostStep: number, speedBoostMin: number,
+        previousPatience: number, patience: number, patienceStep: number, patienceMin: number,
+    ) {
+        if (!resistStep && !speedBoostStep && !patienceStep) return;
+        const str: Array<HTMLElement | Text> = [text(`ステージ経過で`)];
+        const resistDiff = previousResist - resist;
         if (resistDiff) {
-            const isMin = currentResist === resistMin;
-            this.unshift(this.createElement("passStage", [
-                text(`ステージ経過で抵抗値が${float2(resistDiff)}減り`),
-                strong(`${float2(currentResist)}%`), text(`に`),
+            const isMin = resist === resistMin;
+            str.push(
+                br(),
+                text(`抵抗値が${float2(resistDiff)}%減り`),
+                strong(`${float2(resist)}%`), text(`に`),
                 isMin ? strong("(下限)") : text(""),
-            ]));
+            );
         } else {
-            this.unshift(this.createElement("passStage", [
-                text(`ステージ経過での`),
+            str.push(
+                br(),
                 strong(`抵抗値減少は下限に達しています`),
-            ]));
+            );
         }
+        const speedBoostDiff = previousSpeedBoost - speedBoost;
+        if (speedBoostDiff) {
+            const isMin = speedBoost === speedBoostMin;
+            str.push(
+                br(),
+                text(`精神加速が${float2(speedBoostDiff)}%鈍化し`),
+                strong(`${float2(speedBoost)}%`), text(`に`),
+                isMin ? strong("(下限)") : text(""),
+            );
+        } else {
+            str.push(
+                br(),
+                strong(`精神加速鈍化は下限に達しています`),
+            );
+        }
+        const patienceDiff = previousPatience - patience;
+        if (patienceDiff) {
+            const isMin = patience === patienceMin;
+            str.push(
+                br(),
+                text(`我慢値が${float2(patienceDiff)}%減少し`),
+                strong(`${float2(patience)}%`), text(`に`),
+                isMin ? strong("(下限)") : text(""),
+            );
+        } else {
+            str.push(
+                br(),
+                strong(`我慢値は下限に達しています`),
+            );
+        }
+        this.unshift(this.createElement("passStage", str));
     }
 
     endStage(cleared: boolean, orgasmCount: number, successRate: number) {
