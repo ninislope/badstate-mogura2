@@ -227,7 +227,7 @@ class GamePlayer {
             this.upBadState("絶頂余韻", true, orgasmCount);
             this.player.orgasm(orgasmCount);
             console.info("★★★絶頂", "回数=", orgasmCount, "絶頂時快感=", beforeWS, "絶頂後快感=", this.player.sensation);
-            this.moguraGame.scene.orgasm(1 + orgasmCount / 2);
+            this.moguraGame.scene.orgasm(orgasmCount <= 9 ? 0.2 + orgasmCount / 5 : 1.1 + orgasmCount / 10);
             delete this.orgasmTimer;
         }, GamePlayer.orgasmWait);
     }
