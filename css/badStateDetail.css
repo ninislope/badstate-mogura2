@@ -1,5 +1,5 @@
 .badStateDetailContainer {
-    width: 960px;
+    width: 1220px;
     margin: 0 auto;
     position: relative;
 }
@@ -8,7 +8,7 @@
     position: absolute;
     z-index: 100;
     top: 0;
-    left: -1px;
+    left: 259px;
     width: 440px;
     height: 480px;
     color: #911;

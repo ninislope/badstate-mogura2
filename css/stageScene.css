@@ -40,7 +40,7 @@
 }
 
 #stageScene .info {
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 1;
     margin: 0;
     padding: 10px;
@@ -50,7 +50,7 @@
 
 #stageScene .main {
     position: relative;
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 2;
     margin: 0;
     padding: 0;
