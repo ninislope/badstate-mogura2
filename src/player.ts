@@ -30,6 +30,8 @@ class Player {
     previousStageBadStates: PlayerBadStates;
     /** 前挑戦開始時バッドステート */
     previousChallengeBadStates: PlayerBadStates;
+    /** 行動ログ */
+    logs: PlayerLogs;
 
     /** 通常ステータス */
     normalStatus = new PlayerNormalStatus();
@@ -70,6 +72,7 @@ class Player {
         this.previousChallengeSensitivity = this.previousStageSensitivity = this.baseSensitivity;
         this.initialSensitivity = this.baseSensitivity.copy();
         this.initialBadStates = this.previousChallengeBadStates = this.previousStageBadStates = this.badStates;
+        this.logs = new PlayerLogs();
     }
 
     get effectiveBadStates() { return this.addMode === "immediate" ? this.badStates : this.previousStageBadStates; }
@@ -92,18 +95,20 @@ class Player {
     }
     */
 
-    newChallenge() {
+    newChallenge(count: number) {
         this.previousChallengeSensitivity = this.sensitivity.copy();
         this.previousChallengeBadStates = this.badStates;
+        this.logs.newChallenge(count);
     }
 
-    newStageChallenge() {
+    newStageChallenge(level: number, repeatCount: number) {
         this.previousStageSensitivity = this.sensitivity.copy();
         this.previousStageBadStates = this.badStates;
         this.currentStageOrgasmCount = 0;
+        this.logs.newStageChallenge(level, repeatCount);
     }
 
-    upSensation(parts: SensitivePart[], value: number) {
+    upSensation(parts: SensitivePart[], value: number, badState: BadState) {
         const all = this.sensitivity.all;
         const partUpSensitivity: SensitivityDetail = {};
         let upSensation = 0;
@@ -114,6 +119,8 @@ class Player {
             upSensation += Player.sensationSpeed(sensitivity, all, this.effectiveRate) * value;
         }
         this.sensation += upSensation;
+
+        this.logs.upSensation(parts, value, upSensation, badState);
 
         return { sensitivity: partUpSensitivity, sensation: upSensation } as UpSensationInfo;
     }
@@ -129,36 +136,51 @@ class Player {
         // 連続絶頂体質なら快感を残す
         const 連続絶頂体質 = this.effectiveBadStates.find("連続絶頂体質");
         this.sensation = 連続絶頂体質 ? 連続絶頂体質.progress * 20 / 100 * this.sensationLimit: 0;
+        this.logs.orgasm(count, 連続絶頂体質 ? 連続絶頂体質.progress * 20 : 0);
     }
 
-    upBadState(setName: BadStateSetName, upProgress = 1) {
+    /**
+     *
+     * @param setName
+     * @param upProgress
+     * @param triggeredBy 誘発由来なら原因のバッドステートか、原因を明示しない場合はtrue
+     */
+    upBadState(setName: BadStateSetName, triggeredBy?: BadState | boolean, upProgress = 1) {
+        const previousBadState = this.badStates.find(setName);
         const badStates = this.badStates.up(setName, upProgress);
+        this.logs.upBadState(setName, Boolean(badStates), previousBadState, badStates ? badStates.find(setName) : undefined, triggeredBy);
         if (badStates) this.badStates = badStates;
         return badStates;
     }
 
     downBadState(setName: BadStateSetName, downProgress: number | boolean = 1) {
+        const previousBadState = this.badStates.find(setName);
         const badStates = this.badStates.down(setName, downProgress);
+        this.logs.downBadState(setName, Boolean(badStates), previousBadState, badStates ? badStates.find(setName) : undefined);
         if (badStates) this.badStates = badStates;
         return badStates;
     }
 
     downBadStatesOnBattleEnd() {
         const badStates = this.badStates.downBattleEnd();
+        this.logs.downBadStatesOnBattleEnd(this.badStates, badStates);
         if (badStates) this.badStates = badStates;
         return badStates;
     }
 
     downBadStatesOnRetry() {
         const badStates = this.badStates.downRetry();
+        this.logs.downBadStatesOnRetry(this.badStates, badStates);
         if (badStates) this.badStates = badStates;
         return badStates;
     }
 
     /** ステージ経過効果 */
     passStage() {
+        const previousResist = this.resist;
         this.resist -= this.resistStep;
         if (this.resist < this.resistMin) this.resist = this.resistMin;
+        this.logs.passStage(previousResist, this.resist, this.resistStep, this.resistMin);
     }
 }
 
@@ -501,4 +523,147 @@ class PlayerNormalStatus {
     def = 400;
     mag = 1200;
     spd = 500;
+}
+
+function br() {
+    return document.createElement("br");
+}
+
+function strong(text: string) {
+    const node = document.createElement("strong");
+    node.textContent = text;
+    return node;
+}
+
+function 付与() {
+    const node = strong("付与");
+    node.classList.add("add");
+    return node;
+}
+
+function 悪化() {
+    const node = strong("悪化");
+    node.classList.add("progress");
+    return node;
+}
+
+function text(text: string) {
+    return document.createTextNode(text);
+}
+
+class PlayerLogs extends Array<HTMLLIElement> {
+    newChallenge(count: number) {
+        this.unshift(this.createElement("newChallenge", [strong(`${count}回目`), text(`の挑戦開始`)]));
+    }
+
+    newStageChallenge(level: number, repeatCount: number) {
+        this.unshift(this.createElement("newStageChallenge", [
+            strong(`ステージ${level}`), text(`: `),
+            ...(repeatCount === 1 ? [] : [strong(`${repeatCount}`), text(`回目の`)]),
+            text(`挑戦開始`),
+        ]));
+    }
+
+    upSensation(parts: SensitivePart[], value: number, upSensation: number, badState: BadState) {
+        const partsJa =
+            parts.length === PlayerSensitivity.parts.length ?
+            PlayerSensitivity.ja("all", true) :
+            parts.map(part => PlayerSensitivity.ja(part)).join(",");
+        this.unshift(this.createElement("upSensation", [
+            strong(`[${badState.displayName}]`), text(" "),
+            strong(partsJa), text("に"),
+            ...(value === 1 ? [] : [value >= 1 ? strong(`${value}倍`) : text(`${value}倍`), text("の")]),
+            text("快感! "), strong(`+${float2(upSensation)}`),
+        ]));
+    }
+
+    orgasm(count: number, restPercent: number) {
+        const base = [strong(`${count === 1 ? "" : `${count}回`}絶頂`), text(`してしまった!`)];
+        const rest = restPercent === 0 ? [] : [br(), strong("連続絶頂体質"), text(`により`), strong(`快感が${restPercent}%残ってしまう!`)];
+        this.unshift(this.createElement("orgasmLog", base.concat(rest)));
+    }
+
+    upBadState(setName: BadStateSetName, changed: boolean, previousBadState?: BadState, nextBadState?: BadState, triggeredBy?: BadState | boolean) {
+        if (changed && nextBadState) { // count変わったとかでもnextBadStateは返ってくる
+            const reason =
+                triggeredBy === true ?
+                [] :
+                triggeredBy ?
+                [strong(`[${triggeredBy.displayName}]`), text(`により`)] :
+                [strong(`[${setName}]`), text(`攻撃で`)];
+            if (nextBadState.onceLog) {
+                this.unshift(this.createElement("upBadState", [
+                    ...reason,
+                    strong(`[${nextBadState.displayName}]${nextBadState.onceLog}しまった!`),
+                ]));
+            } else {
+                if (previousBadState) {
+                    if (previousBadState.progress === nextBadState.progress) return;
+                    this.unshift(this.createElement("upBadState", [
+                        ...reason,
+                        strong(`[${previousBadState.displayName}]`), text(`が`),
+                        strong(`[${nextBadState.displayName}]に`), 悪化(), text(`してしまった!`),
+                    ]));
+                } else {
+                    this.unshift(this.createElement("upBadState", [
+                        ...reason,
+                        strong(`[${nextBadState.displayName}]が`), 付与(), text(`されてしまった!`),
+                    ]));
+                }
+            }
+        } else if (!triggeredBy) {
+            this.unshift(this.createElement("upBadState", [
+                strong(`[${setName}]`), text(`攻撃をうけてしまった!`),
+            ]));
+        }
+    }
+
+    downBadState(setName: BadStateSetName, changed: boolean, previousBadState?: BadState, nextBadState?: BadState) {
+        if (!changed || previousBadState!.onceLog) return;
+        if (nextBadState) {
+            const progressDiff = previousBadState!.progress - nextBadState.progress;
+            if (!progressDiff) return;
+            this.unshift(this.createElement("downBadState", [
+                strong(`[${previousBadState!.displayName}]`), text("→"), strong(`[${nextBadState.displayName}]`),
+                text(` 進行度 -${progressDiff}`),
+            ]));
+        } else {
+            this.unshift(this.createElement("downBadState", [
+                strong(`[${previousBadState!.displayName}]が解消`), text(`した`),
+            ]));
+        }
+    }
+
+    downBadStatesOnBattleEnd(previousBadStates: PlayerBadStates, currentBadStates?: PlayerBadStates) {
+
+    }
+
+    downBadStatesOnRetry(previousBadStates: PlayerBadStates, currentBadStates?: PlayerBadStates) {
+
+    }
+
+    passStage(previousResist: number, currentResist: number, resistStep: number, resistMin: number) {
+        if (!resistStep) return;
+        const resistDiff = previousResist - currentResist;
+        if (resistDiff) {
+            const isMin = currentResist === resistMin;
+            this.unshift(this.createElement("passStage", [
+                text(`ステージ経過で抵抗値が${float2(resistDiff)}減り`),
+                strong(`${float2(currentResist)}%`), text(`に`),
+                isMin ? strong("(下限)") : text(""),
+            ]));
+        } else {
+            this.unshift(this.createElement("passStage", [
+                text(`ステージ経過での`),
+                strong(`抵抗値減少は下限に達しています`),
+            ]));
+        }
+    }
+
+    private createElement(type, text: Array<HTMLElement | Text>) {
+        const li = document.createElement("li");
+        li.classList.add(type);
+        for (const elem of text) li.appendChild(elem);
+        return li;
+    }
 }

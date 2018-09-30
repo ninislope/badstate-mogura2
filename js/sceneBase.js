@@ -17,16 +17,19 @@ class Scene {
     }
 }
 class MainScene extends Scene {
-    constructor(player, badStatesContainer, statusesContainer, badStateDiffSource, sensitivityDiffSource, showBadStateDetail = true) {
+    constructor(player, badStatesContainer, statusesContainer, logsContainer, badStateDiffSource, sensitivityDiffSource, showBadStateDetail = true) {
         super();
+        this.shownlogsCount = 0;
         this.player = player;
         this.badStatesContainer = badStatesContainer;
         this.statusesContainer = statusesContainer;
+        this.logsContainer = logsContainer;
         this.badStateDiffSource = badStateDiffSource;
         this.showBadStateDetail = showBadStateDetail;
         this.sensitivityStatusElements = SensitivityStatusElements.create(player, sensitivityDiffSource);
         this.setBadStatesView();
         this.createStatuses();
+        this.showlogsFirst();
     }
     getAddMode() {
         return document.querySelector('[name="addMode"]:checked').value;
@@ -53,6 +56,23 @@ class MainScene extends Scene {
     updateStatuses() {
         this.updateNormalStatuses();
         this.sensitivityStatusElements.update();
+    }
+    updateLogs() {
+        const newLogs = this.player.logs.slice(0, this.player.logs.length - this.shownlogsCount);
+        this.logsContainer.insertBefore(this.createLogsFragment(newLogs), this.logsContainer.firstChild);
+        this.shownlogsCount = this.player.logs.length;
+    }
+    showlogsFirst() {
+        this.logsContainer.appendChild(this.createLogsFragment(this.player.logs));
+        this.shownlogsCount = this.player.logs.length;
+        this.logsContainer.scrollTop = 0;
+    }
+    createLogsFragment(logs) {
+        const fragment = document.createDocumentFragment();
+        for (const log of this.player.logs) {
+            fragment.appendChild(log);
+        }
+        return fragment;
     }
     setBadStatesView() {
         if (this.showBadStateDetail) {

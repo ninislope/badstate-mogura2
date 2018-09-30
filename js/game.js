@@ -40,31 +40,34 @@ class GamePlayer {
     get currentBadStates() { return this.player.badStates; }
     get addMode() { return this.player.addMode; }
     get effectiveBadStates() { return this.player.effectiveBadStates; }
-    upBadState(setName, upProgress = 1) {
+    upBadState(setName, triggeredBy, upProgress) {
         if (typeof setName !== "string") {
-            this.upBadState(setName.name, setName.progress);
+            this.upBadState(setName.name, triggeredBy, setName.progress);
             return;
         }
-        const playerBadStates = this.player.upBadState(setName, upProgress);
+        const playerBadStates = this.player.upBadState(setName, triggeredBy, upProgress);
         if (playerBadStates)
-            console.info("▼発動", setName, "進行=", upProgress);
+            console.info("▼発動", setName, "進行=", upProgress, "誘発=", triggeredBy);
         if (playerBadStates)
             this.setBadStateTimer(setName);
         this.moguraGame.scene.updateBadStates();
         this.moguraGame.scene.updateStatuses();
+        this.moguraGame.scene.updateLogs();
     }
     downBadState(setName, periodDown, endTrigger) {
+        const badState = this.player.badStates.find(setName);
         const playerBadStates = this.player.downBadState(setName, periodDown);
         if (endTrigger) { // 持続時間終了後バッドステートを誘発
             for (const triggerParam of endTrigger) {
                 console.info("●終了誘発", ...(typeof triggerParam === "string" ? ["→", triggerParam, "進行=", 1] : ["→", triggerParam.name, "進行=", triggerParam.progress]));
-                this.upBadState(triggerParam);
+                this.upBadState(triggerParam, badState);
             }
         }
         if (playerBadStates)
             this.setBadStateTimer(setName);
         this.moguraGame.scene.updateBadStates();
         this.moguraGame.scene.updateStatuses();
+        this.moguraGame.scene.updateLogs();
     }
     downBadStatesOnBattleEnd() {
         this.player.downBadStatesOnBattleEnd();
@@ -132,7 +135,7 @@ class GamePlayer {
                     if (badState.trigger) { // 停止後バッドステートを誘発
                         for (const triggerParam of badState.trigger) {
                             console.info("●誘発", logname, ...(typeof triggerParam === "string" ? ["→", triggerParam, "進行=", 1] : ["→", triggerParam.name, "進行=", triggerParam.progress]));
-                            this.upBadState(triggerParam);
+                            this.upBadState(triggerParam, badState);
                         }
                     }
                 });
@@ -140,12 +143,12 @@ class GamePlayer {
             else if (badState.trigger) { // バッドステートを誘発
                 for (const triggerParam of badState.trigger) {
                     console.info("●誘発", logname, ...(typeof triggerParam === "string" ? ["→", triggerParam, "進行=", 1] : ["→", triggerParam.name, "進行=", triggerParam.progress]));
-                    this.upBadState(triggerParam);
+                    this.upBadState(triggerParam, badState);
                 }
             }
             if (badState.sensation) {
                 const parts = typeof badState.sensitivity === "number" ? PlayerSensitivity.parts : Object.keys(badState.sensitivity);
-                const info = this.player.upSensation(parts, badState.sensation);
+                const info = this.player.upSensation(parts, badState.sensation, badState);
                 this.moguraGame.scene.upSensation(info);
                 for (const part of Object.keys(info.sensitivity)) {
                     console.info("★快感", logname, "強度=", badState.sensation, "快感=", float2(info.sensation), "感度=", PlayerSensitivity.ja(part, true), "+", float2(info.sensitivity[part]), "base=", float2(this.player.baseSensitivity[part]), "bias=", float2(this.player.badStates.sensitivityBias[part]), "%");
@@ -217,11 +220,11 @@ class GamePlayer {
             const orgasmCount = this.player.toOrgasmCount();
             // if (orgasmCount <= 0) return;
             // 絶頂バッドステートを誘発
-            this.upBadState("絶頂", orgasmCount); // これによって快感上昇するので絶頂処理はその後
+            this.upBadState("絶頂", true, orgasmCount); // これによって快感上昇するので絶頂処理はその後
             if (this.effectiveBadStates.find("子宮屈服")) {
-                this.upBadState("屈服絶頂余韻", orgasmCount);
+                this.upBadState("屈服絶頂余韻", true, orgasmCount);
             }
-            this.upBadState("絶頂余韻", orgasmCount);
+            this.upBadState("絶頂余韻", true, orgasmCount);
             this.player.orgasm(orgasmCount);
             console.info("★★★絶頂", "回数=", orgasmCount, "絶頂時快感=", beforeWS, "絶頂後快感=", this.player.sensation);
             this.moguraGame.scene.orgasm(1 + orgasmCount / 2);

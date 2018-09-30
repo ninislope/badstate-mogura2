@@ -46,7 +46,7 @@ const badStateSets = ({
     絶頂:
     // [特殊]: 絶頂時に自動付与 回数カウント・感度上昇用
     // 回数カウントと感度上昇だけして即時解消(快感もあがるがその後で解消される)
-        Array.from({length: 500}, (_, index) => ({period: 0, periodDown: true, count: 1 + index, sensation: 1, sensitivity: 10 + 5 * index, trigger: ["子宮屈服", "連続絶頂体質"]})),
+        Array.from({length: 500}, (_, index) => ({period: 0, periodDown: true, count: 1 + index, sensation: 1, sensitivity: 10 + 5 * index, trigger: ["子宮屈服", "連続絶頂体質"], onceLog: "して"})),
         /*
         {period: 0, count:  1, sensation: 1, sensitivity:  10, trigger: ["子宮屈服", "連続絶頂体質"]},
         {period: 0, count:  2, sensation: 1, sensitivity:  20, trigger: ["子宮屈服", "連続絶頂体質"]},
@@ -81,7 +81,7 @@ const badStateSets = ({
 
     // 汎用
     膣内射精: [
-        {sensation: 4, sensitivity: {vagina: 20, womb: 20}, delay: 300, stop: 1000, prod: 100, period: 4000, stageDown: 1, speak: ["いやぁぁぁぁぁっ♡"]},
+        {sensation: 4, sensitivity: {vagina: 20, womb: 20}, delay: 300, stop: 1000, prod: 100, period: 4000, stageDown: 1, speak: ["いやぁぁぁぁぁっ♡"], onceLog: "されて"},
     ],
     発情: [
         {level: "（軽度）", sensitivity:  20, count: 1, period: 8000},
@@ -96,7 +96,7 @@ const badStateSets = ({
         {level: "Lv.3",      sensitivity: {leftNipple:  20}, sensation: 0.5},
         {level: "Lv.4",      sensitivity: {leftNipple:  40}, sensation: 0.5},
         {level: "Lv.Max",    sensitivity: {leftNipple: 100}, sensation: 0.5},
-        {name: "左乳首弄り", sensitivity: {leftNipple: 100}, sensation: 1, stop: 100, period: 100, stageDown: 1, speak: ["ひゃぁんっ♡"], hideSpeed: 50},
+        {name: "左乳首弄り", sensitivity: {leftNipple: 100}, sensation: 1, stop: 100, period: 100, stageDown: 1, speak: ["ひゃぁんっ♡"], hideSpeed: 50, onceLog: "を受けて"},
     ],
     "乳首敏感(右)": [
         {level: "Lv.1",      sensitivity: {rightNipple:   5}, sensation: 0.5},
@@ -104,7 +104,7 @@ const badStateSets = ({
         {level: "Lv.3",      sensitivity: {rightNipple:  20}, sensation: 0.5},
         {level: "Lv.4",      sensitivity: {rightNipple:  40}, sensation: 0.5},
         {level: "Lv.Max",    sensitivity: {rightNipple: 100}, sensation: 0.5},
-        {name: "右乳首弄り", sensitivity: {rightNipple: 100}, sensation: 1, stop: 100, period: 100, stageDown: 1, speak: ["ひゃぁんっ♡"], hideSpeed: 50},
+        {name: "右乳首弄り", sensitivity: {rightNipple: 100}, sensation: 1, stop: 100, period: 100, stageDown: 1, speak: ["ひゃぁんっ♡"], hideSpeed: 50, onceLog: "を受けて"},
     ],
     クリ敏感: [
         {level: "Lv.1",    sensitivity: {clitoris:   5}, sensation: 0.5},
@@ -112,7 +112,7 @@ const badStateSets = ({
         {level: "Lv.3",    sensitivity: {clitoris:  20}, sensation: 0.5},
         {level: "Lv.4",    sensitivity: {clitoris:  40}, sensation: 0.5},
         {level: "Lv.Max",  sensitivity: {clitoris: 100}, sensation: 0.5},
-        {name: "クリ弄り", sensitivity: {clitoris: 100}, sensation: 1, stop: 100, period: 100, stageDown: 1, speak: ["ひゃぁんっ♡"], hideSpeed: 50},
+        {name: "クリ弄り", sensitivity: {clitoris: 100}, sensation: 1, stop: 100, period: 100, stageDown: 1, speak: ["ひゃぁんっ♡"], hideSpeed: 50, onceLog: "を受けて"},
     ],
     "乳首肥大化(左)": [
         {level: "Lv.1",   sensitivity: {leftNipple:  5},  delay: 15},
@@ -219,8 +219,8 @@ const badStateSets = ({
         {stop: 100, cycle: 8000, prod: 70, trigger: ["おもらし"], danger: ["おもらし"], speak: ["やっ……もれてる……っ"]},
     ],
     おもらし: [
-        {level: "（少量）", sensation: 1, sensitivity: {urethra: 100}, delay: 100, period: 3000, periodDown: true, stageDown: true, count: 1, trigger: ["尿道性感"]},
-        {level: ""       , sensation: 2, sensitivity: {urethra: 100}, delay: 300, period: 4000, periodDown: true, stageDown: true, count: 1, trigger: ["おもらし癖", "尿道性感"]},
+        {level: "（少量）", sensation: 1, sensitivity: {urethra: 100}, delay: 100, period: 3000, periodDown: true, stageDown: true, count: 1, trigger: ["尿道性感"], onceLog: "して"},
+        {level: ""       , sensation: 2, sensitivity: {urethra: 100}, delay: 300, period: 4000, periodDown: true, stageDown: true, count: 1, trigger: ["おもらし癖", "尿道性感"], onceLog: "して"},
     ],
     尿道性感: [ // おもらし回数で誘発
         {level: "(軽度)", sensitivity: {urethra: 150}, countActivate: [{name: "おもらし", count:  30}], description: "尿道で感じてしまう"},
@@ -233,7 +233,7 @@ const badStateSets = ({
         {sensation: 1, sensitivity: {vagina: 20, womb: 10}, stop: 1000, prod: 80, period: 7500, stageDown: 1, trigger: ["ハメられ"], speak: ["ふあぁんっ♡"]},
     ],
     ハメられ: [
-        {sensation: 1, sensitivity: {vagina: 20, womb: 10}, stop: 100, cycle: 500, prod: 100, period: 3500, stageDown: 1, endTrigger: ["膣内射精"], speak: ["膣内だめっ♡", ""], speakInterval: 350},
+        {sensation: 1, sensitivity: {vagina: 20, womb: 10}, stop: 100, cycle: 500, prod: 100, period: 3500, stageDown: 1, endTrigger: ["膣内射精"], speak: ["膣内だめっ♡", ""], speakInterval: 350, onceLog: "て"},
     ],
 
     // 媚薬系
@@ -286,7 +286,7 @@ const badStateSets = ({
         {sensation: 1, sensitivity: {skin: 30, urethra: 40, clitoris: 40, vagina: 40, anal: 40, hip: 20}, cycle: 5000, trigger: ["露出快感", "露出快感", "露出快感"]},
     ],
     露出快感: [
-        {period: 0, count: 1, trigger: ["露出性感"]},
+        {period: 0, count: 1, trigger: ["露出性感"], onceLog: "を受けて"},
     ],
     露出性感: [ // 露出回数で誘発
         {level: "(軽度)", sensitivity: {skin: 100, bust:  50, leftNipple:  50, rightNipple:  50, urethra:  50, clitoris:  50, vagina:  50, anal:  50, hip: 30}, countActivate: [{name: "露出快感", count:  30}], description: "露出を期待してしまう"},

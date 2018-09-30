@@ -166,6 +166,8 @@ interface BadStateDataWeak {
     stageDown?: number | boolean;
     /** 撤退時進行度回復量(trueなら全回復) */
     retryDown?: number | boolean;
+    /** ログにおいて一過性のものとして扱い`${表示名}${onceLog}しまった`と表示する */
+    onceLog?: string;
 }
 
 type BadStateSets = {
@@ -251,6 +253,7 @@ class BadState implements BadStateData {
     danger?: string[] = [];
     stageDown?: number | boolean;
     retryDown?: number | boolean;
+    onceLog?: string;
 
     /** バッドステートセット名 */
     setName!: BadStateSetName;

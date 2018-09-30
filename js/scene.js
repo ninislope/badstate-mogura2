@@ -5,7 +5,7 @@ class StartScene extends Scene {
 }
 class HomeScene extends MainScene {
     constructor(player, newChallenge, canRepair) {
-        super(player, document.querySelector(`#homeScene .badStates`), document.querySelector(`#homeScene .statuses`), "previousChallengeBadStates", "previousChallengeSensitivity");
+        super(player, document.querySelector(`#homeScene .badStates`), document.querySelector(`#homeScene .statuses`), document.querySelector(`#homeScene .logs`), "previousChallengeBadStates", "previousChallengeSensitivity");
         this.newChallenge = newChallenge;
         this.canRepair = canRepair;
     }
@@ -18,6 +18,7 @@ class HomeScene extends MainScene {
         this.setRepairButtonState();
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
         const gameChallenge = this.player.environment.gameChallenges.currentGameChallenge;
     }
     setStartStageButton() {
@@ -49,7 +50,7 @@ class HomeScene extends MainScene {
 }
 class RepairScene extends MainScene {
     constructor(player) {
-        super(player, document.querySelector(`#repairScene .badStates`), document.querySelector(`#repairScene .statuses`), "previousChallengeBadStates", "previousChallengeSensitivity");
+        super(player, document.querySelector(`#repairScene .badStates`), document.querySelector(`#repairScene .statuses`), document.querySelector(`#repairScene .logs`), "previousChallengeBadStates", "previousChallengeSensitivity");
         this.repaired = false;
     }
     get cautionElem() { return document.querySelector(`#repairScene .caution`); }
@@ -65,6 +66,7 @@ class RepairScene extends MainScene {
         this.resultElem.textContent = "";
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
     }
     doRepair() {
         const repair = this.player.environment.repairs.byCount(this.player.repairCount);
@@ -75,6 +77,7 @@ class RepairScene extends MainScene {
         this.resultElem.textContent = repair.effectDescription;
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
         this.repaired = true;
     }
     back() {
@@ -94,7 +97,7 @@ class StageScene extends MainScene {
     get inactiveElem() { return this._inactiveElem ? this._inactiveElem : (this._inactiveElem = document.querySelector("#stageScene .inactive")); }
     get orgasmElem() { return this._orgasmElem ? this._orgasmElem : (this._orgasmElem = document.querySelector("#stageScene .orgasm")); }
     constructor(player, next, firstStage = false) {
-        super(player, document.querySelector(`#stageScene .badStates`), document.querySelector(`#stageScene .statuses`), "previousStageBadStates", "previousStageSensitivity", false);
+        super(player, document.querySelector(`#stageScene .badStates`), document.querySelector(`#stageScene .statuses`), document.querySelector(`#stageScene .logs`), "previousStageBadStates", "previousStageSensitivity", false);
         this.next = next;
         this.firstStage = firstStage;
     }
@@ -108,19 +111,20 @@ class StageScene extends MainScene {
             this.player.environment.gameChallenges.currentGameChallenge.newGameStage();
         if (this.firstStage) {
             this.player.addMode = this.getAddMode();
-            this.player.newChallenge();
+            this.player.newChallenge(this.player.environment.gameChallenges.currentGameChallenge.count);
         }
         else {
             this.player.passStage();
         }
-        this.player.newStageChallenge();
         const gameStage = this.player.environment.gameChallenges.currentGameChallenge.currentGameStage;
         this.moguraGame = new MoguraGame(this.player, this, gameStage.newGameStageChallenge(), () => sceneState.showResult(this.moguraGame));
+        this.player.newStageChallenge(gameStage.level, gameStage.currentGameStageChallenge.repeatCount);
         this.hideAllMoguras();
         this.setTitle();
         this.updateInfo();
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
         this.moguraGame.gamePlayer.speakReady();
         // 描画準備してからシーン切り替え
         this.setScene("stageScene");
@@ -140,6 +144,9 @@ class StageScene extends MainScene {
     }
     updateStatuses() {
         super.updateStatuses();
+    }
+    updateLogs() {
+        super.updateLogs();
     }
     setSpeak(speak) {
         this.speakElem.textContent = speak;
@@ -206,12 +213,13 @@ class StageScene extends MainScene {
 }
 class ResultScene extends MainScene {
     constructor(player, moguraGame) {
-        super(player, document.querySelector(`#resultScene .badStates`), document.querySelector(`#resultScene .statuses`), "previousStageBadStates", "previousStageSensitivity");
+        super(player, document.querySelector(`#resultScene .badStates`), document.querySelector(`#resultScene .statuses`), document.querySelector(`#resultScene .logs`), "previousStageBadStates", "previousStageSensitivity");
         this.moguraGame = moguraGame;
     }
     start() {
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
         this.updateInfo();
         this.setScene("resultScene");
     }

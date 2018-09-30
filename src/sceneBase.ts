@@ -27,15 +27,18 @@ class MainScene extends Scene {
     player: Player;
     badStatesContainer: HTMLOListElement | HTMLUListElement;
     statusesContainer: HTMLDivElement;
+    logsContainer: HTMLOListElement;
     badStateDiffSource: "previousStageBadStates" | "previousChallengeBadStates";
     showBadStateDetail: boolean;
     private normalStatusElements!: NormalStatusElements;
     private sensitivityStatusElements: SensitivityStatusElements;
+    private shownlogsCount = 0;
 
     constructor(
         player: Player,
         badStatesContainer: HTMLOListElement | HTMLUListElement,
         statusesContainer: HTMLDivElement,
+        logsContainer: HTMLOListElement,
         badStateDiffSource: "previousStageBadStates" | "previousChallengeBadStates",
         sensitivityDiffSource: "previousStageSensitivity" | "previousChallengeSensitivity",
         showBadStateDetail = true,
@@ -44,11 +47,13 @@ class MainScene extends Scene {
         this.player = player;
         this.badStatesContainer = badStatesContainer;
         this.statusesContainer = statusesContainer;
+        this.logsContainer = logsContainer;
         this.badStateDiffSource = badStateDiffSource;
         this.showBadStateDetail = showBadStateDetail;
         this.sensitivityStatusElements = SensitivityStatusElements.create(player, sensitivityDiffSource);
         this.setBadStatesView();
         this.createStatuses();
+        this.showlogsFirst();
     }
 
     protected getAddMode() {
@@ -79,6 +84,26 @@ class MainScene extends Scene {
     protected updateStatuses() {
         this.updateNormalStatuses();
         this.sensitivityStatusElements.update();
+    }
+
+    protected updateLogs() {
+        const newLogs = this.player.logs.slice(0, this.player.logs.length - this.shownlogsCount);
+        this.logsContainer.insertBefore(this.createLogsFragment(newLogs), this.logsContainer.firstChild);
+        this.shownlogsCount = this.player.logs.length;
+    }
+
+    private showlogsFirst() {
+        this.logsContainer.appendChild(this.createLogsFragment(this.player.logs));
+        this.shownlogsCount = this.player.logs.length;
+        this.logsContainer.scrollTop = 0;
+    }
+
+    private createLogsFragment(logs: HTMLLIElement[]) {
+        const fragment = document.createDocumentFragment();
+        for (const log of this.player.logs) {
+            fragment.appendChild(log);
+        }
+        return fragment;
     }
 
     private setBadStatesView() {

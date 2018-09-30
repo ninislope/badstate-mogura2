@@ -13,6 +13,7 @@ class HomeScene extends MainScene {
             player,
             document.querySelector(`#homeScene .badStates`) as HTMLOListElement,
             document.querySelector(`#homeScene .statuses`) as HTMLDivElement,
+            document.querySelector(`#homeScene .logs`) as HTMLOListElement,
             "previousChallengeBadStates",
             "previousChallengeSensitivity",
         );
@@ -29,6 +30,7 @@ class HomeScene extends MainScene {
         this.setRepairButtonState();
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
         const gameChallenge = this.player.environment.gameChallenges.currentGameChallenge;
     }
 
@@ -70,6 +72,7 @@ class RepairScene extends MainScene {
             player,
             document.querySelector(`#repairScene .badStates`) as HTMLOListElement,
             document.querySelector(`#repairScene .statuses`) as HTMLDivElement,
+            document.querySelector(`#repairScene .logs`) as HTMLOListElement,
             "previousChallengeBadStates",
             "previousChallengeSensitivity",
         );
@@ -84,6 +87,7 @@ class RepairScene extends MainScene {
         this.resultElem.textContent = "";
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
     }
 
     doRepair() {
@@ -94,6 +98,7 @@ class RepairScene extends MainScene {
         this.resultElem.textContent = repair.effectDescription;
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
         this.repaired = true;
     }
 
@@ -138,6 +143,7 @@ class StageScene extends MainScene {
             player,
             document.querySelector(`#stageScene .badStates`) as HTMLOListElement,
             document.querySelector(`#stageScene .statuses`) as HTMLDivElement,
+            document.querySelector(`#stageScene .logs`) as HTMLOListElement,
             "previousStageBadStates",
             "previousStageSensitivity",
             false,
@@ -155,20 +161,22 @@ class StageScene extends MainScene {
         if (this.next) this.player.environment.gameChallenges.currentGameChallenge.newGameStage();
         if (this.firstStage) {
             this.player.addMode = this.getAddMode();
-            this.player.newChallenge();
+            this.player.newChallenge(this.player.environment.gameChallenges.currentGameChallenge.count);
         } else {
             this.player.passStage();
         }
-        this.player.newStageChallenge();
 
         const gameStage = this.player.environment.gameChallenges.currentGameChallenge.currentGameStage;
         this.moguraGame = new MoguraGame(this.player, this, gameStage.newGameStageChallenge(), () => sceneState.showResult(this.moguraGame));
+
+        this.player.newStageChallenge(gameStage.level, gameStage.currentGameStageChallenge.repeatCount);
 
         this.hideAllMoguras();
         this.setTitle();
         this.updateInfo();
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
         this.moguraGame.gamePlayer.speakReady();
         // 描画準備してからシーン切り替え
         this.setScene("stageScene");
@@ -190,6 +198,10 @@ class StageScene extends MainScene {
 
     updateStatuses() {
         super.updateStatuses();
+    }
+
+    updateLogs() {
+        super.updateLogs();
     }
 
     setSpeak(speak: string) {
@@ -277,6 +289,7 @@ class ResultScene extends MainScene {
             player,
             document.querySelector(`#resultScene .badStates`) as HTMLOListElement,
             document.querySelector(`#resultScene .statuses`) as HTMLDivElement,
+            document.querySelector(`#resultScene .logs`) as HTMLOListElement,
             "previousStageBadStates",
             "previousStageSensitivity",
         );
@@ -286,6 +299,7 @@ class ResultScene extends MainScene {
     start() {
         this.updateBadStates();
         this.updateStatuses();
+        this.updateLogs();
         this.updateInfo();
         this.setScene("resultScene");
     }
