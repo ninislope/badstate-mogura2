@@ -1,7 +1,7 @@
 .mainScene {
     display: grid;
     grid-template-columns: 1fr 250px 250px;
-    grid-template-rows: 70px 1fr 150px 200px;
+    grid-template-rows: 70px 1fr 120px 230px;
     grid-column-gap: 10px;
     grid-row-gap: 10px;
 }

@@ -9,3 +9,7 @@
 .scene.hidden {
     display: none !important;
 }
+
+p {
+    margin: 0.8em 0;
+}
