@@ -21,6 +21,8 @@
 .logs .downBadStatesOnBattleEnd { color: #00f; }
 .logs .downBadStatesOnRetry { color: #00f; }
 .logs .passStage { color: #099; }
+.logs .endStageSuccess { color: #090; }
+.logs .endStageFailed { color: #90f; }
 
 .logs .upBadState .add { color: #fff; background: #f00; }
 .logs .upBadState .progress { color: #f33; background: #000; }

@@ -121,12 +121,23 @@ class Player {
             this.badStates = badStates;
         return badStates;
     }
+    repair(repair) {
+        ++this.repairCount;
+        this.resist = repair.resist;
+        this.resistStep = repair.resistStep;
+        this.resistMin = repair.resistMin;
+        this.sensitiveSpeedBias = repair.sensitiveSpeedBias;
+        this.logs.repair(this.repairCount, this.resist, this.sensitiveSpeedBias);
+    }
     downBadStatesOnRetry() {
         const badStates = this.badStates.downRetry();
         this.logs.downBadStatesOnRetry(this.badStates, badStates);
         if (badStates)
             this.badStates = badStates;
         return badStates;
+    }
+    endStage(successRate) {
+        this.logs.endStage(this.currentStageCanClear, this.currentStageOrgasmCount, successRate);
     }
     /** ステージ経過効果 */
     passStage() {
@@ -516,7 +527,7 @@ class PlayerLogs extends Array {
                 return;
             this.unshift(this.createElement("downBadState", [
                 strong(`[${previousBadState.displayName}]`), text("→"), strong(`[${nextBadState.displayName}]`),
-                text(` 進行度 -${progressDiff}`),
+                text(` ${progressDiff}段階軽減`),
             ]));
         }
         else {
@@ -526,8 +537,50 @@ class PlayerLogs extends Array {
         }
     }
     downBadStatesOnBattleEnd(previousBadStates, currentBadStates) {
+        if (!currentBadStates)
+            return;
+        const summary = this.badStateDiffSummary(previousBadStates, currentBadStates);
+        if (!summary)
+            return;
+        this.unshift(this.createElement("downBadStatesOnBattleEnd", [
+            text("ステージ終了による軽減・解消:"), br(),
+            ...summary,
+        ]));
+    }
+    repair(repairCount, resist, sensitiveSpeedBias) {
+        this.unshift(this.createElement("downBadStatesOnRetry", [
+            text(`${repairCount}回目の治療をうけたことで`),
+            text(`抵抗値が`), strong(`${resist}%`),
+            ...(sensitiveSpeedBias === 100 ? [] : [text(` 感度上昇速度が`), strong(`${sensitiveSpeedBias}%`)]),
+            text(`に`),
+        ]));
     }
     downBadStatesOnRetry(previousBadStates, currentBadStates) {
+        if (!currentBadStates)
+            return;
+        const summary = this.badStateDiffSummary(previousBadStates, currentBadStates);
+        if (!summary)
+            return;
+        this.unshift(this.createElement("downBadStatesOnRetry", [
+            text("治療による軽減・解消:"), br(),
+            ...summary,
+        ]));
+    }
+    badStateDiffSummary(previousBadStates, currentBadStates) {
+        if (!currentBadStates)
+            return [];
+        const str = [];
+        const diff = new PlayerBadStateDiff(previousBadStates, currentBadStates);
+        for (const entry of diff.sortedBadStateDiffEntries) {
+            if (entry.type === "down") {
+                const progressDiff = entry.before.progress - entry.after.progress;
+                str.push(strong(`・[${entry.before.displayName}]`), text("→"), strong(`[${entry.after.displayName}]`), text(` ${progressDiff}段階軽減`), br());
+            }
+            else if (entry.type === "remove") {
+                str.push(strong(`・[${entry.before.displayName}]が解消`), br());
+            }
+        }
+        return str;
     }
     passStage(previousResist, currentResist, resistStep, resistMin) {
         if (!resistStep)
@@ -547,6 +600,14 @@ class PlayerLogs extends Array {
                 strong(`抵抗値減少は下限に達しています`),
             ]));
         }
+    }
+    endStage(cleared, orgasmCount, successRate) {
+        this.unshift(this.createElement(cleared ? "endStageSuccess" : "endStageFailed", [
+            ...(orgasmCount ? [strong(`${orgasmCount}回絶頂`), cleared ? text("してしまいましたが") : text("してしまい")] : [text("絶頂せずに")]),
+            cleared ? strong("攻略成功") : strong("攻略失敗"),
+            cleared ? text("しました") : text("してしまいました"), br(),
+            text("成功率"), strong(`${float2(successRate)}%`),
+        ]));
     }
     createElement(type, text) {
         const li = document.createElement("li");

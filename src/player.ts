@@ -168,11 +168,24 @@ class Player {
         return badStates;
     }
 
+    repair(repair: Repair) {
+        ++this.repairCount;
+        this.resist = repair.resist;
+        this.resistStep = repair.resistStep;
+        this.resistMin = repair.resistMin;
+        this.sensitiveSpeedBias = repair.sensitiveSpeedBias;
+        this.logs.repair(this.repairCount, this.resist, this.sensitiveSpeedBias);
+    }
+
     downBadStatesOnRetry() {
         const badStates = this.badStates.downRetry();
         this.logs.downBadStatesOnRetry(this.badStates, badStates);
         if (badStates) this.badStates = badStates;
         return badStates;
+    }
+
+    endStage(successRate: number) {
+        this.logs.endStage(this.currentStageCanClear, this.currentStageOrgasmCount, successRate);
     }
 
     /** ステージ経過効果 */
@@ -625,7 +638,7 @@ class PlayerLogs extends Array<HTMLLIElement> {
             if (!progressDiff) return;
             this.unshift(this.createElement("downBadState", [
                 strong(`[${previousBadState!.displayName}]`), text("→"), strong(`[${nextBadState.displayName}]`),
-                text(` 進行度 -${progressDiff}`),
+                text(` ${progressDiff}段階軽減`),
             ]));
         } else {
             this.unshift(this.createElement("downBadState", [
@@ -635,11 +648,47 @@ class PlayerLogs extends Array<HTMLLIElement> {
     }
 
     downBadStatesOnBattleEnd(previousBadStates: PlayerBadStates, currentBadStates?: PlayerBadStates) {
+        if (!currentBadStates) return;
+        const summary = this.badStateDiffSummary(previousBadStates, currentBadStates);
+        if (!summary) return;
+        this.unshift(this.createElement("downBadStatesOnBattleEnd", [
+            text("ステージ終了による軽減・解消:"), br(),
+            ...summary,
+        ]));
+    }
 
+    repair(repairCount: number, resist: number, sensitiveSpeedBias: number) {
+        this.unshift(this.createElement("downBadStatesOnRetry", [
+            text(`${repairCount}回目の治療をうけたことで`),
+            text(`抵抗値が`), strong(`${resist}%`),
+            ...(sensitiveSpeedBias === 100 ? [] : [text(` 感度上昇速度が`), strong(`${sensitiveSpeedBias}%`)]),
+            text(`に`),
+        ]));
     }
 
     downBadStatesOnRetry(previousBadStates: PlayerBadStates, currentBadStates?: PlayerBadStates) {
+        if (!currentBadStates) return;
+        const summary = this.badStateDiffSummary(previousBadStates, currentBadStates);
+        if (!summary) return;
+        this.unshift(this.createElement("downBadStatesOnRetry", [
+            text("治療による軽減・解消:"), br(),
+            ...summary,
+        ]));
+    }
 
+    private badStateDiffSummary(previousBadStates: PlayerBadStates, currentBadStates?: PlayerBadStates) {
+        if (!currentBadStates) return [];
+        const str: Array<HTMLElement | Text> = [];
+        const diff = new PlayerBadStateDiff(previousBadStates, currentBadStates);
+        for (const entry of diff.sortedBadStateDiffEntries) {
+            if (entry.type === "down") {
+                const progressDiff = entry.before!.progress - entry.after!.progress;
+                str.push(strong(`・[${entry.before!.displayName}]`), text("→"), strong(`[${entry.after!.displayName}]`), text(` ${progressDiff}段階軽減`), br());
+            } else if (entry.type === "remove") {
+                str.push(strong(`・[${entry.before!.displayName}]が解消`), br());
+            }
+        }
+        return str;
     }
 
     passStage(previousResist: number, currentResist: number, resistStep: number, resistMin: number) {
@@ -658,6 +707,15 @@ class PlayerLogs extends Array<HTMLLIElement> {
                 strong(`抵抗値減少は下限に達しています`),
             ]));
         }
+    }
+
+    endStage(cleared: boolean, orgasmCount: number, successRate: number) {
+        this.unshift(this.createElement(cleared ? "endStageSuccess" : "endStageFailed", [
+            ...(orgasmCount ? [strong(`${orgasmCount}回絶頂`), cleared ? text("してしまいましたが") : text("してしまい")] : [text("絶頂せずに")]),
+            cleared ? strong("攻略成功") : strong("攻略失敗"),
+            cleared ? text("しました") : text("してしまいました"), br(),
+            text("成功率"), strong(`${float2(successRate)}%`),
+        ]));
     }
 
     private createElement(type, text: Array<HTMLElement | Text>) {

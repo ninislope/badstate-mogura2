@@ -167,7 +167,10 @@ class StageScene extends MainScene {
         }
 
         const gameStage = this.player.environment.gameChallenges.currentGameChallenge.currentGameStage;
-        this.moguraGame = new MoguraGame(this.player, this, gameStage.newGameStageChallenge(), () => sceneState.showResult(this.moguraGame));
+        this.moguraGame = new MoguraGame(this.player, this, gameStage.newGameStageChallenge(), () => {
+            this.player.endStage(this.moguraGame.gameStageChallenge.successRate);
+            sceneState.showResult(this.moguraGame);
+        });
 
         this.player.newStageChallenge(gameStage.level, gameStage.currentGameStageChallenge.repeatCount);
 

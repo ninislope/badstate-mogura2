@@ -7,11 +7,7 @@ class Repair {
         this.description = param.description;
     }
     apply(player) {
-        ++player.repairCount;
-        player.resist = this.resist;
-        player.resistStep = this.resistStep;
-        player.resistMin = this.resistMin;
-        player.sensitiveSpeedBias = this.sensitiveSpeedBias;
+        player.repair(this);
         player.downBadStatesOnRetry();
     }
     get effectDescription() {

@@ -28,11 +28,7 @@ class Repair implements RepairData {
     }
 
     apply(player: Player) {
-        ++player.repairCount;
-        player.resist = this.resist;
-        player.resistStep = this.resistStep;
-        player.resistMin = this.resistMin;
-        player.sensitiveSpeedBias = this.sensitiveSpeedBias;
+        player.repair(this);
         player.downBadStatesOnRetry();
     }
 
