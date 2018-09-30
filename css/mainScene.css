@@ -6,7 +6,7 @@
     grid-row-gap: 10px;
 }
 
-.mainScene > .log {
+.mainScene > .logs {
     grid-column: 1;
     grid-row: 1/5;
 }

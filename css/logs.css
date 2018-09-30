@@ -1,0 +1,26 @@
+.logs {
+    margin: 0;
+    background: #fde;
+    overflow: auto;
+}
+
+.logs > :first-child {
+    background: #ffc;
+}
+
+.logs > li {
+    font-size: smaller;
+}
+
+.logs .newChallenge { color: #009; }
+.logs .newStageChallenge { color: #090; }
+.logs .upSensation { color: #f0c; }
+.logs .orgasmLog { color: #ff0; background: #f00 !important; }
+.logs .upBadState { color: #f00; }
+.logs .downBadState { color: #00f; }
+.logs .downBadStatesOnBattleEnd { color: #00f; }
+.logs .downBadStatesOnRetry { color: #00f; }
+.logs .passStage { color: #099; }
+
+.logs .upBadState .add { color: #fff; background: #f00; }
+.logs .upBadState .progress { color: #f33; background: #000; }
