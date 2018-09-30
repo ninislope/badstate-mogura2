@@ -96,6 +96,7 @@ class MainScene extends Scene {
         normalContainer.appendChild(this.normalStatusElements.resist.container);
         normalContainer.appendChild(this.normalStatusElements.orgasm.container);
         normalContainer.appendChild(this.normalStatusElements.leak.container);
+        normalContainer.appendChild(this.normalStatusElements.milk.container);
     }
     updateNormalStatuses() {
         this.normalStatusElements.sensation.update(this.player.sensation);
@@ -104,6 +105,7 @@ class MainScene extends Scene {
         this.normalStatusElements.resist.update(this.player.resist);
         this.normalStatusElements.orgasm.update(this.player.orgasmCount);
         this.normalStatusElements.leak.update(this.player.badStates.badStateCounts.おもらし || 0);
+        this.normalStatusElements.milk.update(this.player.badStates.badStateCounts.母乳濡れ || 0);
     }
     createSensitivityStatuses() {
         const sensitivity1Container = this.statusesContainer.querySelector(".sensitivity1");
@@ -192,6 +194,7 @@ class NormalStatusElements {
         this.resist = NormalStatusElement.create("抵抗値", "%", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, true);
         this.orgasm = NormalStatusElement.create("絶頂回数", "回", (num) => Math.log10(num + 1) / 3);
         this.leak = NormalStatusElement.create("おもらし回数", "回", (num) => Math.log10(num + 1) / 2, true);
+        this.milk = NormalStatusElement.create("射乳回数", "回", (num) => Math.log10(num + 1) / 2, true);
     }
 }
 class SensitivityStatusElement {

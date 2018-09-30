@@ -168,9 +168,12 @@ const badStateSets = ({
         { level: "Lカップ", sensitivity: { bust: 320 }, delay: 150 },
     ],
     母乳体質: [
-        { level: "Lv.1", sensation: 1, sensitivity: { bust: 30, leftNipple: 30, rightNipple: 30 }, stop: 300, cycle: 10000, prod: 30, danger: ["母乳分泌"], speak: ["んっ……おっぱい張って……っ"] },
-        { level: "Lv.2", sensation: 1.5, sensitivity: { bust: 50, leftNipple: 50, rightNipple: 50 }, stop: 600, cycle: 9000, prod: 30, danger: ["母乳分泌"], speak: ["やっ……母乳がっ……!?"] },
-        { level: "Lv.3", sensation: 2, sensitivity: { bust: 90, leftNipple: 90, rightNipple: 90 }, stop: 1000, cycle: 8000, prod: 30, danger: ["母乳分泌"], speak: ["だめ……母乳感じて……っ"] },
+        { level: "Lv.1", sensation: 1, sensitivity: { bust: 30, leftNipple: 30, rightNipple: 30 }, stop: 300, cycle: 10000, prod: 30, danger: ["母乳分泌"], trigger: ["母乳濡れ"], speak: ["んっ……おっぱい張って……っ"] },
+        { level: "Lv.2", sensation: 1.5, sensitivity: { bust: 50, leftNipple: 50, rightNipple: 50 }, stop: 600, cycle: 9000, prod: 30, danger: ["母乳分泌"], trigger: ["母乳濡れ"], speak: ["やっ……母乳がっ……!?"] },
+        { level: "Lv.3", sensation: 2, sensitivity: { bust: 90, leftNipple: 90, rightNipple: 90 }, stop: 1000, cycle: 8000, prod: 30, danger: ["母乳分泌"], trigger: ["母乳濡れ"], speak: ["だめ……母乳感じて……っ"] },
+    ],
+    母乳濡れ: [
+        { level: "", sensitivity: { bust: 30, leftNipple: 50, rightNipple: 50 }, period: 3000, periodDown: true, stageDown: true, count: 1, onceLog: "になって" },
     ],
     搾乳機: [ // TODO:
     ],
