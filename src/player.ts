@@ -48,7 +48,7 @@ class Player {
     /** このステージでの絶頂回数 */
     currentStageOrgasmCount = 0;
     /** 失敗となる絶頂回数 */
-    orgasmLimit = 10;
+    orgasmLimit = 1;
 
     /** 抵抗値(この%分だけ効果を削る) */
     resist = 0;
