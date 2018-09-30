@@ -162,7 +162,7 @@ class MainScene extends Scene {
 }
 
 class NormalStatusElement {
-    static create(title: string, unit: string, colorFunc: (value: number) => number, autoHideZero = false) {
+    static create(title: string, unit: string, colorFunc: (value: number) => number, autoHide?: number) {
         const li = document.createElement("li");
         li.className = "normalStatus";
         const titleElem = document.createElement("span");
@@ -184,20 +184,20 @@ class NormalStatusElement {
         unitElem.textContent = unit;
         li.appendChild(unitElem);
 
-        return new this(li, titleElem, valueElem, colorFunc, autoHideZero);
+        return new this(li, titleElem, valueElem, colorFunc, autoHide);
     }
 
     container: HTMLLIElement; titleElem: HTMLSpanElement; valueElem: HTMLSpanElement;
     colorFunc: (value: number) => number;
-    autoHideZero: boolean;
+    autoHide?: number;
 
     private _value?: number;
     private _show = true;
 
-    constructor(container: HTMLLIElement, titleElem: HTMLSpanElement, valueElem: HTMLSpanElement, colorFunc: (value: number) => number, autoHideZero = false) {
+    constructor(container: HTMLLIElement, titleElem: HTMLSpanElement, valueElem: HTMLSpanElement, colorFunc: (value: number) => number, autoHide?: number) {
         this.container = container; this.titleElem = titleElem; this.valueElem = valueElem;
         this.colorFunc = colorFunc;
-        this.autoHideZero = autoHideZero;
+        this.autoHide = autoHide;
     }
 
     update(value: number) {
@@ -207,7 +207,7 @@ class NormalStatusElement {
     private set value(value: number) {
         if (this._value === value) return;
         this._value = value;
-        if (this.autoHideZero) this.show = value !== 0;
+        if (this.autoHide !== undefined) this.show = value !== this.autoHide;
         this.valueElem.textContent = float2(value).toString();
         const color = this.colorCode(this.colorFunc(value));
         this.valueElem.style.color = color;
@@ -232,11 +232,11 @@ class NormalStatusElement {
 class NormalStatusElements {
     sensation = NormalStatusElement.create("快感", " / 1000", (num) => Math.log10(num + 1) / 3);
     delay = NormalStatusElement.create("遅延", "秒", (num) => Math.log10(num + 1) * 2);
-    repair = NormalStatusElement.create("治療回数", "回", (num) => Math.log10(num + 1) / 1.5, true);
-    resist = NormalStatusElement.create("抵抗値", "%", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, true);
+    repair = NormalStatusElement.create("治療回数", "回", (num) => Math.log10(num + 1) / 1.5, 0);
+    resist = NormalStatusElement.create("抵抗値", "%", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, 0);
     orgasm = NormalStatusElement.create("絶頂回数", "回", (num) => Math.log10(num + 1) / 3);
-    leak = NormalStatusElement.create("おもらし回数", "回", (num) => Math.log10(num + 1) / 2, true);
-    milk = NormalStatusElement.create("射乳回数", "回", (num) => Math.log10(num + 1) / 2, true);
+    leak = NormalStatusElement.create("おもらし回数", "回", (num) => Math.log10(num + 1) / 2, 0);
+    milk = NormalStatusElement.create("射乳回数", "回", (num) => Math.log10(num + 1) / 2, 0);
 }
 
 class SensitivityStatusElement {

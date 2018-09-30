@@ -126,15 +126,15 @@ class MainScene extends Scene {
     }
 }
 class NormalStatusElement {
-    constructor(container, titleElem, valueElem, colorFunc, autoHideZero = false) {
+    constructor(container, titleElem, valueElem, colorFunc, autoHide) {
         this._show = true;
         this.container = container;
         this.titleElem = titleElem;
         this.valueElem = valueElem;
         this.colorFunc = colorFunc;
-        this.autoHideZero = autoHideZero;
+        this.autoHide = autoHide;
     }
-    static create(title, unit, colorFunc, autoHideZero = false) {
+    static create(title, unit, colorFunc, autoHide) {
         const li = document.createElement("li");
         li.className = "normalStatus";
         const titleElem = document.createElement("span");
@@ -155,7 +155,7 @@ class NormalStatusElement {
         unitElem.className = "unit";
         unitElem.textContent = unit;
         li.appendChild(unitElem);
-        return new this(li, titleElem, valueElem, colorFunc, autoHideZero);
+        return new this(li, titleElem, valueElem, colorFunc, autoHide);
     }
     update(value) {
         this.value = value;
@@ -164,8 +164,8 @@ class NormalStatusElement {
         if (this._value === value)
             return;
         this._value = value;
-        if (this.autoHideZero)
-            this.show = value !== 0;
+        if (this.autoHide !== undefined)
+            this.show = value !== this.autoHide;
         this.valueElem.textContent = float2(value).toString();
         const color = this.colorCode(this.colorFunc(value));
         this.valueElem.style.color = color;
@@ -190,11 +190,11 @@ class NormalStatusElements {
     constructor() {
         this.sensation = NormalStatusElement.create("快感", " / 1000", (num) => Math.log10(num + 1) / 3);
         this.delay = NormalStatusElement.create("遅延", "秒", (num) => Math.log10(num + 1) * 2);
-        this.repair = NormalStatusElement.create("治療回数", "回", (num) => Math.log10(num + 1) / 1.5, true);
-        this.resist = NormalStatusElement.create("抵抗値", "%", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, true);
+        this.repair = NormalStatusElement.create("治療回数", "回", (num) => Math.log10(num + 1) / 1.5, 0);
+        this.resist = NormalStatusElement.create("抵抗値", "%", (num) => Math.log10(Math.max(0, 0 - num)) / 1.5, 0);
         this.orgasm = NormalStatusElement.create("絶頂回数", "回", (num) => Math.log10(num + 1) / 3);
-        this.leak = NormalStatusElement.create("おもらし回数", "回", (num) => Math.log10(num + 1) / 2, true);
-        this.milk = NormalStatusElement.create("射乳回数", "回", (num) => Math.log10(num + 1) / 2, true);
+        this.leak = NormalStatusElement.create("おもらし回数", "回", (num) => Math.log10(num + 1) / 2, 0);
+        this.milk = NormalStatusElement.create("射乳回数", "回", (num) => Math.log10(num + 1) / 2, 0);
     }
 }
 class SensitivityStatusElement {
