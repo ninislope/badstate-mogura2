@@ -15,7 +15,7 @@ const stages: StageData[] = [
     {
         name: "入り口1",
         enemyCount: 7,
-        appearSpeed: { start: 1400, end: 1100, step: 30 },
+        appearSpeed: { start: 1400, end: 1000, step: 45 },
         badStates: {
             "乳首敏感(左)":   { },
             "乳首敏感(右)":   { },
@@ -66,7 +66,7 @@ const stages: StageData[] = [
     },
     {
         name: "媚薬部屋",
-        enemyCount: 12,
+        enemyCount: 14,
         appearSpeed: { start: 800, end: 600, step: 20 },
         badStates: {
             "乳首敏感(左)":   { },
@@ -81,37 +81,14 @@ const stages: StageData[] = [
             膨乳:             { maxProgress: 5 },
             母乳体質:         { weight: 5, maxProgress: 1 },
             尿道カテーテル:   { weight: 3 },
-            媚薬:             { weight: 600 },
-            催淫ガス:         { weight: 800 },
+            媚薬:             { weight: 600, hideSpeed: 80 },
+            催淫ガス:         { weight: 800, hideSpeed: 80 },
             体液媚薬化:       { weight: 1, maxProgress: 1 },
-        },
-    },
-    {
-        name: "第二階層通路",
-        enemyCount: 10,
-        appearSpeed: { start: 900, end: 600, step: 30 },
-        badStates: {
-            "乳首敏感(左)":   { },
-            "乳首敏感(右)":   { },
-            クリ敏感:         { },
-            "乳首肥大化(左)": { maxProgress: 3 },
-            "乳首肥大化(右)": { maxProgress: 3 },
-            クリ肥大化:       { maxProgress: 3 },
-            乳首ローター:     { maxProgress: 1 },
-            クリローター:     { maxProgress: 1 },
-            クリブラシ:       { weight: 50, maxProgress: 1 },
-            膨乳:             { maxProgress: 5 },
-            母乳体質:         { weight: 5, maxProgress: 1 },
-            尿道カテーテル:   { weight: 3 },
-            媚薬:             { },
-            催淫ガス:         { weight: 20 },
-            体液媚薬化:       { weight: 1, maxProgress: 1 },
-            挿入:             { weight: 200, hideSpeed: 40 },
         },
     },
     {
         name: "おもちゃのへや",
-        enemyCount: 14,
+        enemyCount: 16,
         appearSpeed: { start: 800, end: 500, step: 30 },
         badStates: {
             "乳首敏感(左)":   { },
@@ -133,8 +110,8 @@ const stages: StageData[] = [
         },
     },
     {
-        name: "第三階層通路",
-        enemyCount: 12,
+        name: "第二階層通路",
+        enemyCount: 10,
         appearSpeed: { start: 850, end: 650, step: 20 },
         badStates: {
             "乳首敏感(左)":   { },
@@ -153,11 +130,12 @@ const stages: StageData[] = [
             媚薬:             { },
             催淫ガス:         { weight: 20 },
             体液媚薬化:       { weight: 2, maxProgress: 1 },
+            挿入:             { weight: 50, hideSpeed: 70 },
         },
     },
     {
         name: "種付けルーム",
-        enemyCount: 25,
+        enemyCount: 30,
         appearSpeed: { start: 800, end: 500, step: 20 },
         badStates: {
             "乳首敏感(左)":   { },
@@ -171,17 +149,17 @@ const stages: StageData[] = [
             クリブラシ:       { maxProgress: 4 },
             バイブ:           { maxProgress: 4 },
             膨乳:             { maxProgress: 6 },
-            母乳体質:         { weight: 20, maxProgress: 2, hideSpeed: 150 },
-            尿道カテーテル:   { weight: 30, hideSpeed: 150 },
+            母乳体質:         { weight: 50, maxProgress: 2 },
+            尿道カテーテル:   { weight: 50, hideSpeed: 150 },
             媚薬:             { },
             催淫ガス:         { weight: 20 },
-            体液媚薬化:       { weight: 20, maxProgress: 1, hideSpeed: 150 },
-            挿入:             { weight: 700, hideSpeed: 40 },
+            体液媚薬化:       { weight: 20, maxProgress: 1 },
+            挿入:             { weight: 800, hideSpeed: 40 },
         },
     },
     {
         name: "改造室",
-        enemyCount: 20,
+        enemyCount: 25,
         appearSpeed: { start: 800, end: 400, step: 20 },
         badStates: {
             "乳首敏感(左)":   { },
@@ -200,12 +178,13 @@ const stages: StageData[] = [
             媚薬:             { },
             催淫ガス:         { weight: 20 },
             体液媚薬化:       { weight: 150 },
+            挿入:             { weight: 20, hideSpeed: 40 },
         },
     },
     {
         name: "第四階層通路",
         enemyCount: 12,
-        appearSpeed: { start: 850, end: 500, step: 30 },
+        appearSpeed: { start: 850, end: 450, step: 30 },
         badStates: {
             "乳首敏感(左)":   { },
             "乳首敏感(右)":   { },
@@ -252,7 +231,7 @@ const stages: StageData[] = [
     {
         name: "露出調教VR室",
         enemyCount: 20,
-        appearSpeed: { start: 800, end: 400, step: 20 },
+        appearSpeed: { start: 750, end: 400, step: 20 },
         badStates: {
             "乳首敏感(左)":   { weight: 10 },
             "乳首敏感(右)":   { weight: 10 },
@@ -308,7 +287,7 @@ const stages: StageData[] = [
     { // 13
         name: "生物室",
         enemyCount: 20,
-        appearSpeed: { start: 700, end: 450, step: 20 },
+        appearSpeed: { start: 700, end: 350, step: 20 },
         badStates: {
             "乳首敏感(左)":   { },
             "乳首敏感(右)":   { },
