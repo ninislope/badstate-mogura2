@@ -162,21 +162,27 @@ class StageScene extends MainScene {
     }
     appearMogura(index, value) {
         const mogura = this.moguraElems[index];
-        mogura.classList.remove("hidden", "destroyed");
+        mogura.classList.remove("hidden", "destroyed", "failed");
         mogura.classList.add("appear");
         mogura.textContent = value;
         this.updateInfo();
     }
     destroyMogura(index) {
         const mogura = this.moguraElems[index];
-        mogura.classList.remove("hidden", "appear");
+        mogura.classList.remove("hidden", "appear", "failed");
         mogura.classList.add("destroyed");
         this.updateInfo();
     }
     hideMogura(index) {
         const mogura = this.moguraElems[index];
-        mogura.classList.remove("appear", "destroyed");
+        mogura.classList.remove("appear", "destroyed", "failed");
         mogura.classList.add("hidden");
+        this.updateInfo();
+    }
+    failMogura(index) {
+        const mogura = this.moguraElems[index];
+        mogura.classList.remove("appear", "destroyed", "hidden");
+        mogura.classList.add("failed");
         this.updateInfo();
     }
     upSensation(info) {

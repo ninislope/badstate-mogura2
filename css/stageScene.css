@@ -80,6 +80,15 @@
     color: #ccc;
     background: #666;
     visibility: visible;
+    pointer-events: none;
+}
+
+#stageScene .main .mogura.failed {
+    color: #ff0000;
+    background: #f9f;
+    visibility: visible;
+    pointer-events: none;
+    animation: hideFailedMogura 0.7s ease-in forwards;
 }
 
 #stageScene .main .mogura.hidden {
@@ -96,6 +105,11 @@
 }
 
 @keyframes orgasmDisplay {
+    from { opacity: 1 }
+    to { opacity: 0 }
+}
+
+@keyframes hideFailedMogura {
     from { opacity: 1 }
     to { opacity: 0 }
 }

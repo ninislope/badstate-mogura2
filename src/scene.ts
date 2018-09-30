@@ -221,7 +221,7 @@ class StageScene extends MainScene {
 
     appearMogura(index: number, value: string) {
         const mogura = this.moguraElems[index];
-        mogura.classList.remove("hidden", "destroyed");
+        mogura.classList.remove("hidden", "destroyed", "failed");
         mogura.classList.add("appear");
         mogura.textContent = value;
         this.updateInfo();
@@ -229,15 +229,22 @@ class StageScene extends MainScene {
 
     destroyMogura(index: number) {
         const mogura = this.moguraElems[index];
-        mogura.classList.remove("hidden", "appear");
+        mogura.classList.remove("hidden", "appear", "failed");
         mogura.classList.add("destroyed");
         this.updateInfo();
     }
 
     hideMogura(index: number) {
         const mogura = this.moguraElems[index];
-        mogura.classList.remove("appear", "destroyed");
+        mogura.classList.remove("appear", "destroyed", "failed");
         mogura.classList.add("hidden");
+        this.updateInfo();
+    }
+
+    failMogura(index: number) {
+        const mogura = this.moguraElems[index];
+        mogura.classList.remove("appear", "destroyed", "hidden");
+        mogura.classList.add("failed");
         this.updateInfo();
     }
 

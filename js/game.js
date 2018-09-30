@@ -307,6 +307,7 @@ class MoguraGame {
             setTimeout(this.appearMogura, this.gameStageChallenge.currentAppearSpeed);
         };
         this.hideMogura = (index) => {
+            let failed = false;
             if (this.currentMoguraHits[index]) {
                 delete this.currentMoguraHits[index];
             }
@@ -314,9 +315,15 @@ class MoguraGame {
                 const badState = this.currentMoguras[index];
                 this.gameStageChallenge.fail();
                 this.gamePlayer.upBadState(badState.setName);
+                failed = true;
             }
             delete this.currentMoguras[index];
-            this.scene.hideMogura(index);
+            if (failed) {
+                this.scene.failMogura(index);
+            }
+            else {
+                this.scene.hideMogura(index);
+            }
             if (this.gameStageChallenge.restCount <= 0 && !this.ended)
                 this.end();
         };
