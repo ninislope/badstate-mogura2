@@ -1,3 +1,4 @@
+"use strict";
 class Environment {
     constructor(badStates, challenges, repairs, dopes, speak) {
         this.badStates = badStates;

@@ -1,3 +1,4 @@
+"use strict";
 class Speak {
     constructor(actionSpeaks) {
         this.previousActionSpeakIndex = -1;

@@ -1,3 +1,4 @@
+"use strict";
 class Player {
     constructor(environment, addMode = "immediate", badStates = {}, badStateCounts = {}, activeBadStateCounts = {}) {
         /** 治療回数 */
@@ -199,6 +200,7 @@ class PlayerSensitivity {
         this.urethra = 10;
         this.clitoris = 100;
         this.vagina = 40;
+        this.portio = 9;
         this.womb = 8;
         this.anal = 20;
         this.hip = 20;
@@ -234,7 +236,7 @@ class PlayerSensitivity {
     }
 }
 PlayerSensitivity.parts = [
-    "skin", "rightNipple", "leftNipple", "bust", "urethra", "clitoris", "vagina", "womb", "anal", "hip",
+    "skin", "rightNipple", "leftNipple", "bust", "urethra", "clitoris", "vagina", "portio", "womb", "anal", "hip",
 ];
 PlayerSensitivity.partsJa = [
     "肌", "右乳首", "左乳首", "乳房", "尿道", "陰核", "膣", "子宮", "尻穴", "尻肉",
@@ -325,10 +327,10 @@ class PlayerBadStates {
             console.warn(nextBadState, this.badStateCounts);
         if (!nextBadState && (!currentBadState || !currentBadState.count))
             return; // 次レベルがなくカウントもなければ変化なし
-        const nextBadStates = nextBadState ? Object.assign({}, this.badStates, { [setName]: nextBadState }) : this.badStates;
+        const nextBadStates = nextBadState ? Object.assign(Object.assign({}, this.badStates), { [setName]: nextBadState }) : this.badStates;
         const addCount = nextBadState ? nextBadState.count || 0 : currentBadState ? currentBadState.count || 0 : 0;
-        const nextBadStateCounts = addCount ? Object.assign({}, this.badStateCounts, { [setName]: (this.badStateCounts[setName] || 0) + addCount }) : this.badStateCounts;
-        const nextActiveBadStateCounts = addCount ? Object.assign({}, this.activeBadStateCounts, { [setName]: (this.activeBadStateCounts[setName] || 0) + addCount }) : this.activeBadStateCounts;
+        const nextBadStateCounts = addCount ? Object.assign(Object.assign({}, this.badStateCounts), { [setName]: (this.badStateCounts[setName] || 0) + addCount }) : this.badStateCounts;
+        const nextActiveBadStateCounts = addCount ? Object.assign(Object.assign({}, this.activeBadStateCounts), { [setName]: (this.activeBadStateCounts[setName] || 0) + addCount }) : this.activeBadStateCounts;
         return new PlayerBadStates(this.player, nextBadStates, nextBadStateCounts, nextActiveBadStateCounts);
     }
     /**
@@ -347,7 +349,7 @@ class PlayerBadStates {
             return;
         if (nextProgress > 0) {
             const nextBadState = this.player.environment.badStates.findSet(setName).byProgress(nextProgress);
-            return new PlayerBadStates(this.player, Object.assign({}, this.badStates, { [setName]: nextBadState }), this.badStateCounts, this.activeBadStateCounts);
+            return new PlayerBadStates(this.player, Object.assign(Object.assign({}, this.badStates), { [setName]: nextBadState }), this.badStateCounts, this.activeBadStateCounts);
         }
         else {
             const nextBadStates = Object.assign({}, this.badStates);

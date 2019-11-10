@@ -1,3 +1,4 @@
+"use strict";
 class SceneState {
     constructor(player) {
         this.scene = new StartScene();

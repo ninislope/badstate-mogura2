@@ -1,3 +1,4 @@
+"use strict";
 class Serialize {
     static serializeObject(self, props = Object.keys(self)) {
         const obj = {};

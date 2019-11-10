@@ -1,3 +1,4 @@
+"use strict";
 class Scene {
     start() {
     }
@@ -360,6 +361,11 @@ class SensitivityStatusElement {
     }
 }
 class SensitivityStatusElements {
+    constructor(player, elements, diffSource) {
+        this.player = player;
+        this.elements = elements;
+        this.diffSource = diffSource;
+    }
     static create(player, diffSource) {
         const elements = {};
         for (let index = 0; index < PlayerSensitivity.parts.length; ++index) {
@@ -369,11 +375,6 @@ class SensitivityStatusElements {
         }
         elements.all = SensitivityStatusElement.create(PlayerSensitivity.allPartJa, true);
         return new this(player, elements, diffSource);
-    }
-    constructor(player, elements, diffSource) {
-        this.player = player;
-        this.elements = elements;
-        this.diffSource = diffSource;
     }
     element(part) {
         return this.elements[part];

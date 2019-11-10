@@ -1,3 +1,4 @@
+"use strict";
 class StartScene extends Scene {
     start() {
         this.setScene("startScene");
@@ -143,6 +144,11 @@ class DopeScene extends MainScene {
     }
 }
 class StageScene extends MainScene {
+    constructor(player, next, firstStage = false) {
+        super(player, document.querySelector(`#stageScene .badStates`), document.querySelector(`#stageScene .statuses`), document.querySelector(`#stageScene .logs`), "previousStageBadStates", "previousStageSensitivity", false);
+        this.next = next;
+        this.firstStage = firstStage;
+    }
     get levelElem() { return this._levelElem ? this._levelElem : (this._levelElem = document.querySelector("#stageScene .level")); }
     get stageNameElem() { return this._stageNameElem ? this._stageNameElem : (this._stageNameElem = document.querySelector("#stageScene .stageName")); }
     get repeatCountElem() { return this._repeatCountElem ? this._repeatCountElem : (this._repeatCountElem = document.querySelector("#stageScene .repeatCount")); }
@@ -154,11 +160,6 @@ class StageScene extends MainScene {
     get startElem() { return this._startElem ? this._startElem : (this._startElem = document.querySelector("#stageScene .start")); }
     get inactiveElem() { return this._inactiveElem ? this._inactiveElem : (this._inactiveElem = document.querySelector("#stageScene .inactive")); }
     get orgasmElem() { return this._orgasmElem ? this._orgasmElem : (this._orgasmElem = document.querySelector("#stageScene .orgasm")); }
-    constructor(player, next, firstStage = false) {
-        super(player, document.querySelector(`#stageScene .badStates`), document.querySelector(`#stageScene .statuses`), document.querySelector(`#stageScene .logs`), "previousStageBadStates", "previousStageSensitivity", false);
-        this.next = next;
-        this.firstStage = firstStage;
-    }
     start() {
         // FIXME: 未実装故
         if (this.next && this.player.environment.gameChallenges.currentGameChallenge.currentGameStage && this.player.environment.gameChallenges.currentGameChallenge.currentGameStage.level + 1 > this.player.environment.gameChallenges.challenges.challenge(1).stages.length) {

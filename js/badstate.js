@@ -1,16 +1,17 @@
+"use strict";
 function asBadStateSetsData(data) { return data; }
 ;
 /** バッドステート群 */
 class BadStates {
+    constructor(badStateSets) {
+        this.badStateSets = badStateSets;
+        this.badStateSetNames = Object.keys(this.badStateSets).sort((a, b) => this.badStateSets[a].index - this.badStateSets[b].index);
+    }
     static fromData(badStateSets) {
         return new BadStates(Object.keys(badStateSets).reduce((sets, setName, index) => {
             sets[setName] = BadStateSet.fromData(setName, index, badStateSets[setName]);
             return sets;
         }, {}));
-    }
-    constructor(badStateSets) {
-        this.badStateSets = badStateSets;
-        this.badStateSetNames = Object.keys(this.badStateSets).sort((a, b) => this.badStateSets[a].index - this.badStateSets[b].index);
     }
     findSet(setName) {
         return this.badStateSets[setName];
@@ -63,6 +64,26 @@ class BadState {
         return this.speak.map((speakStep) => speakStep instanceof Array ? speakStep[Math.floor(Math.random() * speakStep.length)] : speakStep);
     }
 }
+const badStateDescriptionJa = {
+    setName: "系列名",
+    displayName: "名称",
+    description: "説明",
+    sensitivity: "感度",
+    hideSpeed: "スピード",
+    delay: "遅延",
+    prod: "+効果発動条件",
+    stop: "+効果: 行動不能",
+    sensation: "+効果: 快感",
+    trigger: "+効果: 誘発",
+    period: "持続時間",
+    endTrigger: "解消時誘発",
+    count: "カウント",
+    countActivate: "付与条件（累計回数）",
+    activeCountActivate: "付与条件（付与以後回数）",
+    danger: "危険性",
+    stageDown: "バトル後解消",
+    retryDown: "治療",
+};
 class BadStateDescription {
     constructor(badState, bias = 1) {
         this.badState = badState;
@@ -139,26 +160,7 @@ class BadStateDescription {
         return this.bias === 1 ? `${float2(value)}` : `${float2(value * this.bias)}`;
     }
 }
-BadStateDescription.ja = {
-    setName: "系列名",
-    displayName: "名称",
-    description: "説明",
-    sensitivity: "感度",
-    hideSpeed: "スピード",
-    delay: "遅延",
-    prod: "+効果発動条件",
-    stop: "+効果: 行動不能",
-    sensation: "+効果: 快感",
-    trigger: "+効果: 誘発",
-    period: "持続時間",
-    endTrigger: "解消時誘発",
-    count: "カウント",
-    countActivate: "付与条件（累計回数）",
-    activeCountActivate: "付与条件（付与以後回数）",
-    danger: "危険性",
-    stageDown: "バトル後解消",
-    retryDown: "治療",
-};
+BadStateDescription.ja = badStateDescriptionJa;
 function float2(value) {
     return Math.round(value * 100) / 100;
 }

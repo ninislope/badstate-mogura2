@@ -1,3 +1,4 @@
+"use strict";
 class GamePlayer {
     constructor(player, moguraGame) {
         this.inactiveTimers = [];
@@ -151,7 +152,7 @@ class GamePlayer {
                 const info = this.player.upSensation(parts, badState.sensation, badState);
                 this.moguraGame.scene.upSensation(info);
                 for (const part of Object.keys(info.sensitivity)) {
-                    console.info("★快感", logname, "強度=", badState.sensation, "快感=", float2(info.sensation), "感度=", PlayerSensitivity.ja(part, true), "+", float2(info.sensitivity[part]), "base=", float2(this.player.baseSensitivity[part]), "bias=", float2(this.player.badStates.sensitivityBias[part]), "%");
+                    console.info("★快感", logname, "強度=", badState.sensation, "快感=", float2(info.sensation), "感度=", PlayerSensitivity.ja(part, true), "+", float2(info.sensitivity[part] || 0), "base=", float2(this.player.baseSensitivity[part]), "bias=", float2(this.player.badStates.sensitivityBias[part]), "%");
                 }
                 if (this.player.canOrgasm)
                     this.setOrgasm();

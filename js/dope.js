@@ -1,3 +1,4 @@
+"use strict";
 class Dope {
     constructor(param) {
         this.speedBoost = param.speedBoost;
@@ -35,11 +36,11 @@ class Dope {
     }
 }
 class Dopes {
-    static fromData(dopes) {
-        return new this(dopes.map(dope => new Dope(dope)));
-    }
     constructor(dopes) {
         this.dopes = dopes;
+    }
+    static fromData(dopes) {
+        return new this(dopes.map(dope => new Dope(dope)));
     }
     /**
      *

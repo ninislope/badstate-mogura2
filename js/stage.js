@@ -1,10 +1,11 @@
+"use strict";
 class Challenges {
+    constructor(challenges) {
+        this.challenges = challenges;
+    }
     static fromData(challenges, stages) {
         return new Challenges(// stageのデータは同じものを使う
         challenges.map((challenge, index) => Challenge.fromData(index + 1, challenge, stages)));
-    }
-    constructor(challenges) {
-        this.challenges = challenges;
     }
     challenge(count) {
         // 無限に遊べる
@@ -13,12 +14,12 @@ class Challenges {
 }
 /** 挑戦 */
 class Challenge {
-    static fromData(count, challenge, stages) {
-        return new Challenge(Object.assign({ count }, challenge, { stages: stages.map((stage, index) => new Stage(Object.assign({ level: index + 1 }, stage))) }));
-    }
     constructor(param) {
         this.count = param.count;
         this.stages = param.stages;
+    }
+    static fromData(count, challenge, stages) {
+        return new Challenge(Object.assign(Object.assign({ count }, challenge), { stages: stages.map((stage, index) => new Stage(Object.assign({ level: index + 1 }, stage))) }));
     }
     /**
      * そのレベルのステージ

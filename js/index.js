@@ -1,3 +1,4 @@
+"use strict";
 /*
 
 
@@ -25,7 +26,7 @@ class A{
 }*/
 const _setTimeout = setTimeout;
 function speedUp(num) {
-    setTimeout = function (a, b) { return _setTimeout(a, b / num); };
+    setTimeout = function (a, b) { return _setTimeout(a, (b || 0) / num); };
 }
 function skipStage() {
     if (_player.environment.gameChallenges.currentGameChallenge.currentGameStage && _player.environment.gameChallenges.currentGameChallenge.currentGameStage.level + 1 > _player.environment.gameChallenges.challenges.challenge(1).stages.length) {

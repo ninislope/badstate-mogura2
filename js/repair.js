@@ -1,3 +1,4 @@
+"use strict";
 class Repair {
     constructor(param) {
         this.resist = param.resist;
@@ -27,11 +28,11 @@ class Repair {
     }
 }
 class Repairs {
-    static fromData(repairs) {
-        return new this(repairs.map(repair => new Repair(repair)));
-    }
     constructor(repairs) {
         this.repairs = repairs;
+    }
+    static fromData(repairs) {
+        return new this(repairs.map(repair => new Repair(repair)));
     }
     /**
      *
