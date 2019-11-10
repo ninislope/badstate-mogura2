@@ -239,7 +239,7 @@ PlayerSensitivity.parts = [
     "skin", "rightNipple", "leftNipple", "bust", "urethra", "clitoris", "vagina", "portio", "womb", "anal", "hip",
 ];
 PlayerSensitivity.partsJa = [
-    "肌", "右乳首", "左乳首", "乳房", "尿道", "陰核", "膣", "子宮", "尻穴", "尻肉",
+    "肌", "右乳首", "左乳首", "乳房", "尿道", "陰核", "膣", "ポルチオ", "子宮", "尻穴", "尻肉",
 ];
 PlayerSensitivity.allPartJa = "全部";
 PlayerSensitivity.allPartJaAlt = "全部位";

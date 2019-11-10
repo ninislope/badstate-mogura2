@@ -250,7 +250,7 @@ class PlayerSensitivity implements SensitivityDetail {
     ];
 
     static partsJa = [
-        "肌", "右乳首", "左乳首", "乳房", "尿道", "陰核", "膣", "子宮", "尻穴", "尻肉",
+        "肌", "右乳首", "左乳首", "乳房", "尿道", "陰核", "膣", "ポルチオ", "子宮", "尻穴", "尻肉",
     ];
 
     static allPartJa = "全部";
