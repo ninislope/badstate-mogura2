@@ -2,10 +2,10 @@
   "name": "bst-mogura",
   "version": "1.0.0",
   "description": "https://ninislope.github.io/badstate-mogura2/",
-  "dependencies": {
-    "typescript": "^2.8.1"
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^3.7.2"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

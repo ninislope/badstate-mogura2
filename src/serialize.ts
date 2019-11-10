@@ -8,7 +8,7 @@ class Serialize {
         return obj;
     }
 
-    static serialize(self: any) {
+    static serialize(self: any): any {
         if (self instanceof Array) {
             return self.map((elem) => this.serialize(elem));
         } else if (typeof self === "object") {

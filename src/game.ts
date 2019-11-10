@@ -146,11 +146,11 @@ class GamePlayer {
                 const parts = typeof badState.sensitivity === "number" ? PlayerSensitivity.parts : Object.keys(badState.sensitivity) as SensitivePart[];
                 const info = this.player.upSensation(parts, badState.sensation, badState);
                 this.moguraGame.scene.upSensation(info);
-                for (const part of Object.keys(info.sensitivity) as SensitivePartWithAll[]) {
+                for (const part of Object.keys(info.sensitivity) as SensitivePart[]) {
                     console.info("★快感", logname, "強度=", badState.sensation, "快感=", float2(info.sensation), "感度=",
                         PlayerSensitivity.ja(part, true),
                         "+",
-                        float2(info.sensitivity[part]),
+                        float2(info.sensitivity[part] || 0),
                         "base=",
                         float2(this.player.baseSensitivity[part]),
                         "bias=",

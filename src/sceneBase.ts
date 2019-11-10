@@ -516,7 +516,7 @@ class BadStateListElementGenerator {
 }
 
 class BadStateDetailDialog {
-    private static effects: Array<keyof BadStateDescription> = [
+    private static effects: Array<BadStateDescriptionKey> = [
         "hideSpeed",
         "delay",
         "prod",
@@ -584,7 +584,7 @@ class BadStateDetailDialog {
         return li;
     }
 
-    private static createEffectElement(desc: BadStateDescription, prop: keyof BadStateDescription) {
+    private static createEffectElement(desc: BadStateDescription, prop: BadStateDescriptionKey) {
         const value = desc[prop];
         if (!value) return;
         const name = BadStateDescription.ja[prop];

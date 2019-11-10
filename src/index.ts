@@ -26,7 +26,7 @@ class A{
 
 const _setTimeout = setTimeout;
 function speedUp(num: number) {
-    (setTimeout as any) = function(a, b) { return _setTimeout(a, b / num); }
+    (setTimeout as any) = function(a: TimerHandler, b?: number) { return _setTimeout(a, (b || 0) / num); }
 }
 
 function skipStage() {

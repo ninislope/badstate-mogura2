@@ -105,7 +105,7 @@ class Stage implements StageData {
     constructor(param: StageData & {level: number}) {
         for (const name of Object.keys(param) as Array<keyof StageData | "level">) {
             const value = param[name];
-            if (value != null) this[name] = value;
+            if (value != null) (this[name] as this[typeof name]) = value as this[typeof name];
         }
     }
 

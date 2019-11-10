@@ -20,7 +20,7 @@ class Speak {
         return this.randomFromActionSpeaks(speaks);
     }
 
-    private randomFromActionSpeaks(speaks: string[]) {
+    private randomFromActionSpeaks(speaks: string[]): string {
         if (speaks.length <= 1) return speaks[0];
         const index = Math.floor(Math.random() * speaks.length);
         if (index === this.previousActionSpeakIndex) return this.randomFromActionSpeaks(speaks); // 直前に出したindex出さないように

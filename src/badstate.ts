@@ -45,7 +45,7 @@ interface SensitivityDescription {
 /** 回数有効化条件 */
 interface BadStateCountCondition {
     /** バッドステートセット名 */
-    name: string;
+    name: BadStateSetName;
     /** それが付与された回数 */
     count: number;
 }
@@ -190,7 +190,7 @@ class BadStates {
 
     constructor(badStateSets: BadStateSets) {
         this.badStateSets = badStateSets;
-        this.badStateSetNames = Object.keys(this.badStateSets).sort((a, b) => this.badStateSets[a].index - this.badStateSets[b].index);
+        this.badStateSetNames = (Object.keys(this.badStateSets) as BadStateSetName[]).sort((a, b) => this.badStateSets[a].index - this.badStateSets[b].index);
     }
 
     findSet(setName: BadStateSetName) {
@@ -264,7 +264,7 @@ class BadState implements BadStateData {
 
     constructor(param: BadStateData & {setName: BadStateSetName; setIndex: number; progress: number}) {
         for (const name of Object.keys(param) as Array<keyof BadStateData | "progress" | "setName" | "setIndex">) {
-            if (param[name] != null) this[name] = param[name];
+            if (param[name] != null) (this[name] as this[typeof name]) = param[name] as this[typeof name];
         }
     }
 
@@ -286,27 +286,32 @@ class BadState implements BadStateData {
     }
 }
 
-class BadStateDescription {
-    static ja = {
-        setName: "系列名",
-        displayName: "名称",
-        description: "説明",
-        sensitivity: "感度",
-        hideSpeed: "スピード",
-        delay: "遅延",
-        prod: "+効果発動条件",
-        stop: "+効果: 行動不能",
-        sensation: "+効果: 快感",
-        trigger: "+効果: 誘発",
-        period: "持続時間",
-        endTrigger: "解消時誘発",
-        count: "カウント",
-        countActivate: "付与条件（累計回数）",
-        activeCountActivate: "付与条件（付与以後回数）",
-        danger: "危険性",
-        stageDown: "バトル後解消",
-        retryDown: "治療",
-    };
+const badStateDescriptionJa = {
+    setName: "系列名",
+    displayName: "名称",
+    description: "説明",
+    sensitivity: "感度",
+    hideSpeed: "スピード",
+    delay: "遅延",
+    prod: "+効果発動条件",
+    stop: "+効果: 行動不能",
+    sensation: "+効果: 快感",
+    trigger: "+効果: 誘発",
+    period: "持続時間",
+    endTrigger: "解消時誘発",
+    count: "カウント",
+    countActivate: "付与条件（累計回数）",
+    activeCountActivate: "付与条件（付与以後回数）",
+    danger: "危険性",
+    stageDown: "バトル後解消",
+    retryDown: "治療",
+};
+
+type BadStateDescriptionKey = keyof typeof badStateDescriptionJa;
+type IBadStateDescription = {[key in BadStateDescriptionKey]?: string | string[]};
+
+class BadStateDescription implements IBadStateDescription {
+    static ja = badStateDescriptionJa;
 
     badState: BadState;
     bias: number;

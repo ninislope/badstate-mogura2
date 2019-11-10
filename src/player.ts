@@ -136,7 +136,7 @@ class Player {
         for (const part of parts) { // allの計算をキャッシュして同じ時点で計算
             const sensitivity = this.sensitivity[part];
             partUpSensitivity[part] = Player.sensitiveSpeed(sensitivity, all, this.sensitiveSpeedBias) * value;
-            this.baseSensitivity[part] += partUpSensitivity[part];
+            this.baseSensitivity[part] += partUpSensitivity[part]!;
             upSensation += Player.sensationSpeed(sensitivity, all, this.effectiveRate) * value;
         }
         this.sensation += upSensation;
@@ -246,7 +246,7 @@ type SensitivePartWithAll = SensitivePart | "all";
 /** 感度 */
 class PlayerSensitivity implements SensitivityDetail {
     static parts: SensitivePart[] = [
-        "skin", "rightNipple", "leftNipple", "bust", "urethra", "clitoris", "vagina", "womb", "anal", "hip",
+        "skin", "rightNipple", "leftNipple", "bust", "urethra", "clitoris", "vagina", "portio", "womb", "anal", "hip",
     ];
 
     static partsJa = [
@@ -276,6 +276,7 @@ class PlayerSensitivity implements SensitivityDetail {
     urethra = 10;
     clitoris = 100;
     vagina = 40;
+    portio = 9;
     womb = 8;
     anal = 20;
     hip = 20;
@@ -499,8 +500,8 @@ class PlayerBadStates {
 
     private makeSensitivityBias() {
         const playerSensitivityBias = new PlayerSensitivityBias();
-        for (const name of Object.keys(this.badStates)) {
-            const sensitivity = this.badStates[name].sensitivity;
+        for (const name of Object.keys(this.badStates) as BadStateSetName[]) {
+            const sensitivity = this.badStates[name]!.sensitivity;
             if (typeof sensitivity === "number") {
                 if (sensitivity !== 0) {
                     for (const part of PlayerSensitivity.parts) {
@@ -522,7 +523,7 @@ class PlayerBadStateDiff {
     before: PlayerBadStates;
     after: PlayerBadStates;
     /** バッドステートセット名 */
-    setNames: string[];
+    setNames: BadStateSetName[];
     /** 順序通りのバッドステート差分 */
     sortedBadStateDiffEntries: PlayerBadStateDiffEntry[];
 
@@ -530,11 +531,11 @@ class PlayerBadStateDiff {
         this.before = before;
         this.after = after;
 
-        const uniqueSetNames = {};
+        const uniqueSetNames = {} as {[name in BadStateSetName]: boolean};
         for (const setName of this.before.setNames.concat(this.after.setNames)) {
             uniqueSetNames[setName] = true;
         }
-        this.setNames = Object.keys(uniqueSetNames).sort((a: BadStateSetName, b: BadStateSetName) =>
+        this.setNames = (Object.keys(uniqueSetNames) as BadStateSetName[]).sort((a, b) =>
             (this.before.badStates[a] || this.after.badStates[a])!.setIndex - (this.before.badStates[b] || this.after.badStates[b])!.setIndex,
         );
         this.sortedBadStateDiffEntries = this.setNames.map((setName) => new PlayerBadStateDiffEntry(this.before.badStates[setName], this.after.badStates[setName]));
@@ -807,7 +808,7 @@ class PlayerLogs extends Array<HTMLLIElement> {
         ]));
     }
 
-    private createElement(type, text: Array<HTMLElement | Text>) {
+    private createElement(type: string, text: Array<HTMLElement | Text>) {
         const li = document.createElement("li");
         li.classList.add(type);
         for (const elem of text) li.appendChild(elem);
