@@ -1,0 +1,23 @@
+{
+  "name": "bst-mogura",
+  "version": "1.0.0",
+  "description": "https://ninislope.github.io/badstate-mogura2/",
+  "dependencies": {
+    "typescript": "^2.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ninislope/badstate-mogura2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "CC0",
+  "bugs": {
+    "url": "https://github.com/ninislope/badstate-mogura2/issues"
+  },
+  "homepage": "https://github.com/ninislope/badstate-mogura2#readme"
+}
